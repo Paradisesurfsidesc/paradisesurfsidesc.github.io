@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>Paradise Surfside | Book Your Beach Escape</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Paradise Surfside Beach House — check availability and see current beach weather." />
+  <meta name="description" content="Paradise Surfside Beach House — check availability and view current beach weather." />
 
   <style>
     :root{
@@ -14,7 +14,7 @@
       --muted:#b7c2e2;
       --accent:#4fd1c5;
       --accent2:#60a5fa;
-      --border:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.10);
     }
     *{box-sizing:border-box}
     body{
@@ -82,52 +82,41 @@
       color:rgba(183,194,226,.75);
     }
 
-    /* Weather box */
-    .paradise-weather{
+    /* Top-right weather badge (API-free) */
+    .wx-badge{
       position: fixed;
       top: 14px;
       right: 14px;
-      width: 360px;
-      height: 260px;
-      background: rgba(18,27,47,.92);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 14px;
-      box-shadow:0 12px 28px rgba(0,0,0,.35);
-      overflow:hidden;
-      z-index:9999;
-      backdrop-filter: blur(8px);
-    }
-    .pw-head{
+      z-index: 9999;
       display:flex;
-      justify-content:space-between;
       align-items:center;
+      gap:10px;
       padding:10px 12px;
-      font-size:12px;
-      font-weight:800;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.04);
-    }
-    .pw-head a{
-      font-size:11px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(18,27,47,.92);
+      box-shadow:0 12px 28px rgba(0,0,0,.35);
+      backdrop-filter: blur(8px);
       text-decoration:none;
-      color:var(--text);
-      border:1px solid rgba(255,255,255,.2);
-      padding:4px 8px;
-      border-radius:10px;
+      color: var(--text);
     }
-    .paradise-weather iframe{
-      width:100%;
-      height:calc(100% - 40px);
-      border:0;
+    .wx-dot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow:0 0 0 4px rgba(79,209,197,.15);
     }
+    .wx-text{display:flex; flex-direction:column; line-height:1.1}
+    .wx-title{font-size:11px; font-weight:900; letter-spacing:.2px}
+    .wx-value{font-size:14px; font-weight:900}
+    .wx-sub{font-size:11px; color: rgba(183,194,226,.85); margin-top:2px}
+
     @media (max-width: 560px){
-      .paradise-weather{
-        left:10px;
-        right:10px;
-        width:auto;
+      .wx-badge{
         top:auto;
         bottom:10px;
-        height:240px;
+        right:10px;
+        left:10px;
+        justify-content:space-between;
       }
     }
   </style>
@@ -135,18 +124,18 @@
 
 <body>
 
-  <!-- Weather box -->
-  <div class="paradise-weather">
-    <div class="pw-head">
-      <span>Current Paradise Weather</span>
-      <a href="https://tempestwx.com/station/204460" target="_blank" rel="noopener">Open</a>
-    </div>
-    <iframe
-      src="https://tempestwx.com/station/204460"
-      loading="lazy"
-      sandbox="allow-scripts allow-same-origin allow-popups">
-    </iframe>
-  </div>
+  <!-- API-free weather badge -->
+  <a class="wx-badge"
+     href="https://tempestwx.com/station/204460"
+     target="_blank"
+     rel="noopener">
+    <span class="wx-dot"></span>
+    <span class="wx-text">
+      <span class="wx-title">Current Paradise Weather</span>
+      <span class="wx-value">Tap to view</span>
+      <span class="wx-sub">Live Tempest station</span>
+    </span>
+  </a>
 
   <!-- Main funnel -->
   <div class="wrap">
