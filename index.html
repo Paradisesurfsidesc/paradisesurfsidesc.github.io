@@ -1,69 +1,183 @@
-<!-- Paradise Weather (Tempest) corner box -->
-<div class="paradise-weather">
-  <div class="pw-head">
-    <span>Current Paradise Weather</span>
-    <a href="https://tempestwx.com/station/204460" target="_blank" rel="noopener">Open</a>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Paradise Surfside | Book Your Beach Escape</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Paradise Surfside Beach House — check availability and see current beach weather." />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#121b2f;
+      --text:#eaf0ff;
+      --muted:#b7c2e2;
+      --accent:#4fd1c5;
+      --accent2:#60a5fa;
+      --border:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(79,209,197,.25), transparent 55%),
+        radial-gradient(1000px 600px at 80% 20%, rgba(96,165,250,.25), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .wrap{width:min(920px, 100%)}
+    .card{
+      background: rgba(18,27,47,.9);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:28px;
+      box-shadow: 0 14px 34px rgba(0,0,0,.35);
+      backdrop-filter: blur(8px);
+      text-align:center;
+    }
+    h1{
+      margin:0 0 12px;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height:1.1;
+    }
+    p{
+      margin:0 0 18px;
+      font-size:17px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+    .btns{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:14px;
+    }
+    a.btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 18px;
+      border-radius:14px;
+      font-weight:800;
+      text-decoration:none;
+      border:1px solid var(--border);
+      color:var(--text);
+      background: rgba(255,255,255,.05);
+    }
+    a.btn.primary{
+      border:none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#06101f;
+    }
+    footer{
+      margin-top:18px;
+      font-size:12px;
+      color:rgba(183,194,226,.75);
+    }
+
+    /* Weather box */
+    .paradise-weather{
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      width: 360px;
+      height: 260px;
+      background: rgba(18,27,47,.92);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      box-shadow:0 12px 28px rgba(0,0,0,.35);
+      overflow:hidden;
+      z-index:9999;
+      backdrop-filter: blur(8px);
+    }
+    .pw-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px 12px;
+      font-size:12px;
+      font-weight:800;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+    }
+    .pw-head a{
+      font-size:11px;
+      text-decoration:none;
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.2);
+      padding:4px 8px;
+      border-radius:10px;
+    }
+    .paradise-weather iframe{
+      width:100%;
+      height:calc(100% - 40px);
+      border:0;
+    }
+    @media (max-width: 560px){
+      .paradise-weather{
+        left:10px;
+        right:10px;
+        width:auto;
+        top:auto;
+        bottom:10px;
+        height:240px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Weather box -->
+  <div class="paradise-weather">
+    <div class="pw-head">
+      <span>Current Paradise Weather</span>
+      <a href="https://tempestwx.com/station/204460" target="_blank" rel="noopener">Open</a>
+    </div>
+    <iframe
+      src="https://tempestwx.com/station/204460"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-popups">
+    </iframe>
   </div>
 
-  <iframe
-    src="https://tempestwx.com/station/204460"
-    title="Paradise Weather"
-    loading="lazy"
-    referrerpolicy="no-referrer"
-    sandbox="allow-scripts allow-same-origin allow-popups"
-  ></iframe>
-</div>
+  <!-- Main funnel -->
+  <div class="wrap">
+    <div class="card">
+      <h1>Paradise Surfside 🌴</h1>
+      <p>
+        A 5-bedroom family beach house in Surfside Beach, SC.
+        Check availability, view photos, and plan your perfect beach escape.
+      </p>
 
-<style>
-  .paradise-weather{
-    position: fixed;
-    top: 14px;
-    right: 14px;
-    width: 360px;
-    height: 260px;
-    background: rgba(18,27,47,.92);
-    border: 1px solid rgba(255,255,255,.10);
-    border-radius: 14px;
-    box-shadow: 0 12px 28px rgba(0,0,0,.35);
-    overflow: hidden;
-    z-index: 9999;
-    backdrop-filter: blur(8px);
-  }
-  .pw-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding: 10px 12px;
-    font: 700 12px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color: rgba(234,240,255,.95);
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    background: rgba(255,255,255,.03);
-  }
-  .pw-head a{
-    font-weight:700;
-    color: rgba(234,240,255,.85);
-    text-decoration:none;
-    border: 1px solid rgba(255,255,255,.14);
-    padding: 6px 8px;
-    border-radius: 10px;
-    background: rgba(255,255,255,.04);
-  }
-  .paradise-weather iframe{
-    width:100%;
-    height: calc(100% - 41px);
-    border:0;
-  }
+      <div class="btns">
+        <a class="btn primary" href="https://paradisesurfsidesc.com" target="_blank" rel="noopener">
+          Check Availability
+        </a>
+        <a class="btn" href="https://paradisesurfsidesc.com" target="_blank" rel="noopener">
+          View Photos
+        </a>
+        <a class="btn" href="mailto:info@paradisesurfsidesc.com">
+          Contact Us
+        </a>
+      </div>
 
-  /* Mobile: make it bottom sheet-ish */
-  @media (max-width: 520px){
-    .paradise-weather{
-      right: 10px;
-      left: 10px;
-      width: auto;
-      height: 240px;
-      top: auto;
-      bottom: 10px;
-    }
-  }
-</style>
+      <footer>
+        © <span id="yr"></span> Paradise Surfside • Surfside Beach, SC
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("yr").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
