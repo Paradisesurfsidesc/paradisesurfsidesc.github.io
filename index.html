@@ -1,236 +1,69 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Paradise Surfside — Deals, Weather & Booking</title>
-  <meta name="description" content="Paradise Surfside Beach House — check availability, get deals, and see live beach weather + pool temperature." />
-
-  <style>
-    :root{
-      --bg:#0b1220;
-      --card:#121b2f;
-      --text:#eaf0ff;
-      --muted:#b7c2e2;
-      --accent:#4fd1c5;
-      --accent2:#60a5fa;
-      --border:rgba(255,255,255,.08);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(79,209,197,.25), transparent 55%),
-                  radial-gradient(1000px 600px at 80% 20%, rgba(96,165,250,.25), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-    }
-    .wrap{width:min(980px, 100%)}
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:18px;
-      opacity:.95;
-    }
-    .brand{
-      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
-    }
-    .dot{
-      width:12px; height:12px; border-radius:999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow:0 0 0 4px rgba(79,209,197,.15);
-    }
-    .pill{
-      font-size:12px; color:var(--muted);
-      padding:6px 10px; border:1px solid var(--border); border-radius:999px;
-      background: rgba(255,255,255,.03);
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:18px;
-    }
-    @media (max-width: 900px){
-      .grid{grid-template-columns:1fr}
-    }
-    .card{
-      background: rgba(18,27,47,.85);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
-      backdrop-filter: blur(8px);
-    }
-    h1{margin:0 0 10px; font-size: clamp(28px, 3.5vw, 44px); line-height:1.08}
-    p{margin:0 0 14px; color:var(--muted); font-size:16px; line-height:1.55}
-    .btnrow{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px}
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      padding:12px 14px; border-radius:12px; text-decoration:none; font-weight:700;
-      border:1px solid var(--border);
-      color:var(--text);
-      background: rgba(255,255,255,.04);
-    }
-    .btn.primary{
-      border:none;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color:#06101f;
-    }
-    .btn:hover{transform: translateY(-1px)}
-    .fine{font-size:12px; color:rgba(183,194,226,.8); margin-top:10px}
-    .kpi{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-top:14px;
-    }
-    .mini{
-      padding:14px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.03);
-    }
-    .label{font-size:12px; color:rgba(183,194,226,.9)}
-    .value{font-size:22px; font-weight:850; margin-top:6px}
-    .sub{font-size:12px; color:rgba(183,194,226,.8); margin-top:6px}
-    form{margin-top:10px}
-    .row{display:flex; gap:10px; flex-wrap:wrap}
-    input{
-      flex:1;
-      min-width:220px;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.03);
-      color:var(--text);
-      outline:none;
-    }
-    input::placeholder{color:rgba(183,194,226,.7)}
-    button{
-      padding:12px 14px;
-      border-radius:12px;
-      border: none;
-      cursor:pointer;
-      font-weight:800;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color:#06101f;
-    }
-    .footer{
-      margin-top:14px;
-      display:flex;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:10px;
-      color:rgba(183,194,226,.75);
-      font-size:12px;
-    }
-    .link{color:rgba(234,240,255,.9)}
-    .statusNote{font-size:12px; color:rgba(183,194,226,.8); margin-top:10px}
-  </style>
-</head>
-
-<body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand"><span class="dot"></span> Paradise Surfside</div>
-      <div class="pill">Surfside Beach, SC • 5BR Family Beach House</div>
-    </div>
-
-    <div class="grid">
-      <!-- LEFT: Funnel -->
-      <div class="card">
-        <h1>Book your Surfside escape 🌴</h1>
-        <p>
-          Check availability, get seasonal deals, and soon: live beach weather + pool temperature from our on-site systems.
-        </p>
-
-        <div class="btnrow">
-          <!-- TODO: replace this with your actual booking/check-availability URL -->
-          <a class="btn primary" href="https://paradisesurfsidesc.com" target="_blank" rel="noopener">Check Availability</a>
-          <a class="btn" href="https://paradisesurfsidesc.com" target="_blank" rel="noopener">View Photos</a>
-          <a class="btn" href="mailto:info@paradisesurfsidesc.com">Email Us</a>
-        </div>
-
-        <div class="kpi">
-          <div class="mini">
-            <div class="label">Live Beach Weather</div>
-            <div class="value" id="wxValue">—</div>
-            <div class="sub" id="wxSub">Connect feed to display</div>
-          </div>
-          <div class="mini">
-            <div class="label">Pool Temperature</div>
-            <div class="value" id="poolValue">—</div>
-            <div class="sub" id="poolSub">Connect Hubitat to display</div>
-          </div>
-        </div>
-
-        <div class="statusNote" id="statusNote">
-          Tip: Once you share your weather station feed URL and Hubitat device endpoint, this page can show live readings.
-        </div>
-
-        <div class="fine">
-          By signing up, you’ll only receive occasional deal alerts. Unsubscribe anytime.
-        </div>
-      </div>
-
-      <!-- RIGHT: Deals signup -->
-      <div class="card">
-        <h2 style="margin:0 0 10px; font-size:22px;">Get deals & last-minute openings</h2>
-        <p style="margin:0 0 10px;">
-          Drop your email and we’ll send the best rates + availability updates.
-        </p>
-
-        <!-- SIMPLE SIGNUP OPTION:
-             Replace this with your Mailchimp / ConvertKit / Google Form action later.
-             For now, it just opens an email draft to you. -->
-        <form onsubmit="return signupFallback(event)">
-          <div class="row">
-            <input id="email" type="email" placeholder="you@email.com" required />
-            <button type="submit">Notify me</button>
-          </div>
-        </form>
-
-        <div class="fine">
-          Want “real” signup tracking (Mailchimp/ConvertKit) or SMS alerts? Easy to add next.
-        </div>
-
-        <div class="footer">
-          <div>© <span id="yr"></span> Paradise Surfside</div>
-          <div>
-            <a class="link" href="https://paradisesurfsidesc.com" target="_blank" rel="noopener">paradisesurfsidesc.com</a>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- Paradise Weather (Tempest) corner box -->
+<div class="paradise-weather">
+  <div class="pw-head">
+    <span>Current Paradise Weather</span>
+    <a href="https://tempestwx.com/station/204460" target="_blank" rel="noopener">Open</a>
   </div>
 
-<script>
-  document.getElementById("yr").textContent = new Date().getFullYear();
+  <iframe
+    src="https://tempestwx.com/station/204460"
+    title="Paradise Weather"
+    loading="lazy"
+    referrerpolicy="no-referrer"
+    sandbox="allow-scripts allow-same-origin allow-popups"
+  ></iframe>
+</div>
 
-  // For now: "signup" creates an email draft to your inbox.
-  // Later: swap to Mailchimp/ConvertKit/Google Forms POST action.
-  function signupFallback(e){
-    e.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const subject = encodeURIComponent("Paradise Deals Signup");
-    const body = encodeURIComponent(`Please add this email to deals list:\n\n${email}\n\nSource: GitHub landing page`);
-    window.location.href = `mailto:info@paradisesurfsidesc.com?subject=${subject}&body=${body}`;
-    return false;
+<style>
+  .paradise-weather{
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    width: 360px;
+    height: 260px;
+    background: rgba(18,27,47,.92);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(0,0,0,.35);
+    overflow: hidden;
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+  }
+  .pw-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding: 10px 12px;
+    font: 700 12px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: rgba(234,240,255,.95);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.03);
+  }
+  .pw-head a{
+    font-weight:700;
+    color: rgba(234,240,255,.85);
+    text-decoration:none;
+    border: 1px solid rgba(255,255,255,.14);
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.04);
+  }
+  .paradise-weather iframe{
+    width:100%;
+    height: calc(100% - 41px);
+    border:0;
   }
 
-  // OPTIONAL: Later we’ll replace these with real fetch calls once you provide endpoints.
-  // Example placeholder UI:
-  // document.getElementById("wxValue").textContent = "78°F";
-  // document.getElementById("wxSub").textContent = "Partly cloudy • updated 2m ago";
-  // document.getElementById("poolValue").textContent = "84°F";
-  // document.getElementById("poolSub").textContent = "Salt pool • updated 5m ago";
-</script>
-</body>
-</html>
+  /* Mobile: make it bottom sheet-ish */
+  @media (max-width: 520px){
+    .paradise-weather{
+      right: 10px;
+      left: 10px;
+      width: auto;
+      height: 240px;
+      top: auto;
+      bottom: 10px;
+    }
+  }
+</style>
