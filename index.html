@@ -4,16 +4,18 @@
   <meta charset="utf-8" />
   <title>Paradise Surfside | Beach House in Surfside Beach, SC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Paradise Surfside — check availability and see current Paradise weather." />
+  <meta name="description" content="Paradise Surfside — photos, videos, floor plans, and booking." />
 
-  <!-- ✅ OPTIONAL: Paste your Google Analytics (GA4) tag here, right under this comment -->
+  <!-- OPTIONAL: Paste Google Analytics GA4 tag here -->
 
   <style>
     :root{
+      --bg:#070a12;
       --text:#ffffff;
-      --muted: rgba(255,255,255,.86);
-      --border: rgba(255,255,255,.22);
+      --muted: rgba(255,255,255,.80);
+      --border: rgba(255,255,255,.18);
       --glass: rgba(12,18,36,.65);
+      --nav: rgba(0,0,0,.72);
       --accent:#4fd1c5;
       --accent2:#60a5fa;
     }
@@ -23,42 +25,89 @@
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
-      background:#000;
+      background:var(--bg);
+    }
+    a{color:inherit}
+
+    /* ===== TOP NAV ===== */
+    header{
+      position:sticky;
+      top:0;
+      z-index:9000;
+      background:var(--nav);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.12);
+    }
+    .nav-inner{
+      max-width:1200px;
+      margin:0 auto;
+      padding:12px 16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .brand{
+      font-weight:900;
+      letter-spacing:.6px;
+      text-transform:uppercase;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    nav a{
+      text-decoration:none;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.4px;
+      text-transform:uppercase;
+      padding:6px 8px;
+      border-radius:10px;
+      opacity:.9;
+    }
+    nav a:hover{background:rgba(255,255,255,.10);opacity:1}
+    nav a.cta{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#06101f;
+      opacity:1;
     }
 
-    /* HERO */
+    /* ===== HERO ===== */
     .hero{
-      min-height:100vh;
+      min-height:calc(100vh - 56px);
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:28px;
+      padding:28px 16px;
       background:
-        linear-gradient(180deg, rgba(0,0,0,.48), rgba(0,0,0,.72)),
+        linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.78)),
         url("images/2-web-or-mls-0.jpg") center/cover no-repeat;
     }
-
     .panel{
-      width:min(980px, 100%);
-      background: var(--glass);
+      width:min(980px,100%);
+      background:var(--glass);
       border:1px solid var(--border);
       border-radius:22px;
       padding:28px;
-      box-shadow: 0 18px 44px rgba(0,0,0,.45);
-      backdrop-filter: blur(10px);
+      backdrop-filter:blur(10px);
+      box-shadow:0 18px 44px rgba(0,0,0,.45);
       text-align:center;
     }
-
+    .logo{
+      max-width:320px;
+      width:80%;
+      margin:0 auto 16px;
+      display:block;
+      filter:drop-shadow(0 10px 20px rgba(0,0,0,.35));
+    }
     h1{
       margin:0 0 10px;
-      font-size: clamp(30px, 4vw, 52px);
-      line-height:1.08;
-      letter-spacing:.2px;
+      font-size:clamp(30px,4vw,52px);
+      line-height:1.1;
     }
     p{
       margin:0 0 18px;
       font-size:17px;
-      color: var(--muted);
+      color:var(--muted);
       line-height:1.55;
     }
 
@@ -70,177 +119,168 @@
       margin-top:14px;
     }
     .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
       padding:14px 18px;
       border-radius:14px;
       font-weight:900;
       text-decoration:none;
       border:1px solid var(--border);
-      color:var(--text);
-      background: rgba(255,255,255,.08);
+      background:rgba(255,255,255,.08);
     }
     .btn.primary{
       border:none;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
       color:#06101f;
     }
 
-    footer{
-      margin-top:18px;
-      font-size:12px;
-      color: rgba(255,255,255,.75);
-    }
-
-    /* Top-right weather badge */
+    /* ===== WEATHER BADGE ===== */
     .wx-badge{
-      position: fixed;
-      top: 14px;
-      right: 14px;
-      z-index: 9999;
+      position:fixed;
+      top:70px;
+      right:14px;
+      z-index:9999;
       display:flex;
-      align-items:center;
       gap:10px;
       padding:10px 12px;
       border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(12,18,36,.78);
-      box-shadow:0 12px 28px rgba(0,0,0,.45);
-      backdrop-filter: blur(10px);
+      background:rgba(12,18,36,.80);
+      border:1px solid rgba(255,255,255,.22);
+      backdrop-filter:blur(10px);
       text-decoration:none;
-      color: var(--text);
-      max-width: 92vw;
+      max-width:92vw;
     }
     .wx-dot{
-      width:10px; height:10px; border-radius:999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      width:10px;height:10px;border-radius:999px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
       box-shadow:0 0 0 4px rgba(79,209,197,.18);
-      flex:0 0 auto;
     }
-    .wx-text{display:flex; flex-direction:column; line-height:1.1}
-    .wx-title{font-size:11px; font-weight:950; letter-spacing:.2px; opacity:.95}
-    .wx-value{font-size:14px; font-weight:950}
-    .wx-sub{font-size:11px; color: rgba(255,255,255,.78); margin-top:2px}
+    .wx-title{font-size:11px;font-weight:900}
+    .wx-value{font-size:14px;font-weight:900}
+    .wx-sub{font-size:11px;color:rgba(255,255,255,.78)}
 
-    @media (max-width: 560px){
-      .wx-badge{
-        top:auto;
-        bottom:10px;
-        right:10px;
-        left:10px;
-        justify-content:space-between;
-      }
+    @media(max-width:560px){
+      .wx-badge{top:auto;bottom:10px;left:10px;right:10px;justify-content:space-between}
+    }
+
+    /* ===== CONTENT ===== */
+    main{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px 16px 48px;
+    }
+    section{
+      margin-top:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      padding:18px;
+    }
+    section h2{
+      margin:0 0 8px;
+      font-size:18px;
+      text-transform:uppercase;
+    }
+
+    footer{
+      text-align:center;
+      font-size:12px;
+      color:rgba(255,255,255,.70);
+      margin-top:18px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Live Weather Badge (click opens full station page) -->
-  <a class="wx-badge" id="wxLink" href="https://tempestwx.com/station/204460" target="_blank" rel="noopener">
-    <span class="wx-dot"></span>
-    <span class="wx-text">
-      <span class="wx-title">Current Paradise Weather</span>
-      <span class="wx-value" id="wxValue">Loading…</span>
-      <span class="wx-sub" id="wxSub">Tap for full details</span>
-    </span>
-  </a>
+<header>
+  <div class="nav-inner">
+    <div class="brand">Paradise Surfside Beach, SC</div>
+    <nav>
+      <a href="#details">Details</a>
+      <a href="#images">Images</a>
+      <a href="#videos">Videos</a>
+      <a href="#floorplans">Floor Plans</a>
+      <a class="cta" href="#book">Book</a>
+    </nav>
+  </div>
+</header>
 
-  <div class="hero">
-    <div class="panel">
-      <h1>Paradise Surfside 🌴</h1>
-      <p>
-        A 5-bedroom family beach house in Surfside Beach, SC.
-        Check availability and book your stay.
-      </p>
+<a class="wx-badge" href="https://tempestwx.com/station/204460/grid" target="_blank">
+  <span class="wx-dot"></span>
+  <div>
+    <div class="wx-title">Current Paradise Weather</div>
+    <div class="wx-value" id="wxValue">Loading…</div>
+    <div class="wx-sub" id="wxSub">Tap for details</div>
+  </div>
+</a>
 
-      <div class="btns">
-        <a class="btn primary"
-           href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
-           target="_blank" rel="noopener">
-          Check Availability / Book
-        </a>
+<section class="hero">
+  <div class="panel">
+    <img class="logo" src="images/ParadiseLogo.jpg" alt="Paradise Surfside" onerror="this.style.display='none'">
+    <h1>Paradise Surfside 🌴</h1>
+    <p>Luxury 5-bedroom beach house in Surfside Beach, SC.</p>
 
-        <a class="btn"
-           href="https://skyline-photography.aryeo.com/sites/714b-south-ocean-blvd-surfside-beach-sc-21639184/unbranded#"
-           target="_blank" rel="noopener">
-          View Photos
-        </a>
-
-        <a class="btn" href="mailto:info@paradisesurfsidesc.com">Contact</a>
-      </div>
-
-      <footer>
-        © <span id="yr"></span> Paradise Surfside • Surfside Beach, SC
-      </footer>
+    <div class="btns" id="book">
+      <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank">
+        Check Availability / Book
+      </a>
+      <a class="btn" href="https://skyline-photography.aryeo.com/sites/714b-south-ocean-blvd-surfside-beach-sc-21639184/unbranded#" target="_blank">
+        View Photos
+      </a>
+      <a class="btn" href="https://guide.touchstay.com/guest/bTjhkKUt1OF0V" target="_blank">
+        Virtual House Book
+      </a>
+      <a class="btn" href="mailto:info@paradisesurfsidesc.com">Contact</a>
     </div>
   </div>
+</section>
 
-  <script>
-    document.getElementById("yr").textContent = new Date().getFullYear();
+<main>
+  <section id="details">
+    <h2>Details</h2>
+    <p>Family-friendly, golf trips, and group stays — professionally managed.</p>
+  </section>
 
-    // === Tempest Weather (Paradise Station) ===
-    // Token provided by you (read-only). Station ID selects the Paradise station.
-    const TEMPEST_TOKEN = "d8ddebfb-8b43-4f45-a9cc-cb9597f22b05";
-    const STATION_ID = 204460;
-    const STATION_PAGE = "https://tempestwx.com/station/204460/grid";
+  <section id="images">
+    <h2>Images</h2>
+    <p>Full professional photo gallery.</p>
+  </section>
 
-    const wxValue = document.getElementById("wxValue");
-    const wxSub = document.getElementById("wxSub");
-    const wxLink = document.getElementById("wxLink");
-    wxLink.href = STATION_PAGE;
+  <section id="videos">
+    <h2>Videos</h2>
+    <p>Property walkthrough videos.</p>
+  </section>
 
-    function cToF(c){ return (c * 9/5) + 32; }
+  <section id="floorplans">
+    <h2>Floor Plans</h2>
+    <p>Coming soon.</p>
+  </section>
 
-    function degToCompass(deg){
-      if (typeof deg !== "number" || !isFinite(deg)) return "";
-      const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
-      const idx = Math.round(deg / 22.5) % 16;
-      return dirs[idx];
+  <footer>
+    © <span id="yr"></span> Paradise Surfside • Surfside Beach, SC
+  </footer>
+</main>
+
+<script>
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  const TOKEN = "d8ddebfb-8b43-4f45-a9cc-cb9597f22b05";
+  const STATION = 204460;
+
+  function cToF(c){return (c*9/5)+32}
+  async function loadWx(){
+    try{
+      const r=await fetch(`https://swd.weatherflow.com/swd/rest/observations/station/${STATION}?token=${TOKEN}`);
+      const d=await r.json();
+      const o=d.obs[0];
+      const f=Math.round(cToF(o.air_temperature));
+      document.getElementById("wxValue").textContent=`${f}°F`;
+    }catch{
+      document.getElementById("wxValue").textContent="—";
     }
-
-    async function loadWeather(){
-      try{
-        const url = `https://swd.weatherflow.com/swd/rest/observations/station/${STATION_ID}?token=${encodeURIComponent(TEMPEST_TOKEN)}`;
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error("Bad response");
-        const data = await res.json();
-
-        const obs = data?.obs?.[0];
-        const tempC = obs?.air_temperature;
-        const feelsC = obs?.feels_like;
-        const windAvg = obs?.wind_avg;      // m/s
-        const windDir = obs?.wind_direction; // degrees
-
-        if (typeof tempC !== "number" || !isFinite(tempC)) throw new Error("No temp");
-
-        const tempF = Math.round(cToF(tempC));
-        const feelsF = (typeof feelsC === "number" && isFinite(feelsC)) ? Math.round(cToF(feelsC)) : null;
-
-        // Convert m/s -> mph (1 m/s = 2.23694 mph)
-        const mph = (typeof windAvg === "number" && isFinite(windAvg)) ? Math.round(windAvg * 2.23694) : null;
-        const dir = degToCompass(windDir);
-
-        wxValue.textContent = feelsF !== null ? `${tempF}°F (feels ${feelsF}°)` : `${tempF}°F`;
-
-        if (mph !== null && dir){
-          wxSub.textContent = `Wind ${dir} ${mph} mph • Tap for details`;
-        } else if (mph !== null){
-          wxSub.textContent = `Wind ${mph} mph • Tap for details`;
-        } else {
-          wxSub.textContent = `Tap for full details`;
-        }
-      } catch (e){
-        wxValue.textContent = "Tap to view";
-        wxSub.textContent = "Weather unavailable";
-      }
-    }
-
-    loadWeather();
-    // Refresh every 5 minutes
-    setInterval(loadWeather, 5 * 60 * 1000);
-  </script>
+  }
+  loadWx();
+  setInterval(loadWx,300000);
+</script>
 
 </body>
 </html>
