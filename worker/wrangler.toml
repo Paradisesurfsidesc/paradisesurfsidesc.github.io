@@ -1,0 +1,7 @@
+name = "paradise-events-and-go"
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# Surfside Town Events iCal feed:
+ICS_URL = "https://www.surfsidebeach.org/common/modules/iCalendar/iCalendar.aspx?catID=29&feed=calendar"
