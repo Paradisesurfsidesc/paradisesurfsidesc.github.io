@@ -1,66 +1,67 @@
 <!doctype html>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HFN4RF1QVT"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-HFN4RF1QVT');
-</script>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Paradise Surfside | Book Your Beach Escape</title>
+  <title>Paradise Surfside | Beach House in Surfside Beach, SC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Paradise Surfside Beach House — check availability and view current beach weather." />
+  <meta name="description" content="Paradise Surfside — check availability and see current Paradise weather." />
+
+  <!-- ✅ OPTIONAL: Paste your Google Analytics (GA4) tag here, right under this comment -->
 
   <style>
     :root{
-      --bg:#0b1220;
-      --card:#121b2f;
-      --text:#eaf0ff;
-      --muted:#b7c2e2;
+      --text:#ffffff;
+      --muted: rgba(255,255,255,.86);
+      --border: rgba(255,255,255,.22);
+      --glass: rgba(12,18,36,.65);
       --accent:#4fd1c5;
       --accent2:#60a5fa;
-      --border:rgba(255,255,255,.10);
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(79,209,197,.25), transparent 55%),
-        radial-gradient(1000px 600px at 80% 20%, rgba(96,165,250,.25), transparent 55%),
-        var(--bg);
       color:var(--text);
+      background:#000;
+    }
+
+    /* HERO */
+    .hero{
       min-height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:24px;
-    }
-    .wrap{width:min(920px, 100%)}
-    .card{
-      background: rgba(18,27,47,.9);
-      border:1px solid var(--border);
-      border-radius:20px;
       padding:28px;
-      box-shadow: 0 14px 34px rgba(0,0,0,.35);
-      backdrop-filter: blur(8px);
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.48), rgba(0,0,0,.72)),
+        url("images/2-web-or-mls-0.jpg") center/cover no-repeat;
+    }
+
+    .panel{
+      width:min(980px, 100%);
+      background: var(--glass);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:28px;
+      box-shadow: 0 18px 44px rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
       text-align:center;
     }
+
     h1{
-      margin:0 0 12px;
-      font-size: clamp(30px, 4vw, 46px);
-      line-height:1.1;
+      margin:0 0 10px;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height:1.08;
+      letter-spacing:.2px;
     }
     p{
       margin:0 0 18px;
       font-size:17px;
-      color:var(--muted);
+      color: var(--muted);
       line-height:1.55;
     }
+
     .btns{
       display:flex;
       justify-content:center;
@@ -68,30 +69,31 @@
       gap:12px;
       margin-top:14px;
     }
-    a.btn{
+    .btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
       padding:14px 18px;
       border-radius:14px;
-      font-weight:800;
+      font-weight:900;
       text-decoration:none;
       border:1px solid var(--border);
       color:var(--text);
-      background: rgba(255,255,255,.05);
+      background: rgba(255,255,255,.08);
     }
-    a.btn.primary{
+    .btn.primary{
       border:none;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       color:#06101f;
     }
+
     footer{
       margin-top:18px;
       font-size:12px;
-      color:rgba(183,194,226,.75);
+      color: rgba(255,255,255,.75);
     }
 
-    /* Top-right weather badge (API-free) */
+    /* Top-right weather badge */
     .wx-badge{
       position: fixed;
       top: 14px;
@@ -103,21 +105,23 @@
       padding:10px 12px;
       border-radius:14px;
       border:1px solid var(--border);
-      background: rgba(18,27,47,.92);
-      box-shadow:0 12px 28px rgba(0,0,0,.35);
-      backdrop-filter: blur(8px);
+      background: rgba(12,18,36,.78);
+      box-shadow:0 12px 28px rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
       text-decoration:none;
       color: var(--text);
+      max-width: 92vw;
     }
     .wx-dot{
       width:10px; height:10px; border-radius:999px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow:0 0 0 4px rgba(79,209,197,.15);
+      box-shadow:0 0 0 4px rgba(79,209,197,.18);
+      flex:0 0 auto;
     }
     .wx-text{display:flex; flex-direction:column; line-height:1.1}
-    .wx-title{font-size:11px; font-weight:900; letter-spacing:.2px}
-    .wx-value{font-size:14px; font-weight:900}
-    .wx-sub{font-size:11px; color: rgba(183,194,226,.85); margin-top:2px}
+    .wx-title{font-size:11px; font-weight:950; letter-spacing:.2px; opacity:.95}
+    .wx-value{font-size:14px; font-weight:950}
+    .wx-sub{font-size:11px; color: rgba(255,255,255,.78); margin-top:2px}
 
     @media (max-width: 560px){
       .wx-badge{
@@ -133,38 +137,38 @@
 
 <body>
 
-  <!-- API-free weather badge -->
-  <a class="wx-badge"
-     href="https://tempestwx.com/station/204460"
-     target="_blank"
-     rel="noopener">
+  <!-- Live Weather Badge (click opens full station page) -->
+  <a class="wx-badge" id="wxLink" href="https://tempestwx.com/station/204460" target="_blank" rel="noopener">
     <span class="wx-dot"></span>
     <span class="wx-text">
       <span class="wx-title">Current Paradise Weather</span>
-      <span class="wx-value">Tap to view</span>
-      <span class="wx-sub">Live Tempest station</span>
+      <span class="wx-value" id="wxValue">Loading…</span>
+      <span class="wx-sub" id="wxSub">Tap for full details</span>
     </span>
   </a>
 
-  <!-- Main funnel -->
-  <div class="wrap">
-    <div class="card">
+  <div class="hero">
+    <div class="panel">
       <h1>Paradise Surfside 🌴</h1>
       <p>
         A 5-bedroom family beach house in Surfside Beach, SC.
-        Check availability, view photos, and plan your perfect beach escape.
+        Check availability and book your stay.
       </p>
 
       <div class="btns">
-        <a class="btn primary" href="https://paradisesurfsidesc.com" target="_blank" rel="noopener">
-          Check Availability
+        <a class="btn primary"
+           href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
+           target="_blank" rel="noopener">
+          Check Availability / Book
         </a>
-        <a class="btn" href="https://paradisesurfsidesc.com" target="_blank" rel="noopener">
-          View Photos
+
+        <a class="btn"
+           href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
+           target="_blank" rel="noopener">
+          View Listing
         </a>
-        <a class="btn" href="mailto:info@paradisesurfsidesc.com">
-          Contact Us
-        </a>
+
+        <a class="btn" href="mailto:info@paradisesurfsidesc.com">Contact</a>
       </div>
 
       <footer>
@@ -175,6 +179,67 @@
 
   <script>
     document.getElementById("yr").textContent = new Date().getFullYear();
+
+    // === Tempest Weather (Paradise Station) ===
+    // Token provided by you (read-only). Station ID selects the Paradise station.
+    const TEMPEST_TOKEN = "d8ddebfb-8b43-4f45-a9cc-cb9597f22b05";
+    const STATION_ID = 204460;
+    const STATION_PAGE = "https://tempestwx.com/station/204460";
+
+    const wxValue = document.getElementById("wxValue");
+    const wxSub = document.getElementById("wxSub");
+    const wxLink = document.getElementById("wxLink");
+    wxLink.href = STATION_PAGE;
+
+    function cToF(c){ return (c * 9/5) + 32; }
+
+    function degToCompass(deg){
+      if (typeof deg !== "number" || !isFinite(deg)) return "";
+      const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+      const idx = Math.round(deg / 22.5) % 16;
+      return dirs[idx];
+    }
+
+    async function loadWeather(){
+      try{
+        const url = `https://swd.weatherflow.com/swd/rest/observations/station/${STATION_ID}?token=${encodeURIComponent(TEMPEST_TOKEN)}`;
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error("Bad response");
+        const data = await res.json();
+
+        const obs = data?.obs?.[0];
+        const tempC = obs?.air_temperature;
+        const feelsC = obs?.feels_like;
+        const windAvg = obs?.wind_avg;      // m/s
+        const windDir = obs?.wind_direction; // degrees
+
+        if (typeof tempC !== "number" || !isFinite(tempC)) throw new Error("No temp");
+
+        const tempF = Math.round(cToF(tempC));
+        const feelsF = (typeof feelsC === "number" && isFinite(feelsC)) ? Math.round(cToF(feelsC)) : null;
+
+        // Convert m/s -> mph (1 m/s = 2.23694 mph)
+        const mph = (typeof windAvg === "number" && isFinite(windAvg)) ? Math.round(windAvg * 2.23694) : null;
+        const dir = degToCompass(windDir);
+
+        wxValue.textContent = feelsF !== null ? `${tempF}°F (feels ${feelsF}°)` : `${tempF}°F`;
+
+        if (mph !== null && dir){
+          wxSub.textContent = `Wind ${dir} ${mph} mph • Tap for details`;
+        } else if (mph !== null){
+          wxSub.textContent = `Wind ${mph} mph • Tap for details`;
+        } else {
+          wxSub.textContent = `Tap for full details`;
+        }
+      } catch (e){
+        wxValue.textContent = "Tap to view";
+        wxSub.textContent = "Weather unavailable";
+      }
+    }
+
+    loadWeather();
+    // Refresh every 5 minutes
+    setInterval(loadWeather, 5 * 60 * 1000);
   </script>
 
 </body>
