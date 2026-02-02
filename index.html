@@ -1,266 +1,612 @@
-<!DOCTYPE html>
+<!-- index.html -->
+<!-- Date - 2026-02-01 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Mobile-first + ADA-friendly landing/hero with Weather in title bar, hamburger drawer, Photos/Info/Events CTAs, Book CTA, and footer metadata -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Paradise Guest Guide</title>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Paradise</title>
   <style>
-    /* RESET / BASE */
-    body {
+    :root{
+      --bg: #0b1b2a;
+      --surface: rgba(10, 30, 55, 0.86);
+      --surface-2: rgba(10, 30, 55, 0.94);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,.85);
+      --muted-2: rgba(255,255,255,.75);
+      --focus: #ffde7a;
+      --btn-primary: #f2c14b;
+      --btn-primary-text: #1b1b1b;
+      --btn-secondary: rgba(31, 105, 160, 0.85);
+      --btn-secondary-text: #ffffff;
+      --shadow: 0 12px 32px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius-lg: 24px;
+      --max: 820px;
+      --line: rgba(255,255,255,.18);
+    }
+
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #0b1b2a;
+      }
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    body{
       margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      line-height: 1.4;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color: var(--text);
+      background: var(--bg);
     }
 
-    /* HERO */
-    .hero {
-      position: relative;
-      min-height: 52vh;
-      overflow: hidden;
-    }
-
-    .hero-img {
+    /* Accessibility helpers */
+    .skip-link{
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: 50% 35%;
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(0,0,0,.15),
-        rgba(0,0,0,.75)
-      );
-    }
-
-    .hero-content {
-      position: relative;
-      padding: 22px 18px;
-      max-width: 860px;
+      left: 0.75rem;
+      top: 0.75rem;
+      padding: .6rem .8rem;
+      background: #000;
       color: #fff;
+      border-radius: .5rem;
+      transform: translateY(-200%);
+      z-index: 9999;
+    }
+    .skip-link:focus{ transform: translateY(0); outline: 3px solid var(--focus); outline-offset: 2px; }
+
+    :focus-visible{
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+      border-radius: 10px;
     }
 
-    .hero-badge {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.45);
-      font-size: 14px;
-    }
-
-    .hero-title {
-      margin: 12px 0 8px;
-      font-size: clamp(28px, 5vw, 44px);
-      line-height: 1.05;
-    }
-
-    .hero-subtitle {
-      max-width: 46ch;
-      opacity: .95;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    .btn {
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.35);
-      background: rgba(0,0,0,.25);
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .btn.primary {
-      background: #fff;
-      color: #111;
-      border-color: #fff;
-    }
-
-    /* MAIN CTA */
-    .home-main {
-      padding: 16px;
-      padding-bottom: 92px;
-      text-align: center;
-    }
-
-    .primary-cta {
-      display: inline-block;
-      padding: 14px 18px;
-      border-radius: 16px;
-      border: 1px solid #ddd;
-      background: #fff;
-      color: #111;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
+    /* Layout */
+    .page{
+      min-height: 100%;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: rgba(255,255,255,.96);
-      border-top: 1px solid #e6e6e6;
-      backdrop-filter: blur(10px);
+      grid-template-rows: auto 1fr;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
       z-index: 100;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
     }
 
-    .bn-item {
-      padding: 14px 6px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 600;
+    .topbar{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: .9rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+
+    .brand{
+      display: flex;
+      align-items: baseline;
+      gap: .5rem;
+      min-width: 8rem;
+    }
+    .brand h1{
+      margin: 0;
+      font-size: 1.25rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .header-actions{
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .weather-link{
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .55rem .7rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
       text-decoration: none;
-      color: #111;
-      background: none;
-      border: none;
+      white-space: nowrap;
+      max-width: 70vw;
+    }
+    .weather-link:hover{ background: rgba(255,255,255,.12); }
+    .weather-link .label{
+      font-weight: 600;
+      font-size: .92rem;
+      color: var(--muted);
+    }
+    .weather-link .value{
+      font-weight: 800;
+      font-size: .98rem;
+      color: var(--text);
+    }
+    .weather-link .icon{
+      width: 1.05rem;
+      height: 1.05rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
     }
 
-    /* MENU SHEET */
-    .sheet-backdrop {
+    .icon-btn{
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      border-radius: 12px;
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .icon-btn:hover{ background: rgba(255,255,255,.12); }
+
+    /* Main hero */
+    main{
+      display: grid;
+      place-items: center;
+      padding: 1rem 1rem 2rem;
+    }
+
+    .hero{
+      width: 100%;
+      max-width: var(--max);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.10);
+      background: #000;
+      position: relative;
+      min-height: 82vh;
+      display: grid;
+    }
+
+    .hero::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,.06) 0%, rgba(0,0,0,.20) 55%, rgba(10, 20, 40, .78) 100%);
+      pointer-events: none;
+    }
+
+    /* Replace this with your real photo */
+    .hero-media{
+      position: absolute;
+      inset: 0;
+      background-image: url("hero.jpg");
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.02);
+      transform: scale(1.02);
+    }
+
+    .hero-content{
+      position: relative;
+      padding: 2rem 1.1rem 1.25rem;
+      display: grid;
+      align-content: end;
+      gap: 1.1rem;
+      text-align: center;
+    }
+
+    .hero h2{
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 6vw, 3.1rem);
+      line-height: 1.05;
+      letter-spacing: .01em;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+    }
+
+    .hero p{
+      margin: 0 auto;
+      max-width: 48ch;
+      font-size: clamp(1.02rem, 2.4vw, 1.22rem);
+      color: var(--muted);
+      line-height: 1.45;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+    }
+
+    .cta-row{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .75rem;
+      margin-top: .25rem;
+    }
+
+    .btn{
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: .95rem .9rem;
+      font-weight: 800;
+      letter-spacing: .01em;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+    }
+
+    .btn.secondary{
+      background: var(--btn-secondary);
+      color: var(--btn-secondary-text);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .btn.secondary:hover{ background: rgba(31, 105, 160, 0.95); }
+
+    .btn.primary{
+      background: var(--btn-primary);
+      color: var(--btn-primary-text);
+      box-shadow: 0 10px 26px rgba(242, 193, 75, .22);
+    }
+    .btn.primary:hover{ filter: brightness(1.03); }
+
+    .book-wrap{
+      margin-top: .25rem;
+      display: grid;
+    }
+    .book-wrap .btn.primary{
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 1.05rem 1rem;
+      font-size: 1.1rem;
+    }
+
+    /* Footer metadata inside hero */
+    .hero-footer{
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,.14);
+      display: grid;
+      gap: .65rem;
+      color: var(--muted-2);
+      font-size: .92rem;
+      line-height: 1.35;
+    }
+    .meta-row{
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: .75rem;
+      align-items: center;
+    }
+    .meta-left{ justify-self: start; }
+    .meta-center{ justify-self: center; text-align: center; }
+    .meta-right{ justify-self: end; text-align: right; }
+    .copyright{
+      text-align: center;
+      color: rgba(255,255,255,.70);
+      font-size: .9rem;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 420px){
+      .weather-link .label{ display: none; } /* keeps it from wrapping */
+      .weather-link{ padding: .55rem .6rem; }
+      .meta-row{
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .meta-left,.meta-center,.meta-right{ justify-self: center; text-align: center; }
+    }
+
+    /* Drawer (hamburger menu) */
+    .drawer-backdrop{
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.4);
+      background: rgba(0,0,0,.55);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease;
       z-index: 200;
     }
-
-    .sheet {
+    .drawer{
       position: fixed;
-      left: 0;
+      top: 0;
       right: 0;
-      bottom: 0;
-      background: #fff;
-      border-radius: 18px 18px 0 0;
-      padding: 16px;
-      z-index: 300;
-      transform: translateY(100%);
-      transition: transform .18s ease-out;
+      height: 100%;
+      width: min(86vw, 360px);
+      background: var(--surface-2);
+      border-left: 1px solid var(--line);
+      transform: translateX(102%);
+      transition: transform .18s ease;
+      z-index: 250;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
     }
-
-    .sheet.open {
-      transform: translateY(0);
+    .drawer header{
+      position: static;
+      background: transparent;
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
     }
-
-    .sheet-header {
+    .drawer-top{
+      padding: 1rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+    .drawer-title{
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin: 0;
+      font-size: 1rem;
     }
 
-    .sheet-title {
-      font-weight: 700;
-      font-size: 18px;
+    .drawer nav{
+      padding: .75rem;
     }
 
-    .sheet-close {
-      border: none;
-      background: none;
-      font-size: 22px;
-    }
-
-    .sheet-links a {
+    .drawer a{
       display: block;
-      padding: 14px 6px;
+      padding: .9rem .85rem;
+      margin: .25rem 0;
+      border-radius: 14px;
       text-decoration: none;
-      color: #111;
-      font-weight: 600;
-      border-bottom: 1px solid #eee;
+      color: var(--text);
+      border: 1px solid transparent;
+    }
+    .drawer a:hover{
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.12);
+    }
+
+    .drawer-footer{
+      padding: .9rem 1rem 1.1rem;
+      border-top: 1px solid var(--line);
+      color: rgba(255,255,255,.70);
+      font-size: .9rem;
+    }
+
+    .is-open .drawer-backdrop{
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .is-open .drawer{
+      transform: translateX(0);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .drawer, .drawer-backdrop{
+        transition: none !important;
+      }
     }
   </style>
 </head>
 
 <body>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-  <!-- HERO -->
-  <header class="hero">
-    <img class="hero-img" src="images/Twilight.png" alt="Paradise Beach House at Twilight">
-    <div class="hero-overlay"></div>
+  <div class="page" id="page">
+    <header aria-label="Site header">
+      <div class="topbar">
+        <div class="brand" aria-label="Site name">
+          <h1>Paradise</h1>
+        </div>
 
-    <div class="hero-content">
-      <div class="hero-badge">Paradise • Surfside Beach, SC</div>
-      <h1 class="hero-title">Your Luxury Vacation Awaits</h1>
-      <p class="hero-subtitle">
-        Everything you need for a smooth stay — quick answers, local events, and Paradise perks.
-      </p>
+        <div class="header-actions">
+          <!-- Weather is intentionally visible on the hero/title bar -->
+          <a
+            class="weather-link"
+            href="#weather"
+            id="weatherLink"
+            aria-label="Current Weather at the House. Open weather details."
+          >
+            <span class="label">Current Weather · At the House</span>
+            <span class="icon" aria-hidden="true">⛅</span>
+            <span class="value" id="weatherTemp" aria-live="polite">72°</span>
+          </a>
 
-      <div class="hero-actions">
-        <a class="btn primary" href="guide/quick-start.html">Quick Start</a>
-        <a class="btn" href="events/index.html">Events</a>
-        <a class="btn" href="guide/help.html">Need Help?</a>
+          <button
+            class="icon-btn"
+            id="menuBtn"
+            type="button"
+            aria-label="Open menu"
+            aria-haspopup="dialog"
+            aria-controls="drawer"
+            aria-expanded="false"
+          >
+            <!-- hamburger icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
       </div>
+    </header>
+
+    <main id="main" aria-label="Main content">
+      <section class="hero" aria-label="Hero section">
+        <div class="hero-media" role="img" aria-label="Beach houses at sunset"></div>
+
+        <div class="hero-content">
+          <div>
+            <h2>Your Luxury<br/>Vacation Awaits</h2>
+            <p>Everything you need for a smooth stay — quick answers, local events, and Paradise perks.</p>
+          </div>
+
+          <div class="cta-row" role="group" aria-label="Primary navigation buttons">
+            <a class="btn secondary" href="#photos" aria-label="View photos">Photos</a>
+            <a class="btn secondary" href="#info" aria-label="View house information">Info</a>
+            <a class="btn secondary" href="#events" aria-label="View local events">Events</a>
+          </div>
+
+          <div class="book-wrap">
+            <a class="btn primary" href="#book" aria-label="Check availability and book">Check Availability / Book</a>
+          </div>
+
+          <div class="hero-footer" aria-label="Footer information">
+            <div class="meta-row" role="group" aria-label="Site metadata">
+              <div class="meta-left">Version <span id="appVersion">1.0.0</span></div>
+              <div class="meta-center">Surfside Beach, SC</div>
+              <div class="meta-right">Last updated: <span id="lastUpdated">Feb 2026</span></div>
+            </div>
+            <div class="copyright">© 2026 Paradise. All rights reserved.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Drawer/backdrop is outside the hero for proper stacking -->
+  <div class="drawer-backdrop" id="backdrop" hidden></div>
+
+  <aside
+    class="drawer"
+    id="drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Menu"
+    aria-hidden="true"
+  >
+    <header>
+      <div class="drawer-top">
+        <p class="drawer-title">Menu</p>
+        <button class="icon-btn" id="closeBtn" type="button" aria-label="Close menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav aria-label="Menu links">
+      <a href="#details">Details</a>
+      <a href="#need-help">Need Help</a>
+      <a href="#annual">Annual</a>
+      <!-- Weather is in the title bar, but you can still include a duplicate link here if you want:
+           <a href="#weather">Weather</a> -->
+    </nav>
+
+    <div class="drawer-footer">
+      Tip: Press <strong>Esc</strong> to close.
     </div>
-  </header>
-
-  <!-- MAIN CTA -->
-  <main class="home-main">
-    <a class="primary-cta" href="go/stay">Check Availability / Book</a>
-  </main>
-
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <a class="bn-item" href="guide/quick-start.html">Quick Start</a>
-    <a class="bn-item" href="events/index.html">Events</a>
-    <a class="bn-item" href="guide/help.html">Help</a>
-    <button class="bn-item" id="menuBtn">☰ Menu</button>
-  </nav>
-
-  <!-- MENU SHEET -->
-  <div class="sheet-backdrop" id="menuBackdrop" hidden></div>
-
-  <section class="sheet" id="menuSheet" hidden>
-    <div class="sheet-header">
-      <div class="sheet-title">Menu</div>
-      <button class="sheet-close" id="menuClose">✕</button>
-    </div>
-
-    <div class="sheet-links">
-      <a href="guide/pool.html">Pool</a>
-      <a href="guide/parking.html">Parking</a>
-      <a href="guide/trash.html">Trash</a>
-      <a href="guide/checkout.html">Checkout</a>
-      <a href="events/annual.html">Annual Events</a>
-      <a href="go/stay">Book / Availability</a>
-    </div>
-  </section>
+  </aside>
 
   <script>
-    const btn = document.getElementById('menuBtn');
-    const sheet = document.getElementById('menuSheet');
-    const backdrop = document.getElementById('menuBackdrop');
-    const closeBtn = document.getElementById('menuClose');
+    // index.html
+    // Date - 2026-02-01
+    // Version - 1.0.0
+    // Notes - Minimal JS: ADA-friendly drawer (focus trap + ESC + aria states). Weather placeholders are UI-only.
+    // Author - David Taylor
 
-    function openMenu() {
-      sheet.hidden = false;
-      backdrop.hidden = false;
-      sheet.classList.add('open');
-    }
+    (function () {
+      const page = document.getElementById('page');
+      const menuBtn = document.getElementById('menuBtn');
+      const closeBtn = document.getElementById('closeBtn');
+      const drawer = document.getElementById('drawer');
+      const backdrop = document.getElementById('backdrop');
 
-    function closeMenu() {
-      sheet.classList.remove('open');
-      backdrop.hidden = true;
-      setTimeout(() => sheet.hidden = true, 180);
-    }
+      let lastFocusEl = null;
 
-    btn.onclick = openMenu;
-    closeBtn.onclick = closeMenu;
-    backdrop.onclick = closeMenu;
+      const focusableSelector =
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
+      function setAria(open) {
+        menuBtn.setAttribute('aria-expanded', String(open));
+        drawer.setAttribute('aria-hidden', String(!open));
+        backdrop.hidden = !open;
+        if (open) {
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.overflow = '';
+        }
+      }
+
+      function openDrawer() {
+        lastFocusEl = document.activeElement;
+        page.classList.add('is-open');
+        setAria(true);
+
+        // Move focus into drawer
+        const focusables = drawer.querySelectorAll(focusableSelector);
+        (focusables[0] || closeBtn).focus();
+      }
+
+      function closeDrawer() {
+        page.classList.remove('is-open');
+        setAria(false);
+
+        // Return focus
+        if (lastFocusEl && typeof lastFocusEl.focus === 'function') {
+          lastFocusEl.focus();
+        }
+      }
+
+      function trapFocus(e) {
+        if (drawer.getAttribute('aria-hidden') === 'true') return;
+
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeDrawer();
+          return;
+        }
+
+        if (e.key !== 'Tab') return;
+
+        const focusables = Array.from(drawer.querySelectorAll(focusableSelector))
+          .filter(el => el.offsetParent !== null); // visible
+
+        if (!focusables.length) return;
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+
+      menuBtn.addEventListener('click', openDrawer);
+      closeBtn.addEventListener('click', closeDrawer);
+
+      backdrop.addEventListener('click', closeDrawer);
+
+      // Close drawer when clicking any link inside it
+      drawer.addEventListener('click', (e) => {
+        const t = e.target;
+        if (t && t.matches('a[href]')) closeDrawer();
+      });
+
+      document.addEventListener('keydown', trapFocus);
+
+      // OPTIONAL: Replace these placeholders with real data later
+      // document.getElementById('weatherTemp').textContent = "72°";
+      // document.getElementById('appVersion').textContent = "1.0.0";
+      // document.getElementById('lastUpdated').textContent = "Feb 2026";
+    })();
   </script>
-
 </body>
 </html>
