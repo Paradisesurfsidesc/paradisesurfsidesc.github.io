@@ -4,19 +4,201 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Paradise Guest Guide</title>
-  <link rel="stylesheet" href="assets/css/styles.css" />
-</head>
-<body class="home">
 
+  <style>
+    /* RESET / BASE */
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height: 1.4;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 52vh;
+      overflow: hidden;
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 35%;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0,0,0,.15),
+        rgba(0,0,0,.75)
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      padding: 22px 18px;
+      max-width: 860px;
+      color: #fff;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.45);
+      font-size: 14px;
+    }
+
+    .hero-title {
+      margin: 12px 0 8px;
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.05;
+    }
+
+    .hero-subtitle {
+      max-width: 46ch;
+      opacity: .95;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .btn {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(0,0,0,.25);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn.primary {
+      background: #fff;
+      color: #111;
+      border-color: #fff;
+    }
+
+    /* MAIN CTA */
+    .home-main {
+      padding: 16px;
+      padding-bottom: 92px;
+      text-align: center;
+    }
+
+    .primary-cta {
+      display: inline-block;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 1px solid #ddd;
+      background: #fff;
+      color: #111;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: rgba(255,255,255,.96);
+      border-top: 1px solid #e6e6e6;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .bn-item {
+      padding: 14px 6px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #111;
+      background: none;
+      border: none;
+    }
+
+    /* MENU SHEET */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 200;
+    }
+
+    .sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      border-radius: 18px 18px 0 0;
+      padding: 16px;
+      z-index: 300;
+      transform: translateY(100%);
+      transition: transform .18s ease-out;
+    }
+
+    .sheet.open {
+      transform: translateY(0);
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .sheet-title {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .sheet-close {
+      border: none;
+      background: none;
+      font-size: 22px;
+    }
+
+    .sheet-links a {
+      display: block;
+      padding: 14px 6px;
+      text-decoration: none;
+      color: #111;
+      font-weight: 600;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO -->
   <header class="hero">
     <img class="hero-img" src="images/Twilight.png" alt="Paradise Beach House at Twilight">
     <div class="hero-overlay"></div>
+
     <div class="hero-content">
       <div class="hero-badge">Paradise • Surfside Beach, SC</div>
       <h1 class="hero-title">Your Luxury Vacation Awaits</h1>
       <p class="hero-subtitle">
         Everything you need for a smooth stay — quick answers, local events, and Paradise perks.
       </p>
+
       <div class="hero-actions">
         <a class="btn primary" href="guide/quick-start.html">Quick Start</a>
         <a class="btn" href="events/index.html">Events</a>
@@ -25,19 +207,60 @@
     </div>
   </header>
 
-  <main class="tiles-wrap">
-    <section class="tiles">
-      <a class="tile" href="guide/quick-start.html">Quick Start</a>
-      <a class="tile" href="guide/pool.html">Pool</a>
-      <a class="tile" href="guide/parking.html">Parking</a>
-      <a class="tile" href="guide/trash.html">Trash</a>
-      <a class="tile" href="guide/checkout.html">Checkout</a>
-      <a class="tile" href="events/annual.html">Annual Events</a>
-    </section>
-    <section class="below-tiles">
-      <a class="link" href="go/stay">Check Availability / Book</a>
-    </section>
+  <!-- MAIN CTA -->
+  <main class="home-main">
+    <a class="primary-cta" href="go/stay">Check Availability / Book</a>
   </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a class="bn-item" href="guide/quick-start.html">Quick Start</a>
+    <a class="bn-item" href="events/index.html">Events</a>
+    <a class="bn-item" href="guide/help.html">Help</a>
+    <button class="bn-item" id="menuBtn">☰ Menu</button>
+  </nav>
+
+  <!-- MENU SHEET -->
+  <div class="sheet-backdrop" id="menuBackdrop" hidden></div>
+
+  <section class="sheet" id="menuSheet" hidden>
+    <div class="sheet-header">
+      <div class="sheet-title">Menu</div>
+      <button class="sheet-close" id="menuClose">✕</button>
+    </div>
+
+    <div class="sheet-links">
+      <a href="guide/pool.html">Pool</a>
+      <a href="guide/parking.html">Parking</a>
+      <a href="guide/trash.html">Trash</a>
+      <a href="guide/checkout.html">Checkout</a>
+      <a href="events/annual.html">Annual Events</a>
+      <a href="go/stay">Book / Availability</a>
+    </div>
+  </section>
+
+  <script>
+    const btn = document.getElementById('menuBtn');
+    const sheet = document.getElementById('menuSheet');
+    const backdrop = document.getElementById('menuBackdrop');
+    const closeBtn = document.getElementById('menuClose');
+
+    function openMenu() {
+      sheet.hidden = false;
+      backdrop.hidden = false;
+      sheet.classList.add('open');
+    }
+
+    function closeMenu() {
+      sheet.classList.remove('open');
+      backdrop.hidden = true;
+      setTimeout(() => sheet.hidden = true, 180);
+    }
+
+    btn.onclick = openMenu;
+    closeBtn.onclick = closeMenu;
+    backdrop.onclick = closeMenu;
+  </script>
 
 </body>
 </html>
