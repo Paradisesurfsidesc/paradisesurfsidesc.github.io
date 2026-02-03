@@ -1,200 +1,62 @@
-
 <!-- index.html -->
 <!-- Date - 2026-02-03 -->
-<!-- Version - 1.1.0 -->
-<!-- Notes - Hard-pinned hero footer/buttons using flex:auto pattern -->
+<!-- Version - 1.1.1 -->
+<!-- Notes - Restored valid HTML structure; header/menu injected via assets/site.js; hero remains pinned -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
 <html lang="en">
-<header id="siteHeader"></header>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Paradise</title>
 
-
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
 
 <body>
 
-<header>
-  <div class="topbar">
-    <div class="brand">Paradise</div>
+  <!-- ✅ Injected header + menu will render here -->
+  <header id="siteHeader"></header>
 
-    <div class="header-actions">
-      <a
-        class="weather"
-        id="weather"
-        href="https://tempestwx.com/station/204460/grid"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Live on-site weather station (opens in a new tab)"
-        aria-label="View current on-site weather from the Paradise Tempest weather station"
-      >
-        <span>Current Weather</span>
-        <span id="weatherIcon">⛅</span>
-        <span id="weatherTemp">—</span>
-      </a>
+  <main>
+    <section class="hero" aria-label="Hero section">
+      <div class="hero-bg" aria-hidden="true"></div>
 
-      <button class="menu-btn" aria-label="Open menu">☰</button>
-    </div>
-  </div>
-</header>
+      <div class="hero-content">
+        <div class="hero-top">
+          <h1>Your Luxury<br>Vacation Awaits</h1>
+          <p>
+            Everything you need for a smooth stay — quick answers,
+            local events, and Paradise perks.
+          </p>
+        </div>
 
-<main>
-  <section class="hero" aria-label="Hero section">
-    <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-bottom">
+          <div class="cta-row">
+            <a class="btn secondary" href="paradise-info.html">Paradise Info</a>
+            <a class="btn secondary" href="plan-your-stay.html">Plan Your Stay</a>
+            <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank" rel="noopener noreferrer">
+              Book Now
+            </a>
+          </div>
 
-    <div class="hero-content">
-      <div class="hero-top">
-        <h1>Your Luxury<br>Vacation Awaits</h1>
-        <p>
-          Everything you need for a smooth stay — quick answers,
-          local events, and Paradise perks.
-        </p>
+          <div class="footer">
+            <div class="footer-row">
+              <div>Version 1.1.1</div>
+              <div>Surfside Beach, SC</div>
+              <div style="text-align:right">Last updated: Feb 2026</div>
+            </div>
+            <div style="text-align:center">
+              © 2026 Paradise. All rights reserved.
+            </div>
+          </div>
+        </div>
       </div>
 
-    <div class="hero-bottom">
-    <div class="cta-row">
-      <a class="btn secondary" href="paradise-info.html">Paradise Info</a>
-      <a class="btn secondary" href="plan-your-stay.html">Plan Your Stay</a>
-      <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise">
-        Book Now
-      </a>
-    </div>
-
-    <div class="footer">
-      <div class="footer-row">
-        <div>Version 1.1.0</div>
-        <div>Surfside Beach, SC</div>
-        <div style="text-align:right">Last updated: Feb 2026</div>
-      </div>
-      <div style="text-align:center">
-        © 2026 Paradise. All rights reserved.
-      </div>
-    </div>
-  </div>
-</div>
-  </section>
-</main>
-
-<script>
-  const WEATHER_ENDPOINT =
-    "https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather";
-
-  async function loadWeather() {
-    const tempEl = document.getElementById("weatherTemp");
-    const iconEl = document.getElementById("weatherIcon");
-    const pillEl = document.getElementById("weather");
-
-    try {
-      const res = await fetch(WEATHER_ENDPOINT, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-
-      const data = await res.json();
-      if (!data || data.ok !== true) throw new Error("Bad payload");
-
-      // ✅ Make it resilient: accept number or numeric string
-      const tempNum = Number(data.temp_f);
-      const tempText = Number.isFinite(tempNum) ? Math.round(tempNum) + "°" : "—";
-
-      tempEl.textContent = tempText;
-      iconEl.textContent = data.icon || "⛅";
-
-      // Accessible label
-      const condition = data.condition ? `, ${data.condition}` : "";
-      pillEl.setAttribute(
-        "aria-label",
-        `Current Weather at the House from the on-site weather station: ${tempText}${condition}`
-      );
-    } catch (e) {
-      // Don’t wipe icon — only temp
-      tempEl.textContent = "—";
-    }
-  }
-
-  loadWeather();
-  setInterval(loadWeather, 5 * 60 * 1000);
-</script>
-
-<div class="menu-overlay" id="menuOverlay" aria-hidden="true">
-  <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Site menu">
-    <div class="menu-head">
-      <p class="menu-title">Menu</p>
-      <button class="menu-close" id="menuClose" aria-label="Close menu">✕</button>
-    </div>
-
-    <div class="menu-grid">
-      <a class="menu-link" href="plan-your-stay.html">
-        <div>
-          Plan Your Stay
-          <span class="menu-sub">Start here — food, events, and essentials</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="things-to-do.html">
-        <div>
-          Things To Do
-          <span class="menu-sub">Nearby, parks, mini golf, golf, more</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="paradise-info.html">
-        <div>
-          Paradise Info
-          <span class="menu-sub">House details, amenities, quick answers</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="events.html">
-        <div>
-          Events
-          <span class="menu-sub">Live music, shows, annual events</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="photos.html">
-        <div>
-          Photos
-          <span class="menu-sub">Explore the home</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="videos.html">
-        <div>
-          Videos
-          <span class="menu-sub">Walkthroughs & highlights</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="floor-plans.html">
-        <div>
-          Floor Plans
-          <span class="menu-sub">Layout and room flow</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank" rel="noopener noreferrer">
-        <div>
-          Book Now
-          <span class="menu-sub">Check availability / reserve</span>
-        </div>
-        <span>↗</span>
-      </a>
-    </div>
-
-    <div class="menu-foot">
-      <span>Surfside Beach, SC</span>
-      <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank" rel="noopener noreferrer">
-        Book Now
-      </a>
-    </div>
-  </div>
-</div>
-  <script src="assets/site.js" defer></script>
+    </section>
+  </main>
 
 </body>
 </html>
