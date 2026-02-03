@@ -1,8 +1,9 @@
 // assets/site.js
 // Date - 2026-02-03
-// Version - 1.2.0
+// Version - 1.2.1
 // Notes - Injects normalized header + hamburger menu + consistent footer across pages.
 //         Weather pill updates across pages. Footer shows ← Home on subpages; home omits it.
+//         GA4 enabled + outbound Book Now click tracking.
 // Author - David Taylor
 
 (() => {
@@ -16,16 +17,45 @@
     "https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather";
 
   // Keep these in sync with your visible versioning.
-  const SITE_VERSION = "1.2.0";
+  const SITE_VERSION = "1.2.1";
   const LAST_UPDATED = "Feb 2026";
   const LOCATION_TEXT = "Surfside Beach, SC";
 
+  // =========================
+  // Google Analytics (GA4)
+  // =========================
+  const GA_MEASUREMENT_ID = "G-HFN4RF1QVT";
+
+  function initAnalytics() {
+    if (!GA_MEASUREMENT_ID) return;
+
+    // Load GA script
+    const gaScript = document.createElement("script");
+    gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    gaScript.async = true;
+    document.head.appendChild(gaScript);
+
+    // Init gtag
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      window.dataLayer.push(arguments);
+    }
+    window.gtag = gtag;
+
+    window.gtag("js", new Date());
+    window.gtag("config", GA_MEASUREMENT_ID, {
+      anonymize_ip: true,
+      send_page_view: true,
+    });
+  }
+
+  function trackEvent(name, params = {}) {
+    if (typeof window.gtag !== "function") return;
+    window.gtag("event", name, params);
+  }
+
   function isHomePage() {
     const p = (location.pathname || "").toLowerCase();
-    // Handles:
-    // - / (common)
-    // - /index.html (common)
-    // - /paradisesurfsidesc.github.io/ (github pages)
     return p.endsWith("/") || p.endsWith("/index.html") || p === "";
   }
 
@@ -130,7 +160,7 @@
               <span>›</span>
             </a>
 
-            <a class="menu-link" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer">
+            <a class="menu-link" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer" data-track="book">
               <div>
                 Book Now
                 <span class="menu-sub">Check availability / reserve</span>
@@ -141,7 +171,7 @@
 
           <div class="menu-foot">
             <span>${LOCATION_TEXT}</span>
-            <a class="btn primary" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer">
+            <a class="btn primary" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer" data-track="book">
               Book Now
             </a>
           </div>
@@ -153,9 +183,6 @@
   // =========================
   // Render Footer (Single Source of Truth)
   // Requirement: each page includes: <footer id="siteFooter"></footer>
-  // Behavior:
-  // - Home: no ← Home button
-  // - Subpages: show ← Home on left, Plan Your Stay on right
   // =========================
   function renderFooter() {
     const mount = document.getElementById("siteFooter");
@@ -163,7 +190,6 @@
 
     const home = isHomePage();
 
-    // Uses your existing .footer/.footer-row styling from styles.css
     mount.innerHTML = `
       <div class="footer">
         <div class="footer-row">
@@ -207,6 +233,7 @@
       overlay.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
       closeBtn.focus();
+      trackEvent("menu_open", { page_path: location.pathname });
     }
 
     function closeMenu() {
@@ -214,6 +241,7 @@
       overlay.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
       openBtn.focus();
+      trackEvent("menu_close", { page_path: location.pathname });
     }
 
     openBtn.addEventListener("click", openMenu);
@@ -225,6 +253,35 @@
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeMenu();
+    });
+  }
+
+  // =========================
+  // Outbound Click Tracking
+  // =========================
+  function wireTracking() {
+    document.addEventListener("click", (e) => {
+      const a = e.target && e.target.closest ? e.target.closest("a") : null;
+      if (!a) return;
+
+      // Track booking clicks (menu + anywhere you add data-track="book")
+      if (a.dataset && a.dataset.track === "book") {
+        trackEvent("book_now_click", {
+          page_path: location.pathname,
+          link_url: a.href,
+        });
+        return;
+      }
+
+      // Track any outbound link clicks (optional)
+      const href = a.getAttribute("href") || "";
+      const isExternal = href.startsWith("http") && !href.includes(location.host);
+      if (isExternal) {
+        trackEvent("outbound_click", {
+          page_path: location.pathname,
+          link_url: a.href,
+        });
+      }
     });
   }
 
@@ -258,16 +315,17 @@
       );
     } catch (e) {
       tempEl.textContent = "—";
-      // Leave icon as-is
     }
   }
 
   // =========================
   // Boot
   // =========================
+  initAnalytics();
   renderHeaderAndMenu();
   renderFooter();
   wireMenu();
+  wireTracking();
 
   loadWeather();
   setInterval(loadWeather, 5 * 60 * 1000);
