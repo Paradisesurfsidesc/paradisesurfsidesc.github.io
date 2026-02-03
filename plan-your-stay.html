@@ -1,271 +1,122 @@
 <!-- plan-your-stay.html -->
 <!-- Date - 2026-02-03 -->
-<!-- Version - 1.0.0 -->
-<!-- Notes - Plan Your Stay hub page using global /assets/styles.css and main site navigation structure -->
+<!-- Version - 1.0.1 -->
+<!-- Notes - Normalized page: injected global header/menu via assets/site.js; removed duplicate header/menu/weather scripts -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
 <html lang="en">
-<header id="siteHeader"></header>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Plan Your Stay | Paradise</title>
+
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
 
 <body>
 
-<header>
-  <div class="topbar">
-    <a class="brand" href="index.html" aria-label="Return to home">Paradise</a>
+  <!-- ✅ Injected header + menu -->
+  <header id="siteHeader"></header>
 
-    <div class="header-actions">
-      <a
-        class="weather"
-        id="weather"
-        href="https://tempestwx.com/station/204460/grid"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Live on-site weather station (opens in a new tab)"
-        aria-label="View current on-site weather from the Paradise Tempest weather station"
-      >
-        <span>Current Weather</span>
-        <span id="weatherIcon">⛅</span>
-        <span id="weatherTemp">—</span>
-      </a>
+  <main>
+    <section class="page" aria-label="Plan your stay hub">
 
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-haspopup="dialog" aria-controls="menuOverlay">
-        ☰
-      </button>
-    </div>
-  </div>
-</header>
-
-<main>
-  <section class="page" aria-label="Plan your stay hub">
-
-    <div class="page-header">
-      <h1>Plan Your Stay</h1>
-      <p>
-        Start here — quick answers, best local spots, and what to do while you’re in town.
-        Whether you’re here for a long weekend or a full week, these links will help you plan fast.
-      </p>
-    </div>
-
-    <div class="grid">
-
-      <article class="card">
-        <h2>🍽️ Restaurants</h2>
+      <div class="page-header">
+        <h1>Plan Your Stay</h1>
         <p>
-          Breakfast, seafood, casual spots, and family favorites — plus a few local “must tries.”
+          Start here — quick answers, best local spots, and what to do while you’re in town.
+          Whether you’re here for a long weekend or a full week, these links will help you plan fast.
         </p>
-        <div class="tags">
-          <span class="tag quick">⚡ Great for 3-Day Stays</span>
-          <span class="tag week">🗓️ Perfect for Week Stays</span>
-        </div>
-        <div style="margin-top:.6rem">
-          <a class="btn secondary" href="restaurants.html">Open Restaurants</a>
-        </div>
-      </article>
+      </div>
 
-      <article class="card">
-        <h2>🍺 Breweries & Craft Beer</h2>
-        <p>
-          Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.
-        </p>
-        <div class="tags">
-          <span class="tag quick">⚡ Great for 3-Day Stays</span>
-          <span class="tag week">🗓️ Perfect for Week Stays</span>
-        </div>
-        <div style="margin-top:.6rem">
-          <a class="btn secondary" href="breweries.html">Open Breweries</a>
-        </div>
-      </article>
+      <div class="grid">
 
-      <article class="card">
-        <h2>🧭 Things To Do</h2>
-        <p>
-          Nearby towns, attractions, state parks, mini golf, golf, shopping, and more.
-        </p>
-        <div class="tags">
-          <span class="tag quick">⚡ Great for 3-Day Stays</span>
-          <span class="tag week">🗓️ Perfect for Week Stays</span>
-        </div>
-        <div style="margin-top:.6rem">
-          <a class="btn secondary" href="things-to-do.html">Open Things To Do</a>
-        </div>
-      </article>
+        <article class="card">
+          <h2>🍽️ Restaurants</h2>
+          <p>Breakfast, seafood, casual spots, and family favorites — plus a few local “must tries.”</p>
+          <div class="tags">
+            <span class="tag quick">⚡ Great for 3-Day Stays</span>
+            <span class="tag week">🗓️ Perfect for Week Stays</span>
+          </div>
+          <div style="margin-top:.6rem">
+            <a class="btn secondary" href="restaurants.html">Open Restaurants</a>
+          </div>
+        </article>
 
-      <article class="card">
-        <h2>🎉 Events This Week</h2>
-        <p>
-          What’s happening while you’re here — live music, shows, and annual events.
-        </p>
-        <div class="tags">
-          <span class="tag quick">⚡ Great for 3-Day Stays</span>
-          <span class="tag week">🗓️ Perfect for Week Stays</span>
-        </div>
-        <div style="margin-top:.6rem">
-          <a class="btn secondary" href="events.html">Open Events</a>
-        </div>
-      </article>
+        <article class="card">
+          <h2>🍺 Breweries & Craft Beer</h2>
+          <p>Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.</p>
+          <div class="tags">
+            <span class="tag quick">⚡ Great for 3-Day Stays</span>
+            <span class="tag week">🗓️ Perfect for Week Stays</span>
+          </div>
+          <div style="margin-top:.6rem">
+            <a class="btn secondary" href="breweries.html">Open Breweries</a>
+          </div>
+        </article>
 
-      <article class="card">
-        <h2>📸 House Visuals</h2>
-        <p>
-          Explore the house — photos, videos, and floor plans.
-        </p>
-        <div class="tags">
-          <span class="tag week">🗓️ Helpful for Week Stays</span>
-        </div>
-        <div style="margin-top:.6rem; display:flex; gap:.6rem; flex-wrap:wrap">
-          <a class="btn secondary" href="photos.html">Photos</a>
-          <a class="btn secondary" href="videos.html">Videos</a>
-          <a class="btn secondary" href="floor-plans.html">Floor Plans</a>
-        </div>
-      </article>
+        <article class="card">
+          <h2>🧭 Things To Do</h2>
+          <p>Nearby towns, attractions, state parks, mini golf, golf, shopping, and more.</p>
+          <div class="tags">
+            <span class="tag quick">⚡ Great for 3-Day Stays</span>
+            <span class="tag week">🗓️ Perfect for Week Stays</span>
+          </div>
+          <div style="margin-top:.6rem">
+            <a class="btn secondary" href="things-to-do.html">Open Things To Do</a>
+          </div>
+        </article>
 
-      <article class="card">
-        <h2>🏠 Paradise Info</h2>
-        <p>
-          House details, amenities, layout notes, and helpful info for a smooth stay.
-        </p>
-        <div class="tags">
-          <span class="tag quick">⚡ Great for 3-Day Stays</span>
-          <span class="tag week">🗓️ Perfect for Week Stays</span>
-        </div>
-        <div style="margin-top:.6rem">
-          <a class="btn secondary" href="paradise-info.html">Open Paradise Info</a>
-        </div>
-      </article>
+        <article class="card">
+          <h2>🎉 Events This Week</h2>
+          <p>What’s happening while you’re here — live music, shows, and annual events.</p>
+          <div class="tags">
+            <span class="tag quick">⚡ Great for 3-Day Stays</span>
+            <span class="tag week">🗓️ Perfect for Week Stays</span>
+          </div>
+          <div style="margin-top:.6rem">
+            <a class="btn secondary" href="events.html">Open Events</a>
+          </div>
+        </article>
 
-    </div>
+        <article class="card">
+          <h2>📸 House Visuals</h2>
+          <p>Explore the house — photos, videos, and floor plans.</p>
+          <div class="tags">
+            <span class="tag week">🗓️ Helpful for Week Stays</span>
+          </div>
+          <div style="margin-top:.6rem; display:flex; gap:.6rem; flex-wrap:wrap">
+            <a class="btn secondary" href="photos.html">Photos</a>
+            <a class="btn secondary" href="videos.html">Videos</a>
+            <a class="btn secondary" href="floor-plans.html">Floor Plans</a>
+          </div>
+        </article>
 
-    <div class="page-footer">
-      <a class="btn secondary" href="index.html">← Home</a>
-      <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise">
-        Book Now
-      </a>
-    </div>
+        <article class="card">
+          <h2>🏠 Paradise Info</h2>
+          <p>House details, amenities, layout notes, and helpful info for a smooth stay.</p>
+          <div class="tags">
+            <span class="tag quick">⚡ Great for 3-Day Stays</span>
+            <span class="tag week">🗓️ Perfect for Week Stays</span>
+          </div>
+          <div style="margin-top:.6rem">
+            <a class="btn secondary" href="paradise-info.html">Open Paradise Info</a>
+          </div>
+        </article>
 
-  </section>
-</main>
+      </div>
 
-<script>
-  // Optional: reuse your weather loader if you want this pill to show live temp on every page.
-  // If you prefer it only on index.html, delete this script block.
-  const WEATHER_ENDPOINT =
-    "https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather";
-
-  async function loadWeather() {
-    const tempEl = document.getElementById("weatherTemp");
-    const iconEl = document.getElementById("weatherIcon");
-    const pillEl = document.getElementById("weather");
-    if (!tempEl || !iconEl || !pillEl) return;
-
-    try {
-      const res = await fetch(WEATHER_ENDPOINT, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-
-      const data = await res.json();
-      if (!data || data.ok !== true) throw new Error("Bad payload");
-
-      const tempNum = Number(data.temp_f);
-      const tempText = Number.isFinite(tempNum) ? Math.round(tempNum) + "°" : "—";
-
-      tempEl.textContent = tempText;
-      iconEl.textContent = data.icon || "⛅";
-
-      const condition = data.condition ? `, ${data.condition}` : "";
-      pillEl.setAttribute(
-        "aria-label",
-        `Current Weather at the House from the on-site weather station: ${tempText}${condition}`
-      );
-    } catch (e) {
-      tempEl.textContent = "—";
-    }
-  }
-
-  loadWeather();
-  setInterval(loadWeather, 5 * 60 * 1000);
-</script>
-<div class="menu-overlay" id="menuOverlay" aria-hidden="true">
-  <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Site menu">
-    <div class="menu-head">
-      <p class="menu-title">Menu</p>
-      <button class="menu-close" id="menuClose" aria-label="Close menu">✕</button>
-    </div>
-
-    <div class="menu-grid">
-      <a class="menu-link" href="plan-your-stay.html">
-        <div>
-          Plan Your Stay
-          <span class="menu-sub">Start here — food, events, and essentials</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="things-to-do.html">
-        <div>
-          Things To Do
-          <span class="menu-sub">Nearby, parks, mini golf, golf, more</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="paradise-info.html">
-        <div>
-          Paradise Info
-          <span class="menu-sub">House details, amenities, quick answers</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="events.html">
-        <div>
-          Events
-          <span class="menu-sub">Live music, shows, annual events</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="photos.html">
-        <div>
-          Photos
-          <span class="menu-sub">Explore the home</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="videos.html">
-        <div>
-          Videos
-          <span class="menu-sub">Walkthroughs & highlights</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="floor-plans.html">
-        <div>
-          Floor Plans
-          <span class="menu-sub">Layout and room flow</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank" rel="noopener noreferrer">
-        <div>
+      <div class="page-footer">
+        <a class="btn secondary" href="index.html">← Home</a>
+        <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank" rel="noopener noreferrer">
           Book Now
-          <span class="menu-sub">Check availability / reserve</span>
-        </div>
-        <span>↗</span>
-      </a>
-    </div>
+        </a>
+      </div>
 
-    <div class="menu-foot">
-      <span>Surfside Beach, SC</span>
-      <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank" rel="noopener noreferrer">
-        Book Now
-      </a>
-    </div>
-  </div>
-</div>
-<script src="assets/site.js" defer></script>
+    </section>
+  </main>
 
 </body>
 </html>
