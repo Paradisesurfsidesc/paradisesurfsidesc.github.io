@@ -1,14 +1,37 @@
 // assets/site.js
 // Date - 2026-02-03
-// Version - 1.1.0
-// Notes - Injects normalized header + hamburger menu on any page with <header id="siteHeader"></header>.
-//         Then wires menu behavior and updates the weather pill across pages.
+// Version - 1.2.0
+// Notes - Injects normalized header + hamburger menu + consistent footer across pages.
+//         Weather pill updates across pages. Footer shows ← Home on subpages; home omits it.
 // Author - David Taylor
 
 (() => {
   // =========================
+  // Config
+  // =========================
+  const BOOKING_URL =
+    "https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise";
+  const WEATHER_STATION_URL = "https://tempestwx.com/station/204460/grid";
+  const WEATHER_ENDPOINT =
+    "https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather";
+
+  // Keep these in sync with your visible versioning.
+  const SITE_VERSION = "1.2.0";
+  const LAST_UPDATED = "Feb 2026";
+  const LOCATION_TEXT = "Surfside Beach, SC";
+
+  function isHomePage() {
+    const p = (location.pathname || "").toLowerCase();
+    // Handles:
+    // - / (common)
+    // - /index.html (common)
+    // - /paradisesurfsidesc.github.io/ (github pages)
+    return p.endsWith("/") || p.endsWith("/index.html") || p === "";
+  }
+
+  // =========================
   // Render Header + Menu (Single Source of Truth)
-  // Requirement: each page should include: <header id="siteHeader"></header>
+  // Requirement: each page includes: <header id="siteHeader"></header>
   // =========================
   function renderHeaderAndMenu() {
     const headerMount = document.getElementById("siteHeader");
@@ -22,7 +45,7 @@
           <a
             class="weather"
             id="weather"
-            href="https://tempestwx.com/station/204460/grid"
+            href="${WEATHER_STATION_URL}"
             target="_blank"
             rel="noopener noreferrer"
             title="Live on-site weather station (opens in a new tab)"
@@ -107,12 +130,7 @@
               <span>›</span>
             </a>
 
-            <a
-              class="menu-link"
-              href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a class="menu-link" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer">
               <div>
                 Book Now
                 <span class="menu-sub">Check availability / reserve</span>
@@ -122,13 +140,8 @@
           </div>
 
           <div class="menu-foot">
-            <span>Surfside Beach, SC</span>
-            <a
-              class="btn primary"
-              href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <span>${LOCATION_TEXT}</span>
+            <a class="btn primary" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer">
               Book Now
             </a>
           </div>
@@ -137,53 +150,87 @@
     `;
   }
 
-  // Render first so the DOM contains the elements we wire up next.
-  renderHeaderAndMenu();
-
   // =========================
-  // Hamburger Menu (wired after render)
+  // Render Footer (Single Source of Truth)
+  // Requirement: each page includes: <footer id="siteFooter"></footer>
+  // Behavior:
+  // - Home: no ← Home button
+  // - Subpages: show ← Home on left, Plan Your Stay on right
   // =========================
-  const openBtn = document.getElementById("menuBtn");
-  const overlay = document.getElementById("menuOverlay");
-  const closeBtn = document.getElementById("menuClose");
+  function renderFooter() {
+    const mount = document.getElementById("siteFooter");
+    if (!mount) return;
 
-  function openMenu() {
-    if (!overlay) return;
-    overlay.classList.add("open");
-    overlay.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-    if (closeBtn) closeBtn.focus();
+    const home = isHomePage();
+
+    // Uses your existing .footer/.footer-row styling from styles.css
+    mount.innerHTML = `
+      <div class="footer">
+        <div class="footer-row">
+          <div>
+            ${home ? "" : `<a class="btn secondary" href="index.html">← Home</a>`}
+          </div>
+
+          <div style="text-align:center">
+            <div>Version ${SITE_VERSION}</div>
+            <div>${LOCATION_TEXT}</div>
+          </div>
+
+          <div style="text-align:right">
+            ${
+              home
+                ? `Last updated: ${LAST_UPDATED}`
+                : `<a class="btn secondary" href="plan-your-stay.html">Plan Your Stay</a>`
+            }
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:.5rem">
+          © 2026 Paradise. All rights reserved.
+        </div>
+      </div>
+    `;
   }
 
-  function closeMenu() {
-    if (!overlay) return;
-    overlay.classList.remove("open");
-    overlay.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-    if (openBtn) openBtn.focus();
-  }
+  // =========================
+  // Hamburger Menu Wiring
+  // =========================
+  function wireMenu() {
+    const openBtn = document.getElementById("menuBtn");
+    const overlay = document.getElementById("menuOverlay");
+    const closeBtn = document.getElementById("menuClose");
 
-  if (openBtn && overlay) {
+    if (!openBtn || !overlay || !closeBtn) return;
+
+    function openMenu() {
+      overlay.classList.add("open");
+      overlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      closeBtn.focus();
+    }
+
+    function closeMenu() {
+      overlay.classList.remove("open");
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      openBtn.focus();
+    }
+
     openBtn.addEventListener("click", openMenu);
-  }
-  if (closeBtn) {
     closeBtn.addEventListener("click", closeMenu);
-  }
-  if (overlay) {
+
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay) closeMenu();
     });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
   }
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeMenu();
-  });
 
   // =========================
-  // Weather Pill (works on any page with injected header)
+  // Weather Pill
   // =========================
-  const WEATHER_ENDPOINT =
-    "https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather";
-
   async function loadWeather() {
     const tempEl = document.getElementById("weatherTemp");
     const iconEl = document.getElementById("weatherIcon");
@@ -211,8 +258,16 @@
       );
     } catch (e) {
       tempEl.textContent = "—";
+      // Leave icon as-is
     }
   }
+
+  // =========================
+  // Boot
+  // =========================
+  renderHeaderAndMenu();
+  renderFooter();
+  wireMenu();
 
   loadWeather();
   setInterval(loadWeather, 5 * 60 * 1000);
