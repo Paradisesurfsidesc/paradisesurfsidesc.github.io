@@ -1,56 +1,105 @@
+<!-- paradise-info.html -->
+<!-- Date - 2026-02-03 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - House-specific info page using global styles.css -->
+<!-- Author - David Taylor -->
 
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Paradise Info | Paradise Surfside</title>
-  <meta name="description" content="Photos, videos, and floor plans for Paradise Surfside." />
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; color:#0b2239; background:#fff; }
-    header { padding:18px 16px; border-bottom:1px solid #eee; position:sticky; top:0; background:#fff; z-index:10; }
-    .container { max-width:980px; margin:0 auto; padding:16px; }
-    .muted { color:#5a6b7a; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px; }
-    .card { padding:14px; border-radius:14px; background:#f5f7f9; text-decoration:none; color:#0b2239; font-weight:700; text-align:center; }
-    .card:hover { background:#e8f1f5; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Paradise Info</title>
 
-    .tabbar {
-      position: fixed; left: 0; right: 0; bottom: 0;
-      border-top: 1px solid #eee; background: #fff;
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      padding: 10px 8px; gap: 6px;
-    }
-    .tabbar a {
-      text-decoration: none; color: #0b2239; font-size: 12px; text-align: center;
-      padding: 8px 6px; border-radius: 12px; background: #f7f7f7;
-    }
-    .tabbar a.active { background: #0077b6; color:#fff; }
-    .page-spacer { height:80px; }
-  </style>
+  <link rel="stylesheet" href="/assets/styles.css">
 </head>
+
 <body>
-  <header>
-    <div class="container">
-      <strong>Paradise Info</strong><br />
-      <span class="muted">Explore the home before you arrive.</span>
-    </div>
-  </header>
 
-  <main class="container">
+<header>
+  <div class="topbar">
+    <div class="brand">Paradise</div>
+
+    <div class="header-actions">
+      <a
+        class="weather"
+        href="https://tempestwx.com/station/204460/grid"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="View current on-site weather"
+      >
+        <span>Current Weather</span>
+        <span>⛅</span>
+        <span>—</span>
+      </a>
+
+      <button class="menu-btn" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="page" aria-label="Paradise house information">
+
+    <div class="page-header">
+      <h1>Paradise Info</h1>
+      <p>
+        Everything you need to know about the house — amenities,
+        layout, and what makes Paradise special.
+      </p>
+    </div>
+
     <div class="grid">
-      <a class="card" href="photos.html">📸 Photos</a>
-      <a class="card" href="videos.html">🎥 Videos</a>
-      <a class="card" href="floor-plans.html">📐 Floor Plans</a>
+
+      <article class="card">
+        <h2>🏠 The House</h2>
+        <p>
+          A luxury beach home designed for comfort, space, and easy coastal living.
+          Ideal for families, groups, and extended stays.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>🛏️ Bedrooms & Layout</h2>
+        <p>
+          Multiple bedrooms across levels with thoughtful spacing,
+          private bathrooms, and room for everyone to spread out.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>🍽️ Kitchen & Living</h2>
+        <p>
+          Fully equipped kitchen, open living areas,
+          and gathering spaces perfect for meals and downtime.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>🌴 Outdoor Spaces</h2>
+        <p>
+          Covered areas, seating, and coastal breezes —
+          great for morning coffee or winding down after the beach.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>📍 Location</h2>
+        <p>
+          Located in Surfside Beach, SC — close to dining, attractions,
+          and everything that makes the Grand Strand special.
+        </p>
+      </article>
+
     </div>
 
-    <div class="page-spacer"></div>
-  </main>
+    <div class="page-footer">
+      <a class="btn secondary" href="index.html">← Home</a>
+      <a class="btn secondary" href="plan-your-stay.html">Plan Your Stay</a>
+    </div>
 
-  <nav class="tabbar" aria-label="Primary">
-    <a href="paradise-info.html" class="active">Paradise Info</a>
-    <a href="plan-your-stay.html">Plan Your Stay</a>
-    <a href="index.html#book">Book</a>
-  </nav>
+  </section>
+</main>
+
 </body>
 </html>
