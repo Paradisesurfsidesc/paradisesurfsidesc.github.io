@@ -141,7 +141,7 @@
     .hero-bg {
       position: absolute;
       inset: 0;
-      background: url("./images/twilight.png") center / cover no-repeat;
+      background: url("./images/Twilight.png") center / cover no-repeat;
     }
 
     .hero-content {
@@ -225,16 +225,21 @@
     <div class="brand">Paradise</div>
 
     <div class="header-actions">
-      <div
-        class="weather"
-        id="weather"
-        aria-live="polite"
-        aria-label="Current Weather at the House from the on-site weather station"
-      >
-        <span class="weather-label">Current Temp at Paradise</span>
-        <span id="weatherIcon">⛅</span>
-        <span id="weatherTemp">—</span>
-      </div>
+
+      <a
+  class="weather"
+  id="weather"
+  href="https://tempestwx.com/station/204460"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-live="polite"
+  aria-label="Current Weather at the House from the on-site Tempest weather station. Opens in a new tab."
+>
+  <span class="weather-label">Current Weather</span>
+  <span id="weatherIcon" aria-hidden="true">⛅</span>
+  <span id="weatherTemp">—</span>
+</a>
+
 
       <button class="menu-btn" aria-label="Open menu">
         ☰
