@@ -18,7 +18,7 @@
 
 <header>
   <div class="topbar">
-    <div class="brand">Paradise</div>
+    <a class="brand" href="index.html" aria-label="Return to home">Paradise</a>
 
     <div class="header-actions">
       <a
@@ -35,7 +35,9 @@
         <span id="weatherTemp">—</span>
       </a>
 
-      <button class="menu-btn" aria-label="Open menu">☰</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-haspopup="dialog" aria-controls="menuOverlay">
+        ☰
+      </button>
     </div>
   </div>
 </header>
