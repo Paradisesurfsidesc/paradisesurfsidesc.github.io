@@ -289,24 +289,41 @@
   const WEATHER_ENDPOINT =
     "https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather";
 
-  async function loadWeather(){
-    try{
-      const res = await fetch(WEATHER_ENDPOINT,{cache:"no-store"});
-      const data = await res.json();
-      if(!data.ok) throw new Error();
+  async function loadWeather() {
+    const tempEl = document.getElementById("weatherTemp");
+    const iconEl = document.getElementById("weatherIcon");
+    const pillEl = document.getElementById("weather");
 
-      document.getElementById("weatherTemp").textContent =
-        Math.round(data.temp_f) + "°";
-      document.getElementById("weatherIcon").textContent =
-        data.icon || "⛅";
-    }catch{
-      document.getElementById("weatherTemp").textContent="—";
+    try {
+      const res = await fetch(WEATHER_ENDPOINT, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+
+      const data = await res.json();
+      if (!data || data.ok !== true) throw new Error("Bad payload");
+
+      // ✅ Make it resilient: accept number or numeric string
+      const tempNum = Number(data.temp_f);
+      const tempText = Number.isFinite(tempNum) ? Math.round(tempNum) + "°" : "—";
+
+      tempEl.textContent = tempText;
+      iconEl.textContent = data.icon || "⛅";
+
+      // Accessible label
+      const condition = data.condition ? `, ${data.condition}` : "";
+      pillEl.setAttribute(
+        "aria-label",
+        `Current Weather at the House from the on-site weather station: ${tempText}${condition}`
+      );
+    } catch (e) {
+      // Don’t wipe icon — only temp
+      tempEl.textContent = "—";
     }
   }
 
   loadWeather();
-  setInterval(loadWeather,5*60*1000);
+  setInterval(loadWeather, 5 * 60 * 1000);
 </script>
+
 
 </body>
 </html>
