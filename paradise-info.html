@@ -1,186 +1,87 @@
 <!-- paradise-info.html -->
 <!-- Date - 2026-02-03 -->
-<!-- Version - 1.0.0 -->
-<!-- Notes - House-specific info page using global styles.css -->
+<!-- Version - 1.0.1 -->
+<!-- Notes - Uses injected global header/menu via assets/site.js; page content only -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
 <html lang="en">
-<header id="siteHeader"></header>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Paradise Info | Paradise</title>
 
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
 
 <body>
 
-<header>
-  <div class="topbar">
-    <a class="brand" href="index.html" aria-label="Return to home">Paradise</a>
+  <!-- ✅ Injected header + menu -->
+  <header id="siteHeader"></header>
 
-    <div class="header-actions">
-      <a
-        class="weather"
-        id="weather"
-        href="https://tempestwx.com/station/204460/grid"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Live on-site weather station (opens in a new tab)"
-        aria-label="View current on-site weather from the Paradise Tempest weather station"
-      >
-        <span>Current Weather</span>
-        <span id="weatherIcon">⛅</span>
-        <span id="weatherTemp">—</span>
-      </a>
+  <main>
+    <section class="page" aria-label="Paradise house information">
 
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-haspopup="dialog" aria-controls="menuOverlay">
-        ☰
-      </button>
-    </div>
-  </div>
-</header>
-
-<main>
-  <section class="page" aria-label="Paradise house information">
-
-    <div class="page-header">
-      <h1>Paradise Info</h1>
-      <p>
-        Everything you need to know about the house — amenities,
-        layout, and what makes Paradise special.
-      </p>
-    </div>
-
-    <div class="grid">
-
-      <article class="card">
-        <h2>🏠 The House</h2>
+      <div class="page-header">
+        <h1>Paradise Info</h1>
         <p>
-          A luxury beach home designed for comfort, space, and easy coastal living.
-          Ideal for families, groups, and extended stays.
+          Everything you need to know about the house — amenities,
+          layout, and what makes Paradise special.
         </p>
-      </article>
+      </div>
 
-      <article class="card">
-        <h2>🛏️ Bedrooms & Layout</h2>
-        <p>
-          Multiple bedrooms across levels with thoughtful spacing,
-          private bathrooms, and room for everyone to spread out.
-        </p>
-      </article>
+      <div class="grid">
 
-      <article class="card">
-        <h2>🍽️ Kitchen & Living</h2>
-        <p>
-          Fully equipped kitchen, open living areas,
-          and gathering spaces perfect for meals and downtime.
-        </p>
-      </article>
+        <article class="card">
+          <h2>🏠 The House</h2>
+          <p>
+            A luxury beach home designed for comfort, space, and easy coastal living.
+            Ideal for families, groups, and extended stays.
+          </p>
+        </article>
 
-      <article class="card">
-        <h2>🌴 Outdoor Spaces</h2>
-        <p>
-          Covered areas, seating, and coastal breezes —
-          great for morning coffee or winding down after the beach.
-        </p>
-      </article>
+        <article class="card">
+          <h2>🛏️ Bedrooms & Layout</h2>
+          <p>
+            Multiple bedrooms across levels with thoughtful spacing,
+            private bathrooms, and room for everyone to spread out.
+          </p>
+        </article>
 
-      <article class="card">
-        <h2>📍 Location</h2>
-        <p>
-          Located in Surfside Beach, SC — close to dining, attractions,
-          and everything that makes the Grand Strand special.
-        </p>
-      </article>
+        <article class="card">
+          <h2>🍽️ Kitchen & Living</h2>
+          <p>
+            Fully equipped kitchen, open living areas,
+            and gathering spaces perfect for meals and downtime.
+          </p>
+        </article>
 
-    </div>
+        <article class="card">
+          <h2>🌴 Outdoor Spaces</h2>
+          <p>
+            Covered areas, seating, and coastal breezes —
+            great for morning coffee or winding down after the beach.
+          </p>
+        </article>
 
-    <div class="page-footer">
-      <a class="btn secondary" href="index.html">← Home</a>
-      <a class="btn secondary" href="plan-your-stay.html">Plan Your Stay</a>
-    </div>
+        <article class="card">
+          <h2>📍 Location</h2>
+          <p>
+            Located in Surfside Beach, SC — close to dining, attractions,
+            and everything that makes the Grand Strand special.
+          </p>
+        </article>
 
-  </section>
-</main>
-<div class="menu-overlay" id="menuOverlay" aria-hidden="true">
-  <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Site menu">
-    <div class="menu-head">
-      <p class="menu-title">Menu</p>
-      <button class="menu-close" id="menuClose" aria-label="Close menu">✕</button>
-    </div>
+      </div>
 
-    <div class="menu-grid">
-      <a class="menu-link" href="plan-your-stay.html">
-        <div>
-          Plan Your Stay
-          <span class="menu-sub">Start here — food, events, and essentials</span>
-        </div>
-        <span>›</span>
-      </a>
+      <div class="page-footer">
+        <a class="btn secondary" href="index.html">← Home</a>
+        <a class="btn secondary" href="plan-your-stay.html">Plan Your Stay</a>
+      </div>
 
-      <a class="menu-link" href="things-to-do.html">
-        <div>
-          Things To Do
-          <span class="menu-sub">Nearby, parks, mini golf, golf, more</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="paradise-info.html">
-        <div>
-          Paradise Info
-          <span class="menu-sub">House details, amenities, quick answers</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="events.html">
-        <div>
-          Events
-          <span class="menu-sub">Live music, shows, annual events</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="photos.html">
-        <div>
-          Photos
-          <span class="menu-sub">Explore the home</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="videos.html">
-        <div>
-          Videos
-          <span class="menu-sub">Walkthroughs & highlights</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="floor-plans.html">
-        <div>
-          Floor Plans
-          <span class="menu-sub">Layout and room flow</span>
-        </div>
-        <span>›</span>
-      </a>
-
-      <a class="menu-link" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank" rel="noopener noreferrer">
-        <div>
-          Book Now
-          <span class="menu-sub">Check availability / reserve</span>
-        </div>
-        <span>↗</span>
-      </a>
-    </div>
-
-    <div class="menu-foot">
-      <span>Surfside Beach, SC</span>
-      <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise" target="_blank" rel="noopener noreferrer">
-        Book Now
-      </a>
-    </div>
-  </div>
-</div>
-<script src="assets/site.js" defer></script>
+    </section>
+  </main>
 
 </body>
 </html>
