@@ -1,0 +1,253 @@
+/* =========================================================
+   Paradise Surfside — Site Style Guide
+   File: /assets/styles.css
+   Notes: Shared styles for ALL pages (index + subpages)
+   ========================================================= */
+
+:root{
+  /* Brand / neutrals (edit these to change the whole site) */
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+
+  /* Accent */
+  --accent: #0ea5e9;
+  --accent-2: #075985;
+
+  /* Layout */
+  --max: 980px;
+  --radius: 18px;
+  --shadow: 0 10px 24px rgba(2, 6, 23, 0.08);
+  --shadow-sm: 0 6px 14px rgba(2, 6, 23, 0.08);
+}
+
+/* Base */
+*{ box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(219,234,254,0.9) 0%, transparent 55%),
+              radial-gradient(1200px 600px at 90% 10%, rgba(207,250,254,0.9) 0%, transparent 55%),
+              var(--bg);
+  line-height: 1.5;
+}
+
+img{ max-width: 100%; height: auto; }
+a{ color: inherit; }
+
+/* Layout helpers */
+.wrap{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 22px 16px 36px;
+}
+
+/* Header / Nav */
+.topbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 12px;
+  z-index: 10;
+}
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.brand-dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #38bdf8, var(--accent));
+  box-shadow: 0 0 0 4px rgba(14,165,233,0.15);
+}
+
+.nav{
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.nav a{
+  text-decoration: none;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav a:hover{
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.06);
+  color: var(--text);
+}
+
+/* Page hero */
+.hero{
+  margin: 26px 0 18px;
+  padding: 26px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.85);
+  box-shadow: var(--shadow);
+}
+
+.kicker{
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 800;
+  color: var(--accent-2);
+  background: rgba(14,165,233,0.10);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(14,165,233,0.15);
+  font-size: 13px;
+}
+
+h1{
+  margin: 10px 0 8px;
+  font-size: clamp(26px, 4vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+}
+
+.sub{
+  margin: 0;
+  color: var(--muted);
+  max-width: 64ch;
+  font-size: 16px;
+}
+
+/* Buttons / links */
+.btn{
+  text-decoration: none;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(7,89,133,0.18);
+  background: rgba(7,89,133,0.08);
+  color: var(--accent-2);
+}
+.btn:hover{ background: rgba(7,89,133,0.12); }
+
+/* Grid + cards */
+.grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 16px;
+}
+@media (min-width: 760px){
+  .grid{ grid-template-columns: 1fr 1fr; }
+}
+
+.card{
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 18px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 210px;
+}
+
+.card h2{
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon{
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.12);
+  font-size: 20px;
+  flex: 0 0 auto;
+}
+
+.card p{
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Tags */
+.tags{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.tag{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: #f8fafc;
+}
+
+.tag.quick{
+  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(245, 158, 11, 0.10);
+}
+
+.tag.week{
+  border-color: rgba(34, 197, 94, 0.22);
+  background: rgba(34, 197, 94, 0.10);
+}
+
+/* Footer */
+.site-footer{
+  margin-top: 18px;
+  padding: 14px 2px 0;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 13px;
+}
