@@ -165,7 +165,7 @@ main{
 
 /* BOTTOM BLOCK — PINNED */
 .hero-bottom{
-  /* no margin-top:auto needed anymore */
+  padding-bottom: .25rem;
   display:grid;
   gap:1rem;
 }
