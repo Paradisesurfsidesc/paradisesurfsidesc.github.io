@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plan Your Stay | Paradise Surfside</title>
+  <meta name="description" content="Restaurants, attractions, things to do, and events near Paradise Surfside." />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; color:#0b2239; background:#fff; }
+    header { padding:18px 16px; border-bottom:1px solid #eee; position:sticky; top:0; background:#fff; z-index:10; }
+    .container { max-width:980px; margin:0 auto; padding:16px; }
+    .muted { color:#5a6b7a; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px; }
+    .card { padding:14px; border-radius:14px; background:#f5f7f9; text-decoration:none; color:#0b2239; font-weight:700; text-align:center; }
+    .card:hover { background:#e8f1f5; }
+
+    .tabbar {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      border-top: 1px solid #eee; background: #fff;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      padding: 10px 8px; gap: 6px;
+    }
+    .tabbar a {
+      text-decoration: none; color: #0b2239; font-size: 12px; text-align: center;
+      padding: 8px 6px; border-radius: 12px; background: #f7f7f7;
+    }
+    .tabbar a.active { background: #0077b6; color:#fff; }
+    .page-spacer { height:80px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <strong>Plan Your Stay</strong><br />
+      <span class="muted">Local favorites and ideas for the week.</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="grid">
+      <a class="card" href="restaurants.html">🍽️ Restaurants</a>
+      <a class="card" href="attractions.html">🎡 Attractions</a>
+      <a class="card" href="things-to-do.html">🏖️ Things to Do</a>
+      <a class="card" href="events.html">📅 Events</a>
+    </div>
+
+    <div class="page-spacer"></div>
+  </main>
+
+  <nav class="tabbar" aria-label="Primary">
+    <a href="paradise-info.html">Paradise Info</a>
+    <a href="plan-your-stay.html" class="active">Plan Your Stay</a>
+    <a href="index.html#book">Book</a>
+  </nav>
+</body>
+</html>
