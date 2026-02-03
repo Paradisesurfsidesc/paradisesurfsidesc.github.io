@@ -1,56 +1,193 @@
+<!-- plan-your-stay.html -->
+<!-- Date - 2026-02-03 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Plan Your Stay hub page using global /assets/styles.css and main site navigation structure -->
+<!-- Author - David Taylor -->
+
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Plan Your Stay | Paradise Surfside</title>
-  <meta name="description" content="Restaurants, attractions, things to do, and events near Paradise Surfside." />
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; color:#0b2239; background:#fff; }
-    header { padding:18px 16px; border-bottom:1px solid #eee; position:sticky; top:0; background:#fff; z-index:10; }
-    .container { max-width:980px; margin:0 auto; padding:16px; }
-    .muted { color:#5a6b7a; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px; }
-    .card { padding:14px; border-radius:14px; background:#f5f7f9; text-decoration:none; color:#0b2239; font-weight:700; text-align:center; }
-    .card:hover { background:#e8f1f5; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Plan Your Stay | Paradise</title>
 
-    .tabbar {
-      position: fixed; left: 0; right: 0; bottom: 0;
-      border-top: 1px solid #eee; background: #fff;
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      padding: 10px 8px; gap: 6px;
-    }
-    .tabbar a {
-      text-decoration: none; color: #0b2239; font-size: 12px; text-align: center;
-      padding: 8px 6px; border-radius: 12px; background: #f7f7f7;
-    }
-    .tabbar a.active { background: #0077b6; color:#fff; }
-    .page-spacer { height:80px; }
-  </style>
+  <link rel="stylesheet" href="/assets/styles.css">
 </head>
+
 <body>
-  <header>
-    <div class="container">
-      <strong>Plan Your Stay</strong><br />
-      <span class="muted">Local favorites and ideas for the week.</span>
-    </div>
-  </header>
 
-  <main class="container">
+<header>
+  <div class="topbar">
+    <div class="brand">Paradise</div>
+
+    <div class="header-actions">
+      <a
+        class="weather"
+        id="weather"
+        href="https://tempestwx.com/station/204460/grid"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Live on-site weather station (opens in a new tab)"
+        aria-label="View current on-site weather from the Paradise Tempest weather station"
+      >
+        <span>Current Weather</span>
+        <span id="weatherIcon">⛅</span>
+        <span id="weatherTemp">—</span>
+      </a>
+
+      <button class="menu-btn" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="page" aria-label="Plan your stay hub">
+
+    <div class="page-header">
+      <h1>Plan Your Stay</h1>
+      <p>
+        Start here — quick answers, best local spots, and what to do while you’re in town.
+        Whether you’re here for a long weekend or a full week, these links will help you plan fast.
+      </p>
+    </div>
+
     <div class="grid">
-      <a class="card" href="restaurants.html">🍽️ Restaurants</a>
-      <a class="card" href="attractions.html">🎡 Attractions</a>
-      <a class="card" href="things-to-do.html">🏖️ Things to Do</a>
-      <a class="card" href="events.html">📅 Events</a>
+
+      <article class="card">
+        <h2>🍽️ Restaurants</h2>
+        <p>
+          Breakfast, seafood, casual spots, and family favorites — plus a few local “must tries.”
+        </p>
+        <div class="tags">
+          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        </div>
+        <div style="margin-top:.6rem">
+          <a class="btn secondary" href="restaurants.html">Open Restaurants</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>🍺 Breweries & Craft Beer</h2>
+        <p>
+          Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.
+        </p>
+        <div class="tags">
+          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        </div>
+        <div style="margin-top:.6rem">
+          <a class="btn secondary" href="breweries.html">Open Breweries</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>🧭 Things To Do</h2>
+        <p>
+          Nearby towns, attractions, state parks, mini golf, golf, shopping, and more.
+        </p>
+        <div class="tags">
+          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        </div>
+        <div style="margin-top:.6rem">
+          <a class="btn secondary" href="things-to-do.html">Open Things To Do</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>🎉 Events This Week</h2>
+        <p>
+          What’s happening while you’re here — live music, shows, and annual events.
+        </p>
+        <div class="tags">
+          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        </div>
+        <div style="margin-top:.6rem">
+          <a class="btn secondary" href="events.html">Open Events</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>📸 House Visuals</h2>
+        <p>
+          Explore the house — photos, videos, and floor plans.
+        </p>
+        <div class="tags">
+          <span class="tag week">🗓️ Helpful for Week Stays</span>
+        </div>
+        <div style="margin-top:.6rem; display:flex; gap:.6rem; flex-wrap:wrap">
+          <a class="btn secondary" href="photos.html">Photos</a>
+          <a class="btn secondary" href="videos.html">Videos</a>
+          <a class="btn secondary" href="floor-plans.html">Floor Plans</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>🏠 Paradise Info</h2>
+        <p>
+          House details, amenities, layout notes, and helpful info for a smooth stay.
+        </p>
+        <div class="tags">
+          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        </div>
+        <div style="margin-top:.6rem">
+          <a class="btn secondary" href="paradise-info.html">Open Paradise Info</a>
+        </div>
+      </article>
+
     </div>
 
-    <div class="page-spacer"></div>
-  </main>
+    <div class="page-footer">
+      <a class="btn secondary" href="index.html">← Home</a>
+      <a class="btn primary" href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise">
+        Book Now
+      </a>
+    </div>
 
-  <nav class="tabbar" aria-label="Primary">
-    <a href="paradise-info.html">Paradise Info</a>
-    <a href="plan-your-stay.html" class="active">Plan Your Stay</a>
-    <a href="index.html#book">Book</a>
-  </nav>
+  </section>
+</main>
+
+<script>
+  // Optional: reuse your weather loader if you want this pill to show live temp on every page.
+  // If you prefer it only on index.html, delete this script block.
+  const WEATHER_ENDPOINT =
+    "https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather";
+
+  async function loadWeather() {
+    const tempEl = document.getElementById("weatherTemp");
+    const iconEl = document.getElementById("weatherIcon");
+    const pillEl = document.getElementById("weather");
+    if (!tempEl || !iconEl || !pillEl) return;
+
+    try {
+      const res = await fetch(WEATHER_ENDPOINT, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+
+      const data = await res.json();
+      if (!data || data.ok !== true) throw new Error("Bad payload");
+
+      const tempNum = Number(data.temp_f);
+      const tempText = Number.isFinite(tempNum) ? Math.round(tempNum) + "°" : "—";
+
+      tempEl.textContent = tempText;
+      iconEl.textContent = data.icon || "⛅";
+
+      const condition = data.condition ? `, ${data.condition}` : "";
+      pillEl.setAttribute(
+        "aria-label",
+        `Current Weather at the House from the on-site weather station: ${tempText}${condition}`
+      );
+    } catch (e) {
+      tempEl.textContent = "—";
+    }
+  }
+
+  loadWeather();
+  setInterval(loadWeather, 5 * 60 * 1000);
+</script>
+
 </body>
 </html>
