@@ -18,22 +18,26 @@
 
 <header>
   <div class="topbar">
-    <div class="brand">Paradise</div>
+    <a class="brand" href="index.html" aria-label="Return to home">Paradise</a>
 
     <div class="header-actions">
       <a
         class="weather"
+        id="weather"
         href="https://tempestwx.com/station/204460/grid"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="View current on-site weather"
+        title="Live on-site weather station (opens in a new tab)"
+        aria-label="View current on-site weather from the Paradise Tempest weather station"
       >
         <span>Current Weather</span>
-        <span>⛅</span>
-        <span>—</span>
+        <span id="weatherIcon">⛅</span>
+        <span id="weatherTemp">—</span>
       </a>
 
-      <button class="menu-btn" aria-label="Open menu">☰</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-haspopup="dialog" aria-controls="menuOverlay">
+        ☰
+      </button>
     </div>
   </div>
 </header>
