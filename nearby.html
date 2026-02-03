@@ -1,77 +1,97 @@
+<!-- nearby.html -->
+<!-- Date - 2026-02-03 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Uses global /assets/styles.css + consistent header; subpage layout uses .page/.card/.tags -->
+<!-- Author - David Taylor -->
+
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Nearby Places to Explore | Paradise Surfside</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Nearby beach towns and local favorites close to Paradise Surfside Beach House." />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nearby | Paradise</title>
 
-  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="/assets/styles.css">
 </head>
 
 <body>
 
-  <!-- Header / Nav -->
-  <header class="site-header">
-    <h1>Nearby Places to Explore</h1>
-    <p class="subtitle">
-      Easy trips and local favorites just minutes from Paradise Surfside.
-    </p>
-  </header>
+<header>
+  <div class="topbar">
+    <div class="brand">Paradise</div>
 
-  <main class="content">
+    <div class="header-actions">
+      <a
+        class="weather"
+        href="https://tempestwx.com/station/204460/grid"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Live on-site weather station (opens in a new tab)"
+        aria-label="View current on-site weather from the Paradise Tempest weather station"
+      >
+        <span>Current Weather</span>
+        <span>⛅</span>
+        <span>—</span>
+      </a>
 
-    <!-- Surfside Beach -->
-    <section class="card">
-      <h2>🏖️ Surfside Beach</h2>
-      <p>
-        Known as <strong>“The Family Beach”</strong>, Surfside offers a relaxed,
-        uncrowded atmosphere with a fishing pier, playgrounds, local shops,
-        and wide sandy beaches.
-      </p>
-      <p class="tag">⚡ Great for a 3-Day Stay</p>
-    </section>
+      <button class="menu-btn" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+</header>
 
-    <!-- Murrells Inlet -->
-    <section class="card">
-      <h2>🌊 Murrells Inlet</h2>
-      <p>
-        A historic fishing village and the <strong>Seafood Capital of South Carolina</strong>.
-        Walk the MarshWalk, enjoy waterfront dining, live music, and sunset views.
-      </p>
-      <p class="tag">⚡ Great for a 3-Day Stay · 🗓️ Perfect for Week Stays</p>
-    </section>
+<main>
+  <section class="page" aria-label="Nearby places to explore">
 
-    <!-- Pawleys Island -->
-    <section class="card">
-      <h2>🌾 Pawleys Island</h2>
-      <p>
-        Classic Lowcountry charm with quiet beaches, marsh views,
-        and a slower pace. Home of the famous rope hammocks
-        handcrafted by the Hammock Man.
-      </p>
-      <p class="tag">🗓️ Best if You’re Here All Week</p>
-    </section>
+    <div class="page-header">
+      <h1>Nearby Places to Explore</h1>
+      <p>Short drives. Big payoff. Easy “let’s go do something” options near Surfside.</p>
+    </div>
 
-    <!-- Myrtle Beach -->
-    <section class="card">
-      <h2>🎡 Myrtle Beach</h2>
-      <p>
-        The heart of the Grand Strand — boardwalk, shopping, shows,
-        mini golf, live music, and nightlife. Easy to visit without
-        staying in the crowds.
-      </p>
-      <p class="tag">⚡ Great for a 3-Day Stay · 🗓️ Perfect for Week Stays</p>
-    </section>
+    <div class="grid">
 
-  </main>
+      <article class="card">
+        <h2>🏖️ Surfside Beach</h2>
+        <p>“The Family Beach” — relaxed, uncrowded, and easy. Great for beach days, walks, and a simple reset.</p>
+        <div class="tags">
+          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+        </div>
+      </article>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <p>
-      <a href="../things-to-do.html">← Back to Things To Do</a>
-    </p>
-  </footer>
+      <article class="card">
+        <h2>🌊 Murrells Inlet</h2>
+        <p>MarshWalk sunsets, waterfront dining, and live music in the Seafood Capital of South Carolina.</p>
+        <div class="tags">
+          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>🌾 Pawleys Island</h2>
+        <p>Lowcountry charm with quieter beaches and a slower pace. Iconic hammocks and classic coastal scenery.</p>
+        <div class="tags">
+          <span class="tag week">🗓️ Best if You’re Here All Week</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>🎡 Myrtle Beach</h2>
+        <p>Boardwalk energy, shopping, shows, mini golf, and nightlife — easy to visit without staying in the crowds.</p>
+        <div class="tags">
+          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="page-footer">
+      <a class="btn secondary" href="/index.html">← Home</a>
+      <a class="btn secondary" href="/things-to-do.html">Things To Do</a>
+    </div>
+
+  </section>
+</main>
 
 </body>
 </html>
