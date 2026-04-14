@@ -267,8 +267,9 @@ main{
 
 .hero{
   width:100%;
-  max-width: 100%;   /* was var(--max) / 820px — now fills the screen */
+  max-width:var(--max);
   min-height:85vh;
+  height: calc(100vh - 2rem); /* fills screen minus the 1rem padding top and bottom */
   border-radius:26px;
   overflow:hidden;
   position:relative;
