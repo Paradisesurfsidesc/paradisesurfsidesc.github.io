@@ -645,3 +645,7 @@ main{
     max-width:190px;
   }
 }
+/* Prevent fixed header from overlapping page content */
+.page {
+  margin-top: 100px;
+}
