@@ -60,6 +60,7 @@ img{
   display:flex;
   justify-content:center;
   margin-bottom: 8px;
+  height: 90px;  /* ← add this — matches the fixed header height */
 }
 
 .site-header{
@@ -393,7 +394,7 @@ main{
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: var(--shadow);
   overflow:hidden;
-  margin-top: 8px;       /* just a touch below the header */
+  margin-top: 0;       /* just a touch below the header */
 }
 
 .page-header{
