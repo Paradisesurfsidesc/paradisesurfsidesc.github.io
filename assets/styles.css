@@ -277,7 +277,7 @@ main{
   width:100%;
   max-width:var(--max);
   min-height:85vh;
-  height: calc(100vh - 2rem); /* fills screen minus the 1rem padding top and bottom */
+  height: calc(100vh -110px - 2rem); /* fills screen minus the 1rem padding top and bottom */
   border-radius:26px;
   overflow:hidden;
   position:relative;
