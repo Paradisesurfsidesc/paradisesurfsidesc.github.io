@@ -439,7 +439,19 @@ main{
   margin:0;
   color:var(--muted);
 }
+a.card {
+  text-decoration: none;
+  color: inherit;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+  cursor: pointer;
+}
 
+a.card:hover,
+a.card:focus-visible {
+  background: rgba(255,255,255,.13);
+  border-color: rgba(255,255,255,.3);
+  transform: translateY(-2px);
+}
 .tags{
   display:flex;
   gap:.5rem;
