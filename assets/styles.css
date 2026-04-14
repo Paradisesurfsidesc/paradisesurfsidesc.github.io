@@ -435,4 +435,25 @@ main{
   color:rgba(255,255,255,.75);
   font-size:.9rem;
 }
+/* =========================
+   Logo Support (NEW)
+   ========================= */
 
+.brand img {
+  height: 42px;
+  width: auto;
+  display: block;
+}
+
+.logo-light {
+  display: none;
+}
+
+/* Hero / dark background */
+header.is-dark .logo-dark {
+  display: none;
+}
+
+header.is-dark .logo-light {
+  display: block;
+}
