@@ -265,8 +265,7 @@ img{
 main{
   display:grid;
   place-items:center;
-  padding:0;
-}
+  padding: 0 1rem 1rem; /* no top padding, sides + bottom only */}
 
 /* =========================
    Hero
@@ -393,6 +392,8 @@ main{
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: var(--shadow);
   overflow:hidden;
+  margin-top: 8px;       /* just a touch below the header */
+  border-radius: 26px;   /* matches hero card radius */
 }
 
 .page-header{
