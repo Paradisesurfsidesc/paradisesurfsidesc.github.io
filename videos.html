@@ -1,7 +1,7 @@
-<!-- videos.html -->
+<!-- photos.html -->
 <!-- Date - 2026-04-14 -->
-<!-- Version - 1.0.0 -->
-<!-- Notes - Matched site shell to index.html; header/menu injected via assets/site.js; click-to-load video embed for faster initial page load -->
+<!-- Version - 1.1.0 -->
+<!-- Notes - Added lightbox modal; corrected thumbnail file references; reordered numbered photos and fixed captions -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -9,11 +9,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Paradise | Video</title>
+  <title>Paradise | Photos</title>
 
   <link rel="stylesheet" href="assets/styles.css">
-  <link rel="preconnect" href="https://skyline-photography.aryeo.com">
-  <link rel="dns-prefetch" href="//skyline-photography.aryeo.com">
   <script src="assets/site.js" defer></script>
 
   <style>
@@ -25,69 +23,200 @@
       align-items: flex-start;
     }
 
-    .video-page-card {
+    .photos-page-card {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1200px;
     }
 
-    .video-page-header {
+    .photos-page-header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
-    .video-page-header h1 {
+    .photos-page-header h1 {
       margin-bottom: 10px;
     }
 
-    .video-page-header p {
-      max-width: 700px;
+    .photos-page-header p {
+      max-width: 760px;
       margin: 0 auto;
     }
 
-    .video-frame-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
+    .photo-section {
+      margin-top: 34px;
+    }
+
+    .photo-section h2 {
+      margin: 0 0 14px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .photo-card {
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 18px;
       overflow: hidden;
-      border-radius: 20px;
-      background: rgba(0, 0, 0, 0.15);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(6px);
     }
 
-    .video-launch {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      padding: 24px;
-      text-align: center;
-      border: 0;
-      cursor: pointer;
-      color: inherit;
-      background:
-        linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)),
-        url('images/MAIN THUMBNAIL (2).jpg') center/cover no-repeat;
-    }
-
-    .video-launch .btn {
-      pointer-events: none;
-    }
-
-    .video-frame-wrap iframe {
+    .photo-button {
       width: 100%;
-      height: 100%;
       border: 0;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      font: inherit;
       display: block;
     }
 
-    .video-note {
-      text-align: center;
-      margin-top: 16px;
+    .photo-thumb-wrap {
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .photo-thumb {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transition: transform 0.25s ease;
+    }
+
+    .photo-button:hover .photo-thumb,
+    .photo-button:focus-visible .photo-thumb {
+      transform: scale(1.03);
+    }
+
+    .photo-copy {
+      padding: 14px 14px 16px;
+    }
+
+    .photo-copy h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+      line-height: 1.25;
+    }
+
+    .photo-copy p {
+      margin: 0;
       font-size: 0.95rem;
       opacity: 0.9;
+      line-height: 1.45;
+    }
+
+    .photo-badge {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.82);
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .lightbox-dialog {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, 100%);
+      max-height: calc(100vh - 48px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.5rem;
+      line-height: 1;
+      background: #ffffff;
+      color: #111111;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    .lightbox-figure {
+      margin: 0;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+    }
+
+    .lightbox-image {
+      width: 100%;
+      max-height: calc(100vh - 150px);
+      display: block;
+      object-fit: contain;
+      background: #111111;
+    }
+
+    .lightbox-caption {
+      margin: 0;
+      padding: 14px 16px 16px;
+      color: #ffffff;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 640px) {
+      .page-shell {
+        padding: 105px 14px 28px;
+      }
+
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .lightbox {
+        padding: 14px;
+      }
+
+      .lightbox-close {
+        top: 8px;
+        right: 8px;
+      }
     }
   </style>
 </head>
@@ -96,41 +225,220 @@
   <header id="siteHeader"></header>
 
   <main class="page-shell">
-    <section class="video-page-card" aria-label="Property video section">
-      <div class="video-page-header">
-        <h1>Property Video</h1>
-        <p>Watch a full video tour of Paradise.</p>
+    <section class="photos-page-card" aria-label="Property photo gallery">
+      <div class="photos-page-header">
+        <h1>Photo Gallery</h1>
+        <p>Browse Paradise room by room. Click any image to view it full size, then close with the X, by clicking outside the image, or by pressing Escape.</p>
       </div>
 
-      <div class="video-frame-wrap" id="videoContainer">
-        <button class="video-launch" id="loadVideoBtn" type="button" aria-label="Play property video">
-          <span class="btn primary">Play Video</span>
-          <span>Video loads on demand for a faster page experience.</span>
-        </button>
-      </div>
+      <section class="photo-section" aria-labelledby="gallery-highlights-heading">
+        <h2 id="gallery-highlights-heading">Highlights</h2>
+        <div class="photo-grid" id="highlightsGrid"></div>
+      </section>
 
-      <p class="video-note">Tip: this page now loads faster because the external video player is only requested after you click Play.</p>
+      <section class="photo-section" aria-labelledby="gallery-numbered-heading">
+        <h2 id="gallery-numbered-heading">Full Photo Tour</h2>
+        <div class="photo-grid" id="numberedGrid"></div>
+      </section>
     </section>
   </main>
 
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-backdrop" id="lightboxBackdrop" type="button" aria-label="Close full-size image"></button>
+
+    <div class="lightbox-dialog" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+      <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close full-size image">&times;</button>
+
+      <figure class="lightbox-figure">
+        <img class="lightbox-image" id="lightboxImage" src="" alt="">
+        <figcaption class="lightbox-caption" id="lightboxTitle"></figcaption>
+      </figure>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      var btn = document.getElementById('loadVideoBtn');
-      var container = document.getElementById('videoContainer');
+      var highlights = [
+        {
+          file: 'images/1-web-or-mls-MAIN THUMBNAIL.jpg',
+          title: 'Main Thumbnail',
+          description: 'Front exterior hero image of Paradise.'
+        },
+        {
+          file: 'images/4-web-or-mls-For social media.jpg',
+          title: 'Social Media Feature',
+          description: 'Promotional collage image for Paradise.'
+        },
+        {
+          file: 'images/9-web-or-mls-INTERIOR.jpg',
+          title: 'Interior Feature',
+          description: 'Interior promotional image highlighting the living and dining space.'
+        },
+        {
+          file: 'images/39-web-or-mls-Outdoor.jpg',
+          title: 'Outdoor Feature',
+          description: 'Outdoor promotional image highlighting pool and exterior amenities.'
+        },
+        {
+          file: 'images/48-web-or-mls-Location.jpg',
+          title: 'Location Feature',
+          description: 'Aerial location image showing where Paradise sits near the beach.'
+        },
+        {
+          file: 'images/58-web-or-mls-Twilight.png',
+          title: 'Twilight Exterior',
+          description: 'Front exterior twilight view of Paradise.'
+        },
+        {
+          file: 'images/59-web-or-mls-Twilight (2).png',
+          title: 'Twilight Exterior Alternate',
+          description: 'Alternate twilight exterior view of Paradise.'
+        }
+      ];
 
-      if (!btn || !container) return;
+      var numberedPhotos = [
+        { file: 'images/2-web-or-mls-0.jpg', title: 'Living and Dining Room', description: 'Open living and dining room view.' },
+        { file: 'images/3-web-or-mls-1.jpg', title: 'Living Room', description: 'Living room seating area.' },
+        { file: 'images/5-web-or-mls-2.jpeg', title: 'Living Room', description: 'Living room from alternate angle.' },
 
-      btn.addEventListener('click', function () {
-        container.innerHTML = [
-          '<iframe',
-          'src="https://skyline-photography.aryeo.com/videos/019be250-25c9-718f-bb3d-5673c45012f3"',
-          'title="Paradise Property Video"',
-          'loading="eager"',
-          'allow="autoplay; fullscreen; picture-in-picture"',
-          'allowfullscreen',
-          '></iframe>'
-        ].join(' ');
+        { file: 'images/6-web-or-mls-3.jpeg', title: 'Dining Room', description: 'Dining room view.' },
+        { file: 'images/7-web-or-mls-4.jpeg', title: 'Dining Room', description: 'Dining room from alternate angle.' },
+
+        { file: 'images/8-web-or-mls-5.jpeg', title: 'Lower Balcony', description: 'Lower balcony seating and outdoor space.' },
+
+        { file: 'images/10-web-or-mls-6.jpeg', title: 'Kitchen', description: 'Kitchen overview.' },
+        { file: 'images/11-web-or-mls-7.jpeg', title: 'Kitchen', description: 'Kitchen from alternate angle.' },
+        { file: 'images/12-web-or-mls-8.JPG', title: 'Kitchen', description: 'Kitchen and nearby counter seating.' },
+        { file: 'images/13-web-or-mls-9.jpeg', title: 'Kitchen', description: 'Kitchen prep and cabinet area.' },
+        { file: 'images/14-web-or-mls-10.jpeg', title: 'Kitchen', description: 'Kitchen workspace and appliances.' },
+
+        { file: 'images/23-web-or-mls-19.jpeg', title: 'Upstairs Master Bedroom', description: 'Upstairs master bedroom with a king bed.' },
+        { file: 'images/24-web-or-mls-20.jpeg', title: 'Upstairs Master Bedroom', description: 'Upstairs master bedroom from alternate angle.' },
+
+        { file: 'images/25-web-or-mls-21.jpeg', title: 'Master Bath', description: 'Upstairs master bathroom vanity and bath area.' },
+        { file: 'images/26-web-or-mls-22.jpeg', title: 'Master Bath', description: 'Upstairs master bathroom from alternate angle.' },
+
+        { file: 'images/18-web-or-mls-14.jpeg', title: 'Downstairs Queen Bedroom', description: 'Downstairs bedroom with a queen bed.' },
+
+        { file: 'images/27-web-or-mls-23.jpeg', title: 'Upstairs Bedroom', description: 'Upstairs bedroom with a queen bed and sleeper sofa.' },
+        { file: 'images/28-web-or-mls-24.jpeg', title: 'Upstairs Bedroom', description: 'Upstairs bedroom with a queen bed and sleeper sofa from alternate angle.' },
+
+        { file: 'images/29-web-or-mls-25.jpeg', title: 'Attached Bathroom', description: 'Attached bathroom for the upstairs bedroom.' },
+        { file: 'images/30-web-or-mls-25a.JPG', title: 'Attached Bathroom', description: 'Attached bathroom from alternate angle.' },
+
+        { file: 'images/31-web-or-mls-26.jpeg', title: 'Downstairs Bedroom', description: 'Downstairs bedroom with two double beds.' },
+        { file: 'images/32-web-or-mls-27.jpeg', title: 'Downstairs Bedroom', description: 'Downstairs bedroom with two double beds from alternate angle.' },
+
+        { file: 'images/33-web-or-mls-28.jpeg', title: 'Downstairs Bathroom', description: 'Downstairs bathroom.' },
+        { file: 'images/34-web-or-mls-29.jpeg', title: 'Downstairs Bathroom', description: 'Downstairs bathroom from alternate angle.' },
+
+        { file: 'images/15-web-or-mls-11.jpeg', title: 'Upstairs Balcony', description: 'Upstairs balcony view.' },
+        { file: 'images/16-web-or-mls-12a.jpg', title: 'Upstairs Balcony', description: 'Upstairs balcony seating and rail view.' },
+        { file: 'images/17-web-or-mls-13.jpeg', title: 'Upstairs Balcony', description: 'Upstairs balcony from alternate angle.' },
+        { file: 'images/36-web-or-mls-31.JPG', title: 'Upstairs Balcony', description: 'Upstairs balcony street and neighborhood view.' },
+
+        { file: 'images/35-web-or-mls-30a.jpg', title: 'Bunk Room', description: 'Bunk room with four twin beds.' },
+        { file: 'images/37-web-or-mls-31a.jpg', title: 'Bunk Room', description: 'Bunk room from alternate angle.' },
+        { file: 'images/38-web-or-mls-32.jpeg', title: 'Bunk Room', description: 'Bunk room and attached upstairs bathroom access.' },
+
+        { file: 'images/34-web-or-mls-29.jpeg', title: 'Upstairs Laundry Room', description: 'Upstairs laundry room.' },
+
+        { file: 'images/40-web-or-mls-33a.jpg', title: 'Private Heated/Cooled Pool', description: 'Private heated or cooled pool area.' },
+        { file: 'images/41-web-or-mls-33.jpeg', title: 'Private Heated/Cooled Pool', description: 'Private heated or cooled pool from alternate angle.' },
+        { file: 'images/43-web-or-mls-35.jpeg', title: 'Private Heated/Cooled Pool', description: 'Pool deck and outdoor lounging area.' },
+        { file: 'images/44-web-or-mls-36.jpg', title: 'Private Heated/Cooled Pool', description: 'Poolside seating and outdoor space.' },
+        { file: 'images/45-web-or-mls-36a.jpg', title: 'Private Heated/Cooled Pool', description: 'Poolside view from alternate angle.' },
+        { file: 'images/46-web-or-mls-37.jpeg', title: 'Private Heated/Cooled Pool', description: 'Pool and surrounding exterior view.' },
+        { file: 'images/47-web-or-mls-38.jpg', title: 'Private Heated/Cooled Pool', description: 'Private pool area from additional exterior angle.' },
+
+        { file: 'images/42-web-or-mls-34.jpeg', title: 'Outdoor Shower', description: 'Outdoor shower with foot washing station.' },
+
+        { file: 'images/49-web-or-mls-39.JPG', title: 'Exterior Front', description: 'Front exterior of Paradise.' },
+        { file: 'images/50-web-or-mls-40.JPG', title: 'Exterior Rear', description: 'Rear exterior of Paradise.' },
+        { file: 'images/51-web-or-mls-41.JPG', title: 'Aerial View', description: 'Aerial exterior view of the property.' },
+        { file: 'images/52-web-or-mls-41a.jpeg', title: 'Aerial View - Paradise Marked', description: 'Aerial view pointing out which house is Paradise.' },
+        { file: 'images/53-web-or-mls-42.JPG', title: 'Aerial Beach View', description: 'Aerial beach view near Paradise.' },
+        { file: 'images/54-web-or-mls-42.jpeg', title: 'Aerial Beach View', description: 'Additional aerial beach view.' },
+        { file: 'images/55-web-or-mls-43.JPG', title: 'Exterior Rear', description: 'Rear exterior from elevated perspective.' },
+        { file: 'images/56-web-or-mls-44.JPG', title: 'Aerial Beach View', description: 'Wide aerial shoreline view.' }
+      ];
+
+      var highlightsGrid = document.getElementById('highlightsGrid');
+      var numberedGrid = document.getElementById('numberedGrid');
+
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImage = document.getElementById('lightboxImage');
+      var lightboxTitle = document.getElementById('lightboxTitle');
+      var lightboxClose = document.getElementById('lightboxClose');
+      var lightboxBackdrop = document.getElementById('lightboxBackdrop');
+
+      function createCard(item, badgeText) {
+        var card = document.createElement('article');
+        card.className = 'photo-card';
+
+        var button = document.createElement('button');
+        button.className = 'photo-button';
+        button.type = 'button';
+        button.setAttribute('aria-label', 'Open full-size image: ' + item.title);
+
+        button.innerHTML =
+          '<div class="photo-thumb-wrap">' +
+            '<img class="photo-thumb" src="' + item.file + '" alt="' + item.title + '" loading="lazy">' +
+          '</div>' +
+          '<div class="photo-copy">' +
+            '<span class="photo-badge">' + badgeText + '</span>' +
+            '<h3>' + item.title + '</h3>' +
+            '<p>' + item.description + '</p>' +
+          '</div>';
+
+        button.addEventListener('click', function () {
+          openLightbox(item);
+        });
+
+        var thumb = button.querySelector('img');
+        thumb.addEventListener('error', function () {
+          card.classList.add('is-hidden');
+        });
+
+        card.appendChild(button);
+        return card;
+      }
+
+      function renderGrid(target, items, badgeText) {
+        items.forEach(function (item) {
+          target.appendChild(createCard(item, badgeText));
+        });
+      }
+
+      function openLightbox(item) {
+        lightboxImage.src = item.file;
+        lightboxImage.alt = item.title;
+        lightboxTitle.textContent = item.title + ' — ' + item.description;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        lightboxImage.src = '';
+        lightboxImage.alt = '';
+        lightboxTitle.textContent = '';
+        document.body.style.overflow = '';
+      }
+
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightboxBackdrop.addEventListener('click', closeLightbox);
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && lightbox.classList.contains('open')) {
+          closeLightbox();
+        }
       });
+
+      renderGrid(highlightsGrid, highlights, 'Highlight');
+      renderGrid(numberedGrid, numberedPhotos, 'Photo');
     });
   </script>
 </body>
