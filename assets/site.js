@@ -104,70 +104,83 @@
           </div>
 
           <div class="menu-grid">
-            <a class="menu-link" href="plan-your-stay.html">
-              <div>
-                Plan Your Stay
-                <span class="menu-sub">Start here — food, events, and essentials</span>
-              </div>
-              <span>›</span>
-            </a>
 
-            <a class="menu-link" href="things-to-do.html">
-              <div>
-                Things To Do
-                <span class="menu-sub">Nearby, parks, mini golf, golf, and more</span>
-              </div>
-              <span>›</span>
-            </a>
+  <!-- PROPERTY -->
+  <a class="menu-link" href="paradise-info.html">
+    <div>
+      Paradise Info
+      <span class="menu-sub">House details, amenities, overview</span>
+    </div>
+    <span>›</span>
+  </a>
 
-            <a class="menu-link" href="paradise-info.html">
-              <div>
-                Paradise Info
-                <span class="menu-sub">House details, amenities, quick answers</span>
-              </div>
-              <span>›</span>
-            </a>
+  <a class="menu-link" href="photos.html">
+    <div>
+      Photos
+      <span class="menu-sub">Explore the home</span>
+    </div>
+    <span>›</span>
+  </a>
 
-            <a class="menu-link" href="events.html">
-              <div>
-                Events
-                <span class="menu-sub">Live music, shows, and annual events</span>
-              </div>
-              <span>›</span>
-            </a>
+  <a class="menu-link" href="floor-plans.html">
+    <div>
+      Floor Plans
+      <span class="menu-sub">Layout and room flow</span>
+    </div>
+    <span>›</span>
+  </a>
 
-            <a class="menu-link" href="photos.html">
-              <div>
-                Photos
-                <span class="menu-sub">Explore the home</span>
-              </div>
-              <span>›</span>
-            </a>
+  <a class="menu-link" href="videos.html">
+    <div>
+      Videos
+      <span class="menu-sub">Walkthroughs & highlights</span>
+    </div>
+    <span>›</span>
+  </a>
 
-            <a class="menu-link" href="videos.html">
-              <div>
-                Videos
-                <span class="menu-sub">Walkthroughs & highlights</span>
-              </div>
-              <span>›</span>
-            </a>
+  <a class="menu-link" href="tour.html">
+    <div>
+      Virtual Tour
+      <span class="menu-sub">Interactive walk-through</span>
+    </div>
+    <span>›</span>
+  </a>
 
-            <a class="menu-link" href="floor-plans.html">
-              <div>
-                Floor Plans
-                <span class="menu-sub">Layout and room flow</span>
-              </div>
-              <span>›</span>
-            </a>
+  <!-- PLANNING -->
+  <a class="menu-link" href="plan-your-stay.html">
+    <div>
+      Plan Your Stay
+      <span class="menu-sub">Start here — food, events, essentials</span>
+    </div>
+    <span>›</span>
+  </a>
 
-            <a class="menu-link" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer" data-track="book">
-              <div>
-                Book Now
-                <span class="menu-sub">Check availability / reserve</span>
-              </div>
-              <span>↗</span>
-            </a>
-          </div>
+  <a class="menu-link" href="things-to-do.html">
+    <div>
+      Things To Do
+      <span class="menu-sub">Parks, golf, attractions</span>
+    </div>
+    <span>›</span>
+  </a>
+
+  <a class="menu-link" href="events.html">
+    <div>
+      Events
+      <span class="menu-sub">Live music, shows, seasonal events</span>
+    </div>
+    <span>›</span>
+  </a>
+
+  <!-- BOOK -->
+  <a class="menu-link" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer" data-track="book">
+    <div>
+      Book Now
+      <span class="menu-sub">Check availability / reserve</span>
+    </div>
+    <span>↗</span>
+  </a>
+
+</div>
 
           <div class="menu-foot">
             <span>${LOCATION_TEXT}</span>
