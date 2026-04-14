@@ -1,7 +1,7 @@
 // site.js
 // Date - 2026-04-14
-// Version - 1.0.0
-// Notes - Injected site header/menu with Paradise logo support and dark hero logo switching
+// Version - 1.1.0
+// Notes - Injected header/menu with Paradise logo, weather chip, simplified nav, and dark hero logo switching
 // Author - David Taylor
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,22 +34,31 @@ function injectHeader() {
         >
       </a>
 
-      <button
-        class="menu-toggle"
-        type="button"
-        aria-label="Open menu"
-        aria-expanded="false"
-        aria-controls="siteMenu"
-      >
-        Menu
-      </button>
+      <div class="site-header-actions">
+        <a
+          class="weather"
+          href="https://tempestwx.com/station/204460/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View live weather for Surfside Beach"
+        >
+          Weather
+        </a>
+
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="siteMenu"
+        >
+          Menu
+        </button>
+      </div>
 
       <nav id="siteMenu" class="site-menu" aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="paradise-info.html">Paradise Info</a>
-        <a href="photos.html">Photos</a>
-        <a href="floorplan.html">Floor Plan</a>
-        <a href="videos.html">Video</a>
         <a href="plan-your-stay.html">Plan Your Stay</a>
         <a
           href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
@@ -100,14 +109,20 @@ function setupScrollTheme() {
   const header = document.querySelector('.site-header');
   const hero = document.querySelector('.hero');
 
-  if (!header || !hero) return;
+  if (!header) return;
+
+  if (!hero) {
+    header.classList.remove('is-dark');
+    header.classList.add('is-solid');
+    return;
+  }
 
   function updateTheme() {
     const triggerPoint = Math.max(hero.offsetHeight - 100, 120);
     const useDarkLogo = window.scrollY < triggerPoint;
 
     header.classList.toggle('is-dark', useDarkLogo);
-    header.classList.toggle('is-solid', window.scrollY > 20);
+    header.classList.toggle('is-solid', window.scrollY > 20 || !useDarkLogo);
   }
 
   updateTheme();
