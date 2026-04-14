@@ -118,7 +118,14 @@ img{
   width: auto;
   max-width: 320px;
 }
+/* Show white logo when header is solid (all subpages) */
+.site-header.is-solid .logo-dark {
+  display: none;
+}
 
+.site-header.is-solid .logo-light {
+  display: block;
+}
 /* Tablet */
 @media (max-width: 900px) {
   .site-logo {
