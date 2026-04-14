@@ -500,9 +500,9 @@ header.is-dark .logo-light {
 
 .site-logo {
   display: block;
-  height: 52px;
+  height: 44px;
   width: auto;
-  max-width: min(60vw, 340px);
+  max-width: 220px;
 }
 
 .logo-light {
