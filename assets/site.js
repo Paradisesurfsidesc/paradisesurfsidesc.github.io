@@ -1,7 +1,7 @@
 // site.js
 // Date - 2026-04-14
-// Version - 1.3.0
-// Notes - Aligned with styles.css v1.2.0; replaced overlay menu with .site-menu dropdown; fixed header class injection
+// Version - 1.3.1
+// Notes - Fixed applyHeroImage scope; all functions now correctly outside DOMContentLoaded
 // Author - David Taylor
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,18 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScrollTheme();
   applyHeroImage();
   loadWeather();
-  
+});
+
 function applyHeroImage() {
   const heroBg = document.querySelector('.hero-bg');
   if (!heroBg) return;
 
-  const hour = new Date().getHours(); // 0–23, user's local time
-  const isNight = hour < 7 || hour >= 19; // night = before 7am or after 7pm
+  const hour = new Date().getHours();
+  const isNight = hour < 7 || hour >= 19;
 
   heroBg.style.backgroundImage = isNight
-    ? 'url("images/night.jpg")'  // twilight/dusk shot
-    : 'url("images/day.jpg")'; // bright daytime shot
-});
+    ? 'url("images/night.jpg")'
+    : 'url("images/day.jpg")';
+}
 
 function injectHeader() {
   const headerHost = document.getElementById('siteHeader');
@@ -113,13 +114,11 @@ function setupMenu() {
     toggleMenu();
   });
 
-  // Close on outside click
   document.addEventListener('click', (e) => {
     const header = document.querySelector('.site-header');
     if (header && !header.contains(e.target)) closeMenu();
   });
 
-  // Close on Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeMenu();
   });
