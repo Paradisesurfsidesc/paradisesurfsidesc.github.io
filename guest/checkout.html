@@ -1,0 +1,103 @@
+<!-- guest/checkout.html -->
+<!-- Date - 2026-04-14 -->
+<!-- Version - 1.0.0 -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Checkout | Paradise Guest Guide</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/site.js" defer></script>
+
+  <style>
+    .checklist {
+      display: grid;
+      gap: .65rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      padding: .75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      font-size: .95rem;
+      line-height: 1.5;
+      cursor: pointer;
+      transition: background .18s ease;
+    }
+
+    .checklist li.done {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.3);
+      text-decoration: line-through;
+      opacity: .7;
+    }
+
+    .checklist li input[type="checkbox"] {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: #22c55e;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="Checkout checklist">
+
+      <div class="page-header">
+        <h1>✅ Checkout</h1>
+        <p>Check-out is at <strong>10:00 AM</strong>. Please complete the following before you leave. Tap each item to check it off.</p>
+      </div>
+
+      <div style="padding: 1rem 1.25rem 1.25rem;">
+        <ul class="checklist" id="checklist">
+          <li><input type="checkbox"> Remove all trash from the property and place in the appropriate bins outside.</li>
+          <li><input type="checkbox"> Clean and put away all dirty dishes or run the dishwasher.</li>
+          <li><input type="checkbox"> Close and lock all exterior doors and windows.</li>
+          <li><input type="checkbox"> Set thermostat to <strong>75°F (summer)</strong> or <strong>55°F (winter)</strong>.</li>
+          <li><input type="checkbox"> Put all towels and provided linens in the linen bag. Leave mattress pads, encasements, and comforters on the bed unless soiled — if soiled, place beside the linen bag.</li>
+          <li><input type="checkbox"> Clean the grill if used.</li>
+          <li><input type="checkbox"> Pick up any trash around the pool area.</li>
+          <li><input type="checkbox"> Turn off all lights, fans, and televisions.</li>
+          <li><input type="checkbox"> Log out of any personal streaming accounts on the Roku TVs.</li>
+          <li><input type="checkbox"> Double-check for personal belongings — we are not responsible for lost or left behind items.</li>
+          <li><input type="checkbox"> Lock all doors and return keys to the lockbox they were retrieved from.</li>
+        </ul>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="index.html">← Guest Guide</a>
+        <span style="color:var(--muted); font-size:.9rem;">Questions? Call 843-663-6063 option 2</span>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('#checklist li').forEach(li => {
+      const cb = li.querySelector('input[type="checkbox"]');
+      li.addEventListener('click', (e) => {
+        if (e.target !== cb) cb.checked = !cb.checked;
+        li.classList.toggle('done', cb.checked);
+      });
+    });
+  </script>
+
+</body>
+</html>
