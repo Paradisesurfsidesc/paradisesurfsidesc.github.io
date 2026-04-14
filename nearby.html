@@ -1,7 +1,7 @@
-<!-- nearby.html -->
-<!-- Date - 2026-02-03 -->
-<!-- Version - 1.0.0 -->
-<!-- Notes - Uses global /assets/styles.css + consistent header; subpage layout uses .page/.card/.tags -->
+<!-- things-to-do.html -->
+<!-- Date - 2026-04-14 -->
+<!-- Version - 2.2.0 -->
+<!-- Notes - Removed stay duration tags -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -9,89 +9,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Nearby | Paradise</title>
-
-  <link rel="stylesheet" href="/assets/styles.css">
+  <title>Nearby Places | Paradise</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
 </head>
 
 <body>
+  <header id="siteHeader"></header>
 
-<header>
-  <div class="topbar">
-    <div class="brand">Paradise</div>
+  <main>
+    <section class="page" aria-label="Nearby places and day trips">
 
-    <div class="header-actions">
-      <a
-        class="weather"
-        href="https://tempestwx.com/station/204460/grid"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Live on-site weather station (opens in a new tab)"
-        aria-label="View current on-site weather from the Paradise Tempest weather station"
-      >
-        <span>Current Weather</span>
-        <span>⛅</span>
-        <span>—</span>
-      </a>
+      <div class="page-header">
+        <h1>📍 Nearby Places & Day Trips</h1>
+        <p>Short drives. Big payoff. These are the easiest "let's go do something" options near Surfside.</p>
+      </div>
 
-      <button class="menu-btn" aria-label="Open menu">☰</button>
-    </div>
-  </div>
-</header>
+      <div class="grid">
 
-<main>
-  <section class="page" aria-label="Nearby places to explore">
-
-    <div class="page-header">
-      <h1>Nearby Places to Explore</h1>
-      <p>Short drives. Big payoff. Easy “let’s go do something” options near Surfside.</p>
-    </div>
-
-    <div class="grid">
-
-      <article class="card">
-        <h2>🏖️ Surfside Beach</h2>
-        <p>“The Family Beach” — relaxed, uncrowded, and easy. Great for beach days, walks, and a simple reset.</p>
-        <div class="tags">
-          <span class="tag quick">⚡ Great for 3-Day Stays</span>
+        <div class="card">
+          <h2>🌊 Murrells Inlet</h2>
+          <p>Historic fishing village and the Seafood Capital of South Carolina. MarshWalk sunsets, waterfront dining, and live music.</p>
         </div>
-      </article>
 
-      <article class="card">
-        <h2>🌊 Murrells Inlet</h2>
-        <p>MarshWalk sunsets, waterfront dining, and live music in the Seafood Capital of South Carolina.</p>
-        <div class="tags">
-          <span class="tag quick">⚡ Great for 3-Day Stays</span>
-          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        <div class="card">
+          <h2>🌾 Pawleys Island</h2>
+          <p>Lowcountry charm with quieter beaches and a slower pace. Home of the iconic rope hammocks and classic coastal scenery.</p>
         </div>
-      </article>
 
-      <article class="card">
-        <h2>🌾 Pawleys Island</h2>
-        <p>Lowcountry charm with quieter beaches and a slower pace. Iconic hammocks and classic coastal scenery.</p>
-        <div class="tags">
-          <span class="tag week">🗓️ Best if You’re Here All Week</span>
+        <div class="card">
+          <h2>🎡 Myrtle Beach</h2>
+          <p>Boardwalk energy, shopping, shows, mini golf, and nightlife — easy to visit without staying in the crowds.</p>
         </div>
-      </article>
 
-      <article class="card">
-        <h2>🎡 Myrtle Beach</h2>
-        <p>Boardwalk energy, shopping, shows, mini golf, and nightlife — easy to visit without staying in the crowds.</p>
-        <div class="tags">
-          <span class="tag quick">⚡ Great for 3-Day Stays</span>
-          <span class="tag week">🗓️ Perfect for Week Stays</span>
+        <div class="card">
+          <h2>🏙️ Conway</h2>
+          <p>A charming historic downtown with riverfront views, local shops, and restaurants along the Waccamaw River.</p>
         </div>
-      </article>
 
-    </div>
+        <div class="card">
+          <h2>⚓ Georgetown Waterfront</h2>
+          <p>One of South Carolina's oldest cities — beautiful waterfront, historic district, and great seafood spots.</p>
+        </div>
 
-    <div class="page-footer">
-      <a class="btn secondary" href="/index.html">← Home</a>
-      <a class="btn secondary" href="/things-to-do.html">Things To Do</a>
-    </div>
+        <div class="card">
+          <h2>🌿 Brookgreen Gardens</h2>
+          <p>America's first public sculpture garden — stunning outdoor art, wildlife preserve, and Lowcountry nature trails.</p>
+        </div>
 
-  </section>
-</main>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="plan-your-stay.html">← Plan Your Stay</a>
+      </div>
+
+    </section>
+  </main>
 
 </body>
 </html>
