@@ -1,7 +1,7 @@
 <!-- plan-your-stay.html -->
 <!-- Date - 2026-02-03 -->
-<!-- Version - 1.0.2 -->
-<!-- Notes - Normalized page: injected global header/menu/footer via assets/site.js; includes Weather & Tides card -->
+<!-- Version - 1.0.3 -->
+<!-- Notes - Removed all "3-Day / Week Stay" tags for cleaner UI -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -17,7 +17,6 @@
 
 <body>
 
-  <!-- ✅ Injected header + menu -->
   <header id="siteHeader"></header>
 
   <main>
@@ -36,10 +35,6 @@
         <article class="card">
           <h2>🍽️ Restaurants</h2>
           <p>Breakfast, seafood, casual spots, and family favorites — plus a few local “must tries.”</p>
-          <div class="tags">
-            <span class="tag quick">⚡ Great for 3-Day Stays</span>
-            <span class="tag week">🗓️ Perfect for Week Stays</span>
-          </div>
           <div style="margin-top:.6rem">
             <a class="btn secondary" href="restaurants.html">Open Restaurants</a>
           </div>
@@ -48,10 +43,6 @@
         <article class="card">
           <h2>🍺 Breweries & Craft Beer</h2>
           <p>Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.</p>
-          <div class="tags">
-            <span class="tag quick">⚡ Great for 3-Day Stays</span>
-            <span class="tag week">🗓️ Perfect for Week Stays</span>
-          </div>
           <div style="margin-top:.6rem">
             <a class="btn secondary" href="breweries.html">Open Breweries</a>
           </div>
@@ -60,10 +51,6 @@
         <article class="card">
           <h2>🧭 Things To Do</h2>
           <p>Nearby towns, attractions, state parks, mini golf, golf, shopping, and more.</p>
-          <div class="tags">
-            <span class="tag quick">⚡ Great for 3-Day Stays</span>
-            <span class="tag week">🗓️ Perfect for Week Stays</span>
-          </div>
           <div style="margin-top:.6rem">
             <a class="btn secondary" href="things-to-do.html">Open Things To Do</a>
           </div>
@@ -72,10 +59,6 @@
         <article class="card">
           <h2>🎉 Events This Week</h2>
           <p>What’s happening while you’re here — live music, shows, and annual events.</p>
-          <div class="tags">
-            <span class="tag quick">⚡ Great for 3-Day Stays</span>
-            <span class="tag week">🗓️ Perfect for Week Stays</span>
-          </div>
           <div style="margin-top:.6rem">
             <a class="btn secondary" href="events.html">Open Events</a>
           </div>
@@ -92,9 +75,6 @@
         <article class="card">
           <h2>📸 House Visuals</h2>
           <p>Explore the house — photos, videos, and floor plans.</p>
-          <div class="tags">
-            <span class="tag week">🗓️ Helpful for Week Stays</span>
-          </div>
           <div style="margin-top:.6rem; display:flex; gap:.6rem; flex-wrap:wrap">
             <a class="btn secondary" href="photos.html">Photos</a>
             <a class="btn secondary" href="videos.html">Videos</a>
@@ -105,10 +85,6 @@
         <article class="card">
           <h2>🏠 Paradise Info</h2>
           <p>House details, amenities, layout notes, and helpful info for a smooth stay.</p>
-          <div class="tags">
-            <span class="tag quick">⚡ Great for 3-Day Stays</span>
-            <span class="tag week">🗓️ Perfect for Week Stays</span>
-          </div>
           <div style="margin-top:.6rem">
             <a class="btn secondary" href="paradise-info.html">Open Paradise Info</a>
           </div>
@@ -116,7 +92,6 @@
 
       </div>
 
-      <!-- ✅ Consistent footer (subpages show ← Home automatically) -->
       <footer id="siteFooter"></footer>
 
     </section>
