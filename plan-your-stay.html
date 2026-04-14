@@ -1,7 +1,7 @@
 <!-- plan-your-stay.html -->
-<!-- Date - 2026-02-03 -->
-<!-- Version - 1.0.3 -->
-<!-- Notes - Removed all "3-Day / Week Stay" tags for cleaner UI -->
+<!-- Date - 2026-04-14 -->
+<!-- Version - 1.1.0 -->
+<!-- Notes - Fixed header overlap; converted cards to fully clickable links -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -13,10 +13,46 @@
 
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/site.js" defer></script>
+
+  <style>
+    /* Push content below fixed header */
+    main {
+      padding-top: 100px;
+    }
+
+    /* Clickable card */
+    a.card {
+      display: grid;
+      gap: .55rem;
+      text-decoration: none;
+      color: inherit;
+      transition: background .18s ease, border-color .18s ease, transform .18s ease;
+      cursor: pointer;
+    }
+
+    a.card:hover,
+    a.card:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: rgba(255,255,255,.3);
+      transform: translateY(-2px);
+    }
+
+    /* Multi-button card (House Visuals) */
+    .card-multi {
+      display: grid;
+      gap: .55rem;
+    }
+
+    .card-multi-btns {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-top: .25rem;
+    }
+  </style>
 </head>
 
 <body>
-
   <header id="siteHeader"></header>
 
   <main>
@@ -25,70 +61,53 @@
       <div class="page-header">
         <h1>Plan Your Stay</h1>
         <p>
-          Start here — quick answers, best local spots, and what to do while you’re in town.
-          Whether you’re here for a long weekend or a full week, these links will help you plan fast.
+          Start here — quick answers, best local spots, and what to do while you're in town.
+          Whether you're here for a long weekend or a full week, these links will help you plan fast.
         </p>
       </div>
 
       <div class="grid">
 
-        <article class="card">
+        <a class="card" href="restaurants.html">
           <h2>🍽️ Restaurants</h2>
-          <p>Breakfast, seafood, casual spots, and family favorites — plus a few local “must tries.”</p>
-          <div style="margin-top:.6rem">
-            <a class="btn secondary" href="restaurants.html">Open Restaurants</a>
-          </div>
-        </article>
+          <p>Breakfast, seafood, casual spots, and family favorites — plus a few local "must tries."</p>
+        </a>
 
-        <article class="card">
+        <a class="card" href="breweries.html">
           <h2>🍺 Breweries & Craft Beer</h2>
           <p>Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.</p>
-          <div style="margin-top:.6rem">
-            <a class="btn secondary" href="breweries.html">Open Breweries</a>
-          </div>
-        </article>
+        </a>
 
-        <article class="card">
+        <a class="card" href="things-to-do.html">
           <h2>🧭 Things To Do</h2>
           <p>Nearby towns, attractions, state parks, mini golf, golf, shopping, and more.</p>
-          <div style="margin-top:.6rem">
-            <a class="btn secondary" href="things-to-do.html">Open Things To Do</a>
-          </div>
-        </article>
+        </a>
 
-        <article class="card">
+        <a class="card" href="events.html">
           <h2>🎉 Events This Week</h2>
-          <p>What’s happening while you’re here — live music, shows, and annual events.</p>
-          <div style="margin-top:.6rem">
-            <a class="btn secondary" href="events.html">Open Events</a>
-          </div>
-        </article>
+          <p>What's happening while you're here — live music, shows, and annual events.</p>
+        </a>
 
-        <article class="card">
+        <a class="card" href="weather.html">
           <h2>🌊 Weather & Tides</h2>
           <p>Check the latest forecast, beach conditions, and tide timing.</p>
-          <div style="margin-top:.6rem">
-            <a class="btn secondary" href="weather.html">Open Weather</a>
-          </div>
-        </article>
+        </a>
 
-        <article class="card">
+        <!-- House Visuals has multiple destinations so stays as multi-button -->
+        <div class="card card-multi">
           <h2>📸 House Visuals</h2>
           <p>Explore the house — photos, videos, and floor plans.</p>
-          <div style="margin-top:.6rem; display:flex; gap:.6rem; flex-wrap:wrap">
+          <div class="card-multi-btns">
             <a class="btn secondary" href="photos.html">Photos</a>
             <a class="btn secondary" href="videos.html">Videos</a>
             <a class="btn secondary" href="floor-plans.html">Floor Plans</a>
           </div>
-        </article>
+        </div>
 
-        <article class="card">
+        <a class="card" href="paradise-info.html">
           <h2>🏠 Paradise Info</h2>
           <p>House details, amenities, layout notes, and helpful info for a smooth stay.</p>
-          <div style="margin-top:.6rem">
-            <a class="btn secondary" href="paradise-info.html">Open Paradise Info</a>
-          </div>
-        </article>
+        </a>
 
       </div>
 
