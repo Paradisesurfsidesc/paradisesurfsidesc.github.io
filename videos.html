@@ -1,46 +1,137 @@
-<!DOCTYPE html>
+<!-- videos.html -->
+<!-- Date - 2026-04-14 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Matched site shell to index.html; header/menu injected via assets/site.js; click-to-load video embed for faster initial page load -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Videos</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .video-container {
-            max-width: 800px;
-            width: 100%;
-            padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        iframe {
-            width: 100%;
-            height: 450px;
-            border-radius: 8px;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Paradise | Video</title>
+
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="preconnect" href="https://skyline-photography.aryeo.com">
+  <link rel="dns-prefetch" href="//skyline-photography.aryeo.com">
+  <script src="assets/site.js" defer></script>
+
+  <style>
+    .page-shell {
+      min-height: 100vh;
+      padding: 120px 20px 40px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .video-page-card {
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .video-page-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .video-page-header h1 {
+      margin-bottom: 10px;
+    }
+
+    .video-page-header p {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .video-frame-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .video-launch {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      text-align: center;
+      border: 0;
+      cursor: pointer;
+      color: inherit;
+      background:
+        linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)),
+        url('images/MAIN THUMBNAIL (2).jpg') center/cover no-repeat;
+    }
+
+    .video-launch .btn {
+      pointer-events: none;
+    }
+
+    .video-frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .video-note {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+  </style>
 </head>
+
 <body>
+  <header id="siteHeader"></header>
 
-    <div class="video-container">
+  <main class="page-shell">
+    <section class="video-page-card" aria-label="Property video section">
+      <div class="video-page-header">
         <h1>Property Video</h1>
-        <iframe src="https://skyline-photography.aryeo.com/videos/019be250-25c9-718f-bb3d-5673c45012f3" 
-                allow="autoplay; fullscreen; picture-in-picture" 
-                allowfullscreen>
-        </iframe>
-    </div>
+        <p>Watch a full video tour of Paradise.</p>
+      </div>
 
+      <div class="video-frame-wrap" id="videoContainer">
+        <button class="video-launch" id="loadVideoBtn" type="button" aria-label="Play property video">
+          <span class="btn primary">Play Video</span>
+          <span>Video loads on demand for a faster page experience.</span>
+        </button>
+      </div>
+
+      <p class="video-note">Tip: this page now loads faster because the external video player is only requested after you click Play.</p>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var btn = document.getElementById('loadVideoBtn');
+      var container = document.getElementById('videoContainer');
+
+      if (!btn || !container) return;
+
+      btn.addEventListener('click', function () {
+        container.innerHTML = [
+          '<iframe',
+          'src="https://skyline-photography.aryeo.com/videos/019be250-25c9-718f-bb3d-5673c45012f3"',
+          'title="Paradise Property Video"',
+          'loading="eager"',
+          'allow="autoplay; fullscreen; picture-in-picture"',
+          'allowfullscreen',
+          '></iframe>'
+        ].join(' ');
+      });
+    });
+  </script>
 </body>
 </html>
-
