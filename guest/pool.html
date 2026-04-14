@@ -13,9 +13,73 @@
   <meta name="robots" content="noindex">
   <link rel="stylesheet" href="../assets/styles.css">
   <script src="../assets/site.js" defer></script>
+
+  <style>
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-box {
+      background: #0f2235;
+      border: 2px solid rgba(239,68,68,.6);
+      border-radius: 22px;
+      padding: 2rem 1.5rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,.6);
+    }
+
+    .modal-box h2 {
+      color: #f87171;
+      margin: .5rem 0 1rem;
+      font-size: 1.5rem;
+    }
+
+    .modal-box p {
+      color: rgba(255,255,255,.85);
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 999px;
+      border: none;
+      background: #f87171;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity .18s ease;
+    }
+
+    .modal-btn:hover { opacity: .88; }
+  </style>
 </head>
 
 <body>
+  <!-- Acknowledgement Modal -->
+  <div class="modal-overlay" id="safetyModal">
+    <div class="modal-box">
+      <div style="font-size:3rem;">⚠️</div>
+      <h2>No Lifeguard on Duty</h2>
+      <p>There is <strong>no lifeguard on duty</strong> at this pool. All swimming is entirely <strong>at your own risk</strong>.</p>
+      <p>Children must be supervised by a responsible adult at all times. Never leave children unattended in or around the pool area.</p>
+      <p style="font-size:.9rem; color:rgba(255,255,255,.6);">By continuing you acknowledge that you have read and understood this safety notice.</p>
+      <button class="modal-btn" id="acknowledgeBtn">I Understand — Show Pool Info</button>
+    </div>
+  </div>
+
   <header id="siteHeader"></header>
 
   <main>
@@ -80,6 +144,12 @@
           </div>
 
           <div class="card">
+            <h2>🧂 Salt Water Pool</h2>
+            <p>Paradise features a <strong>salt water pool</strong> — gentler on skin, eyes, and hair than traditional chlorine pools. No harsh chemical smell and a noticeably softer swimming experience.</p>
+            <p>The salt system still sanitizes the water effectively — it's simply a more natural and comfortable way to swim.</p>
+          </div>
+
+          <div class="card">
             <h2>🔧 Pool Issues</h2>
             <p>For any pool issues during your stay contact Southern Coast Vacations:</p>
             <p><strong>843-663-6063 option 2</strong></p>
@@ -95,6 +165,17 @@
 
     </section>
   </main>
+  <script>
+    document.getElementById('acknowledgeBtn').addEventListener('click', () => {
+      document.getElementById('safetyModal').style.display = 'none';
+      sessionStorage.setItem('poolAcknowledged', 'true');
+    });
+
+    // Don't show again if already acknowledged this session
+    if (sessionStorage.getItem('poolAcknowledged') === 'true') {
+      document.getElementById('safetyModal').style.display = 'none';
+    }
+  </script>
 
 </body>
 </html>
