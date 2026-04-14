@@ -1,1 +1,416 @@
+<!-- photos.html -->
+<!-- Date - 2026-03-16 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Photo gallery page for Paradise using locally hosted images and existing global header/footer injection -->
+<!-- Author - David Taylor -->
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Photos | Paradise</title>
+
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+
+  <style>
+    .gallery-hero {
+      margin-bottom: 1.25rem;
+    }
+
+    .gallery-hero-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.25rem;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(8,16,28,.9), rgba(8,16,28,.72));
+      box-shadow: 0 18px 40px rgba(0,0,0,.28);
+    }
+
+    .gallery-hero-image {
+      display: block;
+      width: 100%;
+      max-height: 520px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .gallery-hero-overlay {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 1rem 1.1rem;
+      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.72));
+    }
+
+    .gallery-hero-overlay h2 {
+      margin: 0 0 .35rem 0;
+      font-size: clamp(1.3rem, 2vw, 2rem);
+    }
+
+    .gallery-hero-overlay p {
+      margin: 0;
+      max-width: 60ch;
+      color: rgba(255,255,255,.88);
+    }
+
+    .gallery-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin: 1rem 0 1.25rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .gallery-item {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.03);
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(0,0,0,.24);
+      border-color: rgba(255,255,255,.18);
+    }
+
+    .gallery-thumb {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      background: rgba(255,255,255,.04);
+    }
+
+    .gallery-caption {
+      padding: .8rem .9rem .95rem;
+    }
+
+    .gallery-caption h3 {
+      margin: 0 0 .25rem 0;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .gallery-caption p {
+      margin: 0;
+      color: rgba(255,255,255,.72);
+      font-size: .92rem;
+    }
+
+    .tour-card {
+      margin-top: 1.25rem;
+      padding: 1rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.03);
+    }
+
+    .tour-card h2 {
+      margin-top: 0;
+      margin-bottom: .4rem;
+    }
+
+    .tour-card p {
+      margin-top: 0;
+      margin-bottom: .8rem;
+    }
+
+    .notes {
+      margin-top: 1rem;
+      color: rgba(255,255,255,.7);
+      font-size: .92rem;
+    }
+
+    @media (max-width: 980px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-hero-overlay p {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="Paradise photo gallery">
+
+      <div class="page-header">
+        <h1>Photo Gallery</h1>
+        <p>
+          Browse Paradise inside and out — exterior views, balconies, pool area, beach proximity,
+          and interior spaces throughout the home.
+        </p>
+      </div>
+
+      <section class="gallery-hero" aria-label="Featured photo">
+        <div class="gallery-hero-card">
+          <img
+            class="gallery-hero-image"
+            src="images/2-web-or-mls-0.jpg"
+            alt="Paradise Surfside exterior at dusk">
+          <div class="gallery-hero-overlay">
+            <h2>Paradise at Dusk</h2>
+            <p>
+              A signature exterior view of the home and one of the strongest first-impression images in the gallery.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="gallery-actions">
+        <a class="btn secondary" href="https://skyline-photography.aryeo.com/sites/714b-south-ocean-blvd-surfside-beach-sc-21639184/unbranded#" target="_blank" rel="noopener">
+          Open Full Interactive Tour
+        </a>
+        <a class="btn secondary" href="videos.html">View Videos</a>
+        <a class="btn secondary" href="floor-plans.html">View Floor Plans</a>
+      </div>
+
+      <section class="gallery-grid" aria-label="Paradise photo thumbnails">
+
+        <a class="gallery-item" href="images/3-web-or-mls-1.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/3-web-or-mls-1.jpg" alt="Paradise exterior daytime front view">
+          <div class="gallery-caption">
+            <h3>Exterior Front</h3>
+            <p>Daytime curb view of the home.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/29.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/29.JPG" alt="Paradise exterior property view">
+          <div class="gallery-caption">
+            <h3>Property Exterior</h3>
+            <p>Wide exterior perspective of the property.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/30.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/30.JPG" alt="Paradise balcony or exterior neighborhood view">
+          <div class="gallery-caption">
+            <h3>Neighborhood View</h3>
+            <p>Open view from the property toward the surrounding area.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/31.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/31.jpg" alt="Paradise pool and outdoor area">
+          <div class="gallery-caption">
+            <h3>Pool Area</h3>
+            <p>Shared outdoor pool and seating area.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/35.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/35.jpg" alt="Paradise balcony with seating">
+          <div class="gallery-caption">
+            <h3>Balcony Seating</h3>
+            <p>Relaxed outdoor space for morning coffee or evening wind-down.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/41.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/41.JPG" alt="Aerial view near Paradise Surfside">
+          <div class="gallery-caption">
+            <h3>Aerial View</h3>
+            <p>Property location and surrounding coastal area.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/44.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/44.JPG" alt="Beach and ocean aerial view near Paradise">
+          <div class="gallery-caption">
+            <h3>Beach Proximity</h3>
+            <p>Coastline and beach access perspective.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/4-web-or-mls-3.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/4-web-or-mls-3.jpg" alt="Paradise living room">
+          <div class="gallery-caption">
+            <h3>Living Area</h3>
+            <p>Main living room with open seating layout.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/6.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/6.jpeg" alt="Paradise open living and dining space">
+          <div class="gallery-caption">
+            <h3>Open Living Space</h3>
+            <p>Bright main area connecting seating and dining.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/7.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/7.jpeg" alt="Paradise dining space">
+          <div class="gallery-caption">
+            <h3>Dining Area</h3>
+            <p>Gathering space for meals and group seating.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/10-web-or-mls-6.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/10-web-or-mls-6.jpeg" alt="Paradise kitchen">
+          <div class="gallery-caption">
+            <h3>Kitchen</h3>
+            <p>Clean, bright kitchen with prep and storage space.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/11-web-or-mls-7.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/11-web-or-mls-7.jpeg" alt="Paradise kitchen alternate view">
+          <div class="gallery-caption">
+            <h3>Kitchen View 2</h3>
+            <p>Alternate kitchen angle with additional detail.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/14-web-or-mls-10.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/14-web-or-mls-10.jpeg" alt="Paradise bedroom">
+          <div class="gallery-caption">
+            <h3>Bedroom</h3>
+            <p>Comfortable sleeping space with coastal styling.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/15-web-or-mls-11.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/15-web-or-mls-11.jpeg" alt="Paradise bedroom alternate view">
+          <div class="gallery-caption">
+            <h3>Bedroom View 2</h3>
+            <p>Additional bedroom angle and layout view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/16-web-or-mls-12a.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/16-web-or-mls-12a.jpg" alt="Paradise bathroom">
+          <div class="gallery-caption">
+            <h3>Bathroom</h3>
+            <p>Clean bath space with bright finishes.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/17-web-or-mls-13.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/17-web-or-mls-13.jpeg" alt="Paradise shower or bathroom detail">
+          <div class="gallery-caption">
+            <h3>Bath Detail</h3>
+            <p>Additional bathroom or shower detail.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/18-web-or-mls-14.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/18-web-or-mls-14.jpeg" alt="Paradise bedroom or bunk room">
+          <div class="gallery-caption">
+            <h3>Guest Room</h3>
+            <p>Additional sleeping space for guests or kids.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/19-web-or-mls-15.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/19-web-or-mls-15.jpeg" alt="Paradise bedroom setup">
+          <div class="gallery-caption">
+            <h3>Bedroom View 3</h3>
+            <p>Another bedroom setup and furnishing view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/20-web-or-mls-16.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/20-web-or-mls-16.jpeg" alt="Paradise bedroom detail">
+          <div class="gallery-caption">
+            <h3>Bedroom Detail</h3>
+            <p>Additional sleeping arrangement detail.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/21-web-or-mls-17.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/21-web-or-mls-17.jpeg" alt="Paradise bathroom mirror and sink area">
+          <div class="gallery-caption">
+            <h3>Bath Vanity</h3>
+            <p>Sink, mirror, and bathroom finish detail.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/22-web-or-mls-18.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/22-web-or-mls-18.jpeg" alt="Paradise bathroom or hallway area">
+          <div class="gallery-caption">
+            <h3>Interior Detail</h3>
+            <p>Additional interior finish and layout view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/23-web-or-mls-19.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/23-web-or-mls-19.jpeg" alt="Paradise bedroom with twin beds or bunks">
+          <div class="gallery-caption">
+            <h3>Guest Sleeping Area</h3>
+            <p>Flexible sleeping arrangements for groups.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/24-web-or-mls-20.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/24-web-or-mls-20.jpeg" alt="Paradise bedroom corner detail">
+          <div class="gallery-caption">
+            <h3>Bedroom Corner</h3>
+            <p>Additional room perspective and details.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/25-web-or-mls-21.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/25-web-or-mls-21.jpg" alt="Paradise bath or sink detail">
+          <div class="gallery-caption">
+            <h3>Bathroom Detail</h3>
+            <p>Clean finish detail from one of the baths.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/26-web-or-mls-22.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/26-web-or-mls-22.jpg" alt="Paradise bunk room">
+          <div class="gallery-caption">
+            <h3>Bunk Room</h3>
+            <p>Built-in sleeping space for kids or groups.</p>
+          </div>
+        </a>
+
+      </section>
+
+      <section class="tour-card" aria-label="Interactive tour link">
+        <h2>Want the full interactive experience?</h2>
+        <p>
+          For the complete hosted gallery and tour experience, use the interactive photo tour below.
+        </p>
+        <a class="btn secondary" href="https://skyline-photography.aryeo.com/sites/714b-south-ocean-blvd-surfside-beach-sc-21639184/unbranded#" target="_blank" rel="noopener">
+          Open Full Interactive Tour
+        </a>
+
+        <p class="notes">
+          Note: This page hosts the main Paradise photo gallery directly on your site for better branding and reliability.
+        </p>
+      </section>
+
+      <footer id="siteFooter"></footer>
+
+    </section>
+  </main>
+
+</body>
+</html>
