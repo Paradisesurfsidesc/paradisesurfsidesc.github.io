@@ -14,7 +14,42 @@
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/site.js" defer></script>
 
+  <style>
+    /* Push content below fixed header */
+    main {
+      padding-top: 100px;
+    }
 
+    /* Clickable card */
+    a.card {
+      display: grid;
+      gap: .55rem;
+      text-decoration: none;
+      color: inherit;
+      transition: background .18s ease, border-color .18s ease, transform .18s ease;
+      cursor: pointer;
+    }
+
+    a.card:hover,
+    a.card:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: rgba(255,255,255,.3);
+      transform: translateY(-2px);
+    }
+
+    /* Multi-button card (House Visuals) */
+    .card-multi {
+      display: grid;
+      gap: .55rem;
+    }
+
+    .card-multi-btns {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-top: .25rem;
+    }
+  </style>
 </head>
 
 <body>
@@ -39,17 +74,17 @@
         </a>
 
         <a class="card" href="breweries.html">
-          <h2>🍺 Local Breweries</h2>
-          <p>Enjoy local breweries on the Myrtle Beach Beer Trail — great for post-beach and rainy days.</p>
+          <h2>🍺 Breweries & Craft Beer</h2>
+          <p>Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.</p>
         </a>
 
-        <a class="card" href="nearby.html">
-          <h2>🧭 Nearby</h2>
+        <a class="card" href="things-to-do.html">
+          <h2>🧭 Things To Do</h2>
           <p>Nearby towns, attractions, state parks, mini golf, golf, shopping, and more.</p>
         </a>
 
         <a class="card" href="https://www.visitsurfsidebeach.com/" target="_blank" rel="noopener noreferrer">
-          <h2>🗺️ Surfside Beach Visitor Guide</h2>
+          <h2>🎉 Events This Week</h2>
           <p>What's happening while you're here — live music, shows, and annual events.</p>
         </a>
 
