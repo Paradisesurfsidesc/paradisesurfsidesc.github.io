@@ -394,7 +394,6 @@ main{
   box-shadow: var(--shadow);
   overflow:hidden;
   margin-top: 8px;       /* just a touch below the header */
-  border-radius: 26px;   /* matches hero card radius */
 }
 
 .page-header{
