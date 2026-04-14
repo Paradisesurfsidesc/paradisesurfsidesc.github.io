@@ -1,12 +1,11 @@
 // site.js
 // Date - 2026-04-14
-// Version - 1.2.0
-// Notes - Restored hamburger overlay menu, live weather chip support, Paradise logo switching, simplified top nav
+// Version - 1.3.0
+// Notes - Aligned with styles.css v1.2.0; replaced overlay menu with .site-menu dropdown; fixed header class injection
 // Author - David Taylor
 
 document.addEventListener('DOMContentLoaded', () => {
   injectHeader();
-  injectMenuOverlay();
   setupMenu();
   applyHeaderTheme();
   setupScrollTheme();
@@ -18,8 +17,8 @@ function injectHeader() {
   if (!headerHost) return;
 
   headerHost.innerHTML = `
-    <div class="topbar">
-      <a class="brand" href="index.html" aria-label="Paradise home">
+    <div class="site-header is-dark">
+      <a class="site-brand" href="index.html" aria-label="Paradise home">
         <img
           class="site-logo logo-dark"
           src="images/Paradise.png"
@@ -36,7 +35,7 @@ function injectHeader() {
         >
       </a>
 
-      <div class="header-actions">
+      <div class="site-header-actions">
         <a
           class="weather"
           id="weatherChip"
@@ -46,151 +45,98 @@ function injectHeader() {
           aria-label="Live weather for Surfside Beach"
         >
           <span id="weatherTemp">--°</span>
-          <span id="weatherCond">Loading</span>
+          <span id="weatherCond">Live Weather</span>
         </a>
 
         <button
-          class="menu-btn"
+          class="menu-toggle"
           id="menuBtn"
           type="button"
           aria-label="Open menu"
           aria-expanded="false"
-          aria-controls="menuOverlay"
+          aria-controls="siteMenu"
         >
           ☰
         </button>
       </div>
-    </div>
-  `;
-}
 
-function injectMenuOverlay() {
-  if (document.getElementById('menuOverlay')) return;
-
-  const overlay = document.createElement('div');
-  overlay.id = 'menuOverlay';
-  overlay.className = 'menu-overlay';
-  overlay.setAttribute('aria-hidden', 'true');
-
-  overlay.innerHTML = `
-    <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Site menu">
-      <div class="menu-head">
-        <h2 class="menu-title">Menu</h2>
-        <button class="menu-close" id="menuClose" type="button" aria-label="Close menu">✕</button>
-      </div>
-
-      <div class="menu-grid">
-        <a class="menu-link" href="index.html">
-          <span>
-            Home
-            <span class="menu-sub">Return to the main page</span>
-          </span>
-          <span>›</span>
-        </a>
-
-        <a class="menu-link" href="paradise-info.html">
-          <span>
-            Paradise Info
-            <span class="menu-sub">House details, photos, floor plan, and video</span>
-          </span>
-          <span>›</span>
-        </a>
-
-        <a class="menu-link" href="plan-your-stay.html">
-          <span>
-            Plan Your Stay
-            <span class="menu-sub">Things to do, events, dining, and local tips</span>
-          </span>
-          <span>›</span>
-        </a>
-
+      <nav class="site-menu" id="siteMenu" aria-label="Site navigation">
+        <a href="index.html">Home <span>›</span></a>
+        <a href="paradise-info.html">Paradise Info <span>›</span></a>
+        <a href="plan-your-stay.html">Plan Your Stay <span>›</span></a>
         <a
-          class="menu-link"
           href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          <span>
-            Book Now
-            <span class="menu-sub">Reserve your stay</span>
-          </span>
-          <span>↗</span>
-        </a>
-      </div>
-
-      <div class="menu-foot">
-        <span>Surfside Beach, SC</span>
-        <span>Paradise</span>
-      </div>
+        >Book Now <span>↗</span></a>
+      </nav>
     </div>
   `;
-
-  document.body.appendChild(overlay);
 }
 
 function setupMenu() {
   const menuBtn = document.getElementById('menuBtn');
-  const menuClose = document.getElementById('menuClose');
-  const menuOverlay = document.getElementById('menuOverlay');
+  const siteMenu = document.getElementById('siteMenu');
 
-  if (!menuBtn || !menuClose || !menuOverlay) return;
+  if (!menuBtn || !siteMenu) return;
 
   function openMenu() {
-    menuOverlay.classList.add('open');
-    menuOverlay.setAttribute('aria-hidden', 'false');
+    siteMenu.classList.add('is-open');
     menuBtn.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
+    menuBtn.setAttribute('aria-label', 'Close menu');
   }
 
   function closeMenu() {
-    menuOverlay.classList.remove('open');
-    menuOverlay.setAttribute('aria-hidden', 'true');
+    siteMenu.classList.remove('is-open');
     menuBtn.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+    menuBtn.setAttribute('aria-label', 'Open menu');
   }
 
-  menuBtn.addEventListener('click', openMenu);
-  menuClose.addEventListener('click', closeMenu);
+  function toggleMenu() {
+    siteMenu.classList.contains('is-open') ? closeMenu() : openMenu();
+  }
 
-  menuOverlay.addEventListener('click', (event) => {
-    if (event.target === menuOverlay) closeMenu();
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu();
   });
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && menuOverlay.classList.contains('open')) {
-      closeMenu();
-    }
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    const header = document.querySelector('.site-header');
+    if (header && !header.contains(e.target)) closeMenu();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
   });
 }
 
 function applyHeaderTheme() {
-  const header = document.querySelector('header');
-  if (!header) return;
+  const siteHeader = document.querySelector('.site-header');
+  if (!siteHeader) return;
 
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  const darkPages = ['index.html', 'videos.html'];
+  const page = window.location.pathname.split('/').pop() || 'index.html';
+  const isHeroPage = ['index.html', ''].includes(page);
 
-  header.classList.toggle('is-dark', darkPages.includes(currentPage));
+  if (!isHeroPage) {
+    siteHeader.classList.remove('is-dark');
+    siteHeader.classList.add('is-solid');
+  }
 }
 
 function setupScrollTheme() {
-  const header = document.querySelector('header');
+  const siteHeader = document.querySelector('.site-header');
   const hero = document.querySelector('.hero');
 
-  if (!header) return;
-
-  if (!hero) {
-    header.classList.remove('is-dark');
-    header.classList.add('is-solid');
-    return;
-  }
+  if (!siteHeader || !hero) return;
 
   function updateTheme() {
     const triggerPoint = Math.max(hero.offsetHeight - 100, 120);
-    const useDarkLogo = window.scrollY < triggerPoint;
-
-    header.classList.toggle('is-dark', useDarkLogo);
-    header.classList.toggle('is-solid', window.scrollY > 20 || !useDarkLogo);
+    const pastHero = window.scrollY >= triggerPoint;
+    siteHeader.classList.toggle('is-dark', !pastHero);
+    siteHeader.classList.toggle('is-solid', pastHero);
   }
 
   updateTheme();
@@ -205,24 +151,14 @@ async function loadWeather() {
   if (!tempEl || !condEl) return;
 
   try {
-    // Replace this URL with your secure weather endpoint if you have one.
-    // Do NOT put your private Tempest API token directly into public site.js.
     const response = await fetch('assets/weather.json', { cache: 'no-store' });
-
-    if (!response.ok) {
-      throw new Error(`Weather request failed: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Status ${response.status}`);
 
     const data = await response.json();
-
-    const temp = typeof data.tempF === 'number' ? `${Math.round(data.tempF)}°` : '--°';
-    const cond = data.condition || 'Live Weather';
-
-    tempEl.textContent = temp;
-    condEl.textContent = cond;
-  } catch (error) {
+    tempEl.textContent = typeof data.tempF === 'number' ? `${Math.round(data.tempF)}°` : '--°';
+    condEl.textContent = data.condition || 'Live Weather';
+  } catch {
     tempEl.textContent = '--°';
     condEl.textContent = 'Live Weather';
-    console.warn('Weather load failed:', error);
   }
 }
