@@ -1,7 +1,7 @@
 <!-- index.html -->
 <!-- Date - 2026-04-14 -->
-<!-- Version - 1.1.2 -->
-<!-- Notes - Added favicon/app icon links; header/menu injected via assets/site.js; hero remains pinned -->
+<!-- Version - 1.1.3 -->
+<!-- Notes - Added SEO meta tags, Open Graph, and Twitter Card -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -9,22 +9,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Paradise</title>
 
-  <link rel="stylesheet" href="assets/styles.css">
+  <!-- Primary SEO -->
+  <title>Paradise | Vacation Rental | Surfside Beach, SC</title>
+  <meta name="description" content="Paradise is a beautiful vacation rental in Surfside Beach, SC — steps from the beach with a private pool, spacious layout, and everything you need for a perfect coastal getaway.">
+  <meta name="keywords" content="Surfside Beach vacation rental, Paradise Surfside Beach, Myrtle Beach vacation home, beach house rental SC, family beach rental South Carolina">
+  <link rel="canonical" href="https://paradisesurfsidesc.com/">
 
+  <!-- Open Graph (Facebook, iMessage, etc.) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://paradisesurfsidesc.com/">
+  <meta property="og:title" content="Paradise | Vacation Rental | Surfside Beach, SC">
+  <meta property="og:description" content="A beautiful beach house rental in Surfside Beach, SC with a private pool, spacious rooms, and easy beach access. Book your stay today.">
+  <meta property="og:image" content="https://paradisesurfsidesc.com/images/1-web-or-mls-MAIN THUMBNAIL.jpg">
+  <meta property="og:site_name" content="Paradise Surfside Beach">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Paradise | Vacation Rental | Surfside Beach, SC">
+  <meta name="twitter:description" content="A beautiful beach house rental in Surfside Beach, SC with a private pool, spacious rooms, and easy beach access.">
+  <meta name="twitter:image" content="https://paradisesurfsidesc.com/images/1-web-or-mls-MAIN THUMBNAIL.jpg">
+
+  <!-- Favicons -->
   <link rel="icon" href="images/icons/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="images/icons/paradise-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/icons/paradise-16.png">
   <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
   <link rel="manifest" href="images/icons/site.webmanifest">
 
+  <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/site.js" defer></script>
 </head>
 
 <body>
-
-  <!-- Injected header + menu will render here -->
   <header id="siteHeader"></header>
 
   <main>
@@ -35,7 +53,8 @@
         <div class="hero-top">
           <h1>Your<br>Vacation Awaits</h1>
           <p>
-            Everything you need for a relaxing vacation.
+            Everything you need for a relaxing vacation,
+            local events, and recommendations.
           </p>
         </div>
 
@@ -50,7 +69,7 @@
 
           <div class="footer">
             <div class="footer-row">
-              <div>Version 1.1.2</div>
+              <div>Version 1.1.3</div>
               <div>Surfside Beach, SC</div>
               <div style="text-align:right">Last updated: Apr 2026</div>
             </div>
