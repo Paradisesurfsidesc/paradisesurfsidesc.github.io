@@ -60,7 +60,7 @@ img{
   display:flex;
   justify-content:center;
   margin-bottom: 8px;
-  height: 90px;  /* ← add this — matches the fixed header height */
+  height: 110px;  /* ← add this — matches the fixed header height */
 }
 
 .site-header{
