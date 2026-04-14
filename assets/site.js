@@ -57,6 +57,7 @@ function injectHeader() {
           rel="noopener noreferrer"
           aria-label="Live weather for Surfside Beach"
         >
+          <span id="weatherIcon">⛅</span>
           <span id="weatherTemp">--°</span>
           <span id="weatherCond">Live Weather</span>
         </a>
@@ -77,6 +78,7 @@ function injectHeader() {
         <a href="index.html">Home <span>›</span></a>
         <a href="paradise-info.html">Paradise Info <span>›</span></a>
         <a href="plan-your-stay.html">Plan Your Stay <span>›</span></a>
+        <a href="signup.html">📧 Stay in the Loop <span>›</span></a>
         <a
           href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
           target="_blank"
@@ -168,9 +170,11 @@ async function loadWeather() {
     const data = await response.json();
     if (!data || data.ok !== true) throw new Error('Bad payload');
 
+    const iconEl = document.getElementById('weatherIcon');
     const temp = Number.isFinite(Number(data.temp_f)) ? `${Math.round(data.temp_f)}°` : '--°';
     tempEl.textContent = temp;
     condEl.textContent = data.condition || 'Live Weather';
+    if (iconEl) iconEl.textContent = data.icon || '⛅';
   } catch {
     tempEl.textContent = '--°';
     condEl.textContent = 'Live Weather';
