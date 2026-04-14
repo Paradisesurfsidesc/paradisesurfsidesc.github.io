@@ -89,11 +89,11 @@ img{
   backdrop-filter:none;
 }
 
-.site-header.is-solid{
-  background:var(--surface);
-  backdrop-filter:blur(10px);
-  box-shadow:var(--shadow);
-  border-radius:0 0 18px 18px;
+.site-header.is-solid {
+  background: rgba(15, 55, 95, 0.96);  /* brighter blue vs the near-black before */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  border-radius: 0 0 18px 18px;
 }
 
 .site-brand{
