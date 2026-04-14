@@ -492,10 +492,10 @@ header.is-dark .logo-light {
 }
 
 .site-brand {
-  display: inline-flex;
+.site-brand {
+  display: flex;
   align-items: center;
-  text-decoration: none;
-  min-width: 0;
+  overflow: hidden;
 }
 
 .site-logo {
@@ -560,14 +560,14 @@ main {
   margin-top: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .site-header {
     flex-wrap: wrap;
   }
 
   .site-logo {
-    height: 44px;
-    max-width: 65vw;
+    height: 36px;
+    max-width:180px;
   }
 
   .site-menu {
