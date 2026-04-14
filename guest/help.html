@@ -92,7 +92,7 @@
     <section class="page" aria-label="Help and contacts">
 
       <div class="page-header">
-        <h1>🆘 Help & Contacts</h1>
+        <h1>🙋 Help & Contacts</h1>
         <p>Need assistance? Contact Southern Coast Vacations or submit a maintenance request below.</p>
       </div>
 
@@ -107,8 +107,19 @@
         </div>
 
         <div class="card">
-          <h2>🚨 After Hours Emergency</h2>
-          <p>Call <a href="tel:18436636063" style="color:var(--accent)">843-663-6063</a> and listen for the emergency prompt.</p>
+          <h2>🚨 Emergency</h2>
+          <p style="font-size:1.1rem; font-weight:800; color:#f87171;">In any emergency dial <a href="tel:911" style="color:#f87171;">911</a></p>
+        </div>
+
+        <div class="card">
+          <h2>🚔 Non-Emergency Numbers</h2>
+          <p><strong>Police Dispatch:</strong> <a href="tel:8439136368" style="color:var(--accent)">843-913-6368</a></p>
+          <p><strong>Fire Department:</strong> <a href="tel:8439136369" style="color:var(--accent)">843-913-6369</a></p>
+          <p><strong>Fire Marshal:</strong> <a href="tel:8439136352" style="color:var(--accent)">843-913-6352</a></p>
+          <p><strong>Public Works:</strong> <a href="tel:8439136360" style="color:var(--accent)">843-913-6360</a></p>
+          <p><strong>Power Outages (Santee Cooper):</strong> <a href="tel:8887697688" style="color:var(--accent)">888-769-7688</a></p>
+          <p><strong>Lost Children:</strong> <a href="tel:8439136368" style="color:var(--accent)">843-913-6368</a></p>
+          <p><strong>Beach Wheelchairs:</strong> <a href="tel:8439136368" style="color:var(--accent)">843-913-6368</a> (8am–5pm)</p>
         </div>
 
         <div class="card">
@@ -168,6 +179,7 @@
 
       <div class="page-footer">
         <a class="btn secondary" href="index.html">← Guest Guide</a>
+        <p style="font-size:.8rem; color:rgba(255,255,255,.45); margin:0; text-align:right;">*All information provided as a courtesy only. Paradise LLC is not responsible for delayed, incorrect, or missing data. Always dial 911 in an emergency.</p>
       </div>
 
     </section>
@@ -192,7 +204,7 @@
       // Uses Formspree — replace YOUR_FORM_ID with your Formspree form ID
       // Sign up free at formspree.io and create a form pointed at stay@southerncoastvacations.com + paradise.surfsidesc@gmail.com
       try {
-        const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+        const res = await fetch('https://formspree.io/f/xaqanvoa', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
