@@ -162,14 +162,20 @@ async function loadWeather() {
   if (!tempEl || !condEl) return;
 
   try {
-    const response = await fetch('assets/weather.json', { cache: 'no-store' });
+    const response = await fetch('https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather', { cache: 'no-store' });
     if (!response.ok) throw new Error(`Status ${response.status}`);
 
     const data = await response.json();
-    tempEl.textContent = typeof data.tempF === 'number' ? `${Math.round(data.tempF)}°` : '--°';
+    if (!data || data.ok !== true) throw new Error('Bad payload');
+
+    const temp = Number.isFinite(Number(data.temp_f)) ? `${Math.round(data.temp_f)}°` : '--°';
+    tempEl.textContent = temp;
     condEl.textContent = data.condition || 'Live Weather';
   } catch {
     tempEl.textContent = '--°';
     condEl.textContent = 'Live Weather';
   }
+
+  // Refresh every 5 minutes
+  setTimeout(loadWeather, 5 * 60 * 1000);
 }
