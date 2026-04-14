@@ -666,8 +666,3 @@ a.card:focus-visible {
     max-width:190px;
   }
 }
-/* Prevent fixed header from overlapping page content */
-.page {
-  margin-top: 0;
-  border-radius: 0 0 26px 26px;
-}
