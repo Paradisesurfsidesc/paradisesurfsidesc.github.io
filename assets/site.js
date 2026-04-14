@@ -9,7 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMenu();
   applyHeaderTheme();
   setupScrollTheme();
+  applyHeroImage();
   loadWeather();
+  
+function applyHeroImage() {
+  const heroBg = document.querySelector('.hero-bg');
+  if (!heroBg) return;
+
+  const hour = new Date().getHours(); // 0–23, user's local time
+  const isNight = hour < 7 || hour >= 19; // night = before 7am or after 7pm
+
+  heroBg.style.backgroundImage = isNight
+    ? 'url("images/night.jpg")'  // twilight/dusk shot
+    : 'url("images/day.jpg")'; // bright daytime shot
 });
 
 function injectHeader() {
