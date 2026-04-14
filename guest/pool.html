@@ -1,6 +1,7 @@
 <!-- guest/pool.html -->
 <!-- Date - 2026-04-14 -->
-<!-- Version - 1.0.0 -->
+<!-- Version - 1.1.0 -->
+<!-- Notes - Restructured layout: warning banner, hours, then rules/heat side by side -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -22,30 +23,36 @@
 
       <div class="page-header">
         <h1>🏊 Pool</h1>
-        <p>Your private heated and cooled pool — enjoy it any time during your stay.</p>
+        <p>Your private heated and cooled pool — enjoy it during your stay.</p>
       </div>
 
-      <div class="grid">
-
-        <div class="card">
-          <h2>🌡️ Heat & Cool</h2>
-          <p>The pool is equipped with a <strong>heat pump</strong> for heating and cooling. Temperature changes are <strong>not instant</strong> — please allow several hours for the pool to reach your desired temperature.</p>
-          <p><strong>Important:</strong> Pool heating and cooling is an <strong>additional charge</strong>. The temperature is <strong>locked and controlled exclusively by Southern Coast Vacations</strong>. Guests may not adjust pool equipment or settings.</p>
-          <p>For temperature concerns contact Southern Coast at <strong>843-663-6063 option 2</strong>.</p>
+      <!-- No Lifeguard Banner -->
+      <div style="padding: 1rem 1.25rem 0;">
+        <div style="
+          background: rgba(239,68,68,.15);
+          border: 2px solid rgba(239,68,68,.6);
+          border-radius: 18px;
+          padding: 1.25rem 1.5rem;
+          text-align: center;
+        ">
+          <div style="font-size: 2.5rem; margin-bottom: .5rem;">⚠️</div>
+          <h2 style="margin: 0 0 .5rem; font-size: 1.5rem; color: #f87171;">No Lifeguard on Duty</h2>
+          <p style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">All swimming is at your own risk. Children must be supervised by a responsible adult at all times. Never leave children unattended in or around the pool.</p>
         </div>
+      </div>
 
-        <div class="card" style="border-color: rgba(239,68,68,.5); background: rgba(239,68,68,.1);">
-          <h2>⚠️ No Lifeguard on Duty</h2>
-          <p><strong>There is no lifeguard on duty at this pool. All swimming is at your own risk.</strong></p>
-          <p>Children must be supervised by a responsible adult at all times. Never leave children unattended in or around the pool.</p>
-        </div>
-
+      <!-- Hours — full width -->
+      <div style="padding: 1rem 1.25rem 0;">
         <div class="card">
           <h2>🕐 Hours</h2>
           <p><strong>Open:</strong> 8:00 AM (approximate — please confirm with Southern Coast)</p>
-          <p><strong>Close:</strong> 11:00 PM</p>
-          <p>Please be respectful of neighbors during evening hours. No pool use after 11:00 PM.</p>
+          <p><strong>Close:</strong> 11:00 PM · No pool use after 11:00 PM</p>
+          <p>Please be respectful of neighbors during evening hours.</p>
         </div>
+      </div>
+
+      <!-- Pool Rules + Heat & Cool side by side -->
+      <div class="grid" style="padding-top: 1rem;">
 
         <div class="card">
           <h2>📋 Pool Rules</h2>
@@ -61,14 +68,23 @@
           <p>• No pool use after 11:00 PM</p>
           <p>• Keep noise to a minimum during evening hours</p>
           <p>• Pick up all trash around the pool area throughout your stay</p>
-          <p>• <strong>Do not tamper with or attempt to adjust any pool equipment.</strong> All pool equipment is managed exclusively by Southern Coast Vacations — contact them for any issues at <strong>843-663-6063 option 2</strong></p>
+          <p>• <strong>Do not tamper with or attempt to adjust any pool equipment.</strong> All pool equipment is managed exclusively by Southern Coast Vacations</p>
         </div>
 
-        <div class="card">
-          <h2>🔧 Pool Issues</h2>
-          <p>For any pool issues during your stay, contact Southern Coast Vacations directly:</p>
-          <p><strong>843-663-6063 option 2</strong></p>
-          <p>Or submit a <a href="help.html" style="color:var(--accent)">maintenance request</a>.</p>
+        <div style="display: grid; gap: .9rem; align-content: start;">
+          <div class="card">
+            <h2>🌡️ Heat & Cool</h2>
+            <p>The pool is equipped with a <strong>heat pump</strong>. Temperature changes are <strong>not instant</strong> — please allow several hours for the pool to reach your desired temperature.</p>
+            <p><strong>Important:</strong> Pool heating and cooling is an <strong>additional charge</strong>. The temperature is <strong>locked and controlled exclusively by Southern Coast Vacations</strong>. Guests may not adjust pool equipment or settings.</p>
+            <p>For concerns contact Southern Coast at <strong>843-663-6063 option 2</strong>.</p>
+          </div>
+
+          <div class="card">
+            <h2>🔧 Pool Issues</h2>
+            <p>For any pool issues during your stay contact Southern Coast Vacations:</p>
+            <p><strong>843-663-6063 option 2</strong></p>
+            <p>Or submit a <a href="help.html" style="color:var(--accent)">maintenance request</a>.</p>
+          </div>
         </div>
 
       </div>
