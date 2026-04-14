@@ -103,9 +103,9 @@ img{
 
 .site-logo{
   display:block;
-  height:48px;
+  height:56px;
   width:auto;
-  max-width:260px;
+  max-width:300px;
 }
 
 .logo-light{
@@ -494,8 +494,8 @@ main{
   }
 
   .site-logo{
-    height:38px;
-    max-width:200px;
+    height:42px;
+    max-width:220px;
   }
 
   .site-menu{
