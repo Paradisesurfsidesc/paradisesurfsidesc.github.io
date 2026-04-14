@@ -1,0 +1,106 @@
+<!-- plan-your-stay.html -->
+<!-- Date - 2026-04-14 -->
+<!-- Version - 1.1.0 -->
+<!-- Notes - Fixed header overlap; converted cards to fully clickable links -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Plan Your Stay | Paradise</title>
+
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+
+  <style>
+    /* Push content below fixed header */
+    main {
+      padding-top: 100px;
+    }
+
+    /* Clickable card */
+    a.card {
+      display: grid;
+      gap: .55rem;
+      text-decoration: none;
+      color: inherit;
+      transition: background .18s ease, border-color .18s ease, transform .18s ease;
+      cursor: pointer;
+    }
+
+    a.card:hover,
+    a.card:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: rgba(255,255,255,.3);
+      transform: translateY(-2px);
+    }
+
+    /* Multi-button card (House Visuals) */
+    .card-multi {
+      display: grid;
+      gap: .55rem;
+    }
+
+    .card-multi-btns {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-top: .25rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="Plan your stay hub">
+
+      <div class="page-header">
+        <h1>Plan Your Stay</h1>
+        <p>
+          Start here — quick answers, best local spots, and what to do while you're in town.
+          Whether you're here for a long weekend or a full week, these links will help you plan fast.
+        </p>
+      </div>
+
+      <div class="grid">
+
+        <a class="card" href="restaurants.html">
+          <h2>🍽️ Restaurants</h2>
+          <p>Breakfast, seafood, casual spots, and family favorites — plus a few local "must tries."</p>
+        </a>
+
+        <a class="card" href="breweries.html">
+          <h2>🍺 Breweries & Craft Beer</h2>
+          <p>Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.</p>
+        </a>
+
+        <a class="card" href="things-to-do.html">
+          <h2>🧭 Things To Do</h2>
+          <p>Nearby towns, attractions, state parks, mini golf, golf, shopping, and more.</p>
+        </a>
+
+        <a class="card" href="events.html">
+          <h2>🎉 Events This Week</h2>
+          <p>What's happening while you're here — live music, shows, and annual events.</p>
+        </a>
+
+        <a class="card" href="https://tidesandcurrents.noaa.gov/stationhome.html?id=8661070" target="_blank" rel="noopener noreferrer">
+          <h2>🌊 Weather & Tides</h2>
+          <p>Check the latest forecast, beach conditions, and tide timing.</p>
+        </a>
+
+
+
+      </div>
+
+      <footer id="siteFooter"></footer>
+
+    </section>
+  </main>
+
+</body>
+</html>
