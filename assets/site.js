@@ -1,345 +1,116 @@
-// assets/site.js
-// Date - 2026-02-03
-// Version - 1.2.1
-// Notes - Injects normalized header + hamburger menu + consistent footer across pages.
-//         Weather pill updates across pages. Footer shows ← Home on subpages; home omits it.
-//         GA4 enabled + outbound Book Now click tracking.
+// site.js
+// Date - 2026-04-14
+// Version - 1.0.0
+// Notes - Injected site header/menu with Paradise logo support and dark hero logo switching
 // Author - David Taylor
 
-(() => {
-  // =========================
-  // Config
-  // =========================
-  const BOOKING_URL =
-    "https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise";
-  const WEATHER_STATION_URL = "https://tempestwx.com/station/204460/grid";
-  const WEATHER_ENDPOINT =
-    "https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather";
+document.addEventListener('DOMContentLoaded', () => {
+  injectHeader();
+  setupMenu();
+  applyHeaderTheme();
+  setupScrollTheme();
+});
 
-  // Keep these in sync with your visible versioning.
-  const SITE_VERSION = "1.2.1";
-  const LAST_UPDATED = "Feb 2026";
-  const LOCATION_TEXT = "Surfside Beach, SC";
+function injectHeader() {
+  const headerHost = document.getElementById('siteHeader');
+  if (!headerHost) return;
 
-  // =========================
-  // Google Analytics (GA4)
-  // =========================
-  const GA_MEASUREMENT_ID = "G-HFN4RF1QVT";
+  headerHost.innerHTML = `
+    <div class="site-header">
+      <a class="site-brand" href="index.html" aria-label="Paradise home">
+        <img
+          class="site-logo logo-dark"
+          src="images/Paradise.png"
+          alt="Paradise Surfside Beach, SC"
+          decoding="async"
+          fetchpriority="high"
+        >
+        <img
+          class="site-logo logo-light"
+          src="images/Paradise-white.png"
+          alt="Paradise Surfside Beach, SC"
+          decoding="async"
+          fetchpriority="high"
+        >
+      </a>
 
-  function initAnalytics() {
-    if (!GA_MEASUREMENT_ID) return;
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="siteMenu"
+      >
+        Menu
+      </button>
 
-    // Load GA script
-    const gaScript = document.createElement("script");
-    gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-    gaScript.async = true;
-    document.head.appendChild(gaScript);
+      <nav id="siteMenu" class="site-menu" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="paradise-info.html">Paradise Info</a>
+        <a href="photos.html">Photos</a>
+        <a href="floorplan.html">Floor Plan</a>
+        <a href="videos.html">Video</a>
+        <a href="plan-your-stay.html">Plan Your Stay</a>
+        <a
+          href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Book Now</a>
+      </nav>
+    </div>
+  `;
+}
 
-    // Init gtag
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      window.dataLayer.push(arguments);
-    }
-    window.gtag = gtag;
+function setupMenu() {
+  const toggle = document.querySelector('.menu-toggle');
+  const menu = document.querySelector('.site-menu');
 
-    window.gtag("js", new Date());
-    window.gtag("config", GA_MEASUREMENT_ID, {
-      anonymize_ip: true,
-      send_page_view: true,
-    });
+  if (!toggle || !menu) return;
+
+  toggle.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  document.addEventListener('click', (event) => {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+    if (header.contains(event.target)) return;
+
+    menu.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function applyHeaderTheme() {
+  const header = document.querySelector('.site-header');
+  if (!header) return;
+
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const darkPages = ['index.html'];
+
+  if (darkPages.includes(currentPage)) {
+    header.classList.add('is-dark');
+  } else {
+    header.classList.remove('is-dark');
+  }
+}
+
+function setupScrollTheme() {
+  const header = document.querySelector('.site-header');
+  const hero = document.querySelector('.hero');
+
+  if (!header || !hero) return;
+
+  function updateTheme() {
+    const triggerPoint = Math.max(hero.offsetHeight - 100, 120);
+    const useDarkLogo = window.scrollY < triggerPoint;
+
+    header.classList.toggle('is-dark', useDarkLogo);
+    header.classList.toggle('is-solid', window.scrollY > 20);
   }
 
-  function trackEvent(name, params = {}) {
-    if (typeof window.gtag !== "function") return;
-    window.gtag("event", name, params);
-  }
-
-  function isHomePage() {
-    const p = (location.pathname || "").toLowerCase();
-    return p.endsWith("/") || p.endsWith("/index.html") || p === "";
-  }
-
-  // =========================
-  // Render Header + Menu (Single Source of Truth)
-  // Requirement: each page includes: <header id="siteHeader"></header>
-  // =========================
-  function renderHeaderAndMenu() {
-    const headerMount = document.getElementById("siteHeader");
-    if (!headerMount) return;
-
-    headerMount.innerHTML = `
-      <div class="topbar">
-        <a class="brand" href="index.html" aria-label="Return to home">Paradise</a>
-
-        <div class="header-actions">
-          <a
-            class="weather"
-            id="weather"
-            href="${WEATHER_STATION_URL}"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Live on-site weather station (opens in a new tab)"
-            aria-label="View current on-site weather from the Paradise Tempest weather station"
-          >
-            <span>Current Weather</span>
-            <span id="weatherIcon">⛅</span>
-            <span id="weatherTemp">—</span>
-          </a>
-
-          <button
-            class="menu-btn"
-            id="menuBtn"
-            aria-label="Open menu"
-            aria-haspopup="dialog"
-            aria-controls="menuOverlay"
-          >☰</button>
-        </div>
-      </div>
-
-      <div class="menu-overlay" id="menuOverlay" aria-hidden="true">
-        <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Site menu">
-          <div class="menu-head">
-            <p class="menu-title">Menu</p>
-            <button class="menu-close" id="menuClose" aria-label="Close menu">✕</button>
-          </div>
-
-          <div class="menu-grid">
-
-  <!-- PROPERTY -->
-  <a class="menu-link" href="paradise-info.html">
-    <div>
-      Paradise Info
-      <span class="menu-sub">House details, amenities, overview</span>
-    </div>
-    <span>›</span>
-  </a>
-
-  <a class="menu-link" href="photos.html">
-    <div>
-      Photos
-      <span class="menu-sub">Explore the home</span>
-    </div>
-    <span>›</span>
-  </a>
-
-  <a class="menu-link" href="floor-plans.html">
-    <div>
-      Floor Plans
-      <span class="menu-sub">Layout and room flow</span>
-    </div>
-    <span>›</span>
-  </a>
-
-  <a class="menu-link" href="videos.html">
-    <div>
-      Videos
-      <span class="menu-sub">Walkthroughs & highlights</span>
-    </div>
-    <span>›</span>
-  </a>
-
-  <a class="menu-link" href="tour.html">
-    <div>
-      Virtual Tour
-      <span class="menu-sub">Interactive walk-through</span>
-    </div>
-    <span>›</span>
-  </a>
-
-  <!-- PLANNING -->
-  <a class="menu-link" href="plan-your-stay.html">
-    <div>
-      Plan Your Stay
-      <span class="menu-sub">Start here — food, events, essentials</span>
-    </div>
-    <span>›</span>
-  </a>
-
-  <a class="menu-link" href="things-to-do.html">
-    <div>
-      Things To Do
-      <span class="menu-sub">Parks, golf, attractions</span>
-    </div>
-    <span>›</span>
-  </a>
-
-  <a class="menu-link" href="events.html">
-    <div>
-      Events
-      <span class="menu-sub">Live music, shows, seasonal events</span>
-    </div>
-    <span>›</span>
-  </a>
-
-  <!-- BOOK -->
-  <a class="menu-link" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer" data-track="book">
-    <div>
-      Book Now
-      <span class="menu-sub">Check availability / reserve</span>
-    </div>
-    <span>↗</span>
-  </a>
-
-</div>
-
-          <div class="menu-foot">
-            <span>${LOCATION_TEXT}</span>
-            <a class="btn primary" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer" data-track="book">
-              Book Now
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  // =========================
-  // Render Footer (Single Source of Truth)
-  // Requirement: each page includes: <footer id="siteFooter"></footer>
-  // =========================
-  function renderFooter() {
-    const mount = document.getElementById("siteFooter");
-    if (!mount) return;
-
-    const home = isHomePage();
-
-    mount.innerHTML = `
-      <div class="footer">
-        <div class="footer-row">
-          <div>
-            ${home ? "" : `<a class="btn secondary" href="index.html">← Home</a>`}
-          </div>
-
-          <div style="text-align:center">
-            <div>Version ${SITE_VERSION}</div>
-            <div>${LOCATION_TEXT}</div>
-          </div>
-
-          <div style="text-align:right">
-            ${
-              home
-                ? `Last updated: ${LAST_UPDATED}`
-                : `<a class="btn secondary" href="plan-your-stay.html">Plan Your Stay</a>`
-            }
-          </div>
-        </div>
-
-        <div style="text-align:center; margin-top:.5rem">
-          © 2026 Paradise. All rights reserved.
-        </div>
-      </div>
-    `;
-  }
-
-  // =========================
-  // Hamburger Menu Wiring
-  // =========================
-  function wireMenu() {
-    const openBtn = document.getElementById("menuBtn");
-    const overlay = document.getElementById("menuOverlay");
-    const closeBtn = document.getElementById("menuClose");
-
-    if (!openBtn || !overlay || !closeBtn) return;
-
-    function openMenu() {
-      overlay.classList.add("open");
-      overlay.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
-      closeBtn.focus();
-      trackEvent("menu_open", { page_path: location.pathname });
-    }
-
-    function closeMenu() {
-      overlay.classList.remove("open");
-      overlay.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
-      openBtn.focus();
-      trackEvent("menu_close", { page_path: location.pathname });
-    }
-
-    openBtn.addEventListener("click", openMenu);
-    closeBtn.addEventListener("click", closeMenu);
-
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) closeMenu();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeMenu();
-    });
-  }
-
-  // =========================
-  // Outbound Click Tracking
-  // =========================
-  function wireTracking() {
-    document.addEventListener("click", (e) => {
-      const a = e.target && e.target.closest ? e.target.closest("a") : null;
-      if (!a) return;
-
-      // Track booking clicks (menu + anywhere you add data-track="book")
-      if (a.dataset && a.dataset.track === "book") {
-        trackEvent("book_now_click", {
-          page_path: location.pathname,
-          link_url: a.href,
-        });
-        return;
-      }
-
-      // Track any outbound link clicks (optional)
-      const href = a.getAttribute("href") || "";
-      const isExternal = href.startsWith("http") && !href.includes(location.host);
-      if (isExternal) {
-        trackEvent("outbound_click", {
-          page_path: location.pathname,
-          link_url: a.href,
-        });
-      }
-    });
-  }
-
-  // =========================
-  // Weather Pill
-  // =========================
-  async function loadWeather() {
-    const tempEl = document.getElementById("weatherTemp");
-    const iconEl = document.getElementById("weatherIcon");
-    const pillEl = document.getElementById("weather");
-
-    if (!tempEl || !iconEl || !pillEl) return;
-
-    try {
-      const res = await fetch(WEATHER_ENDPOINT, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-
-      const data = await res.json();
-      if (!data || data.ok !== true) throw new Error("Bad payload");
-
-      const tempNum = Number(data.temp_f);
-      const tempText = Number.isFinite(tempNum) ? Math.round(tempNum) + "°" : "—";
-
-      tempEl.textContent = tempText;
-      iconEl.textContent = data.icon || "⛅";
-
-      const condition = data.condition ? `, ${data.condition}` : "";
-      pillEl.setAttribute(
-        "aria-label",
-        `Current Weather at the House from the on-site weather station: ${tempText}${condition}`
-      );
-    } catch (e) {
-      tempEl.textContent = "—";
-    }
-  }
-
-  // =========================
-  // Boot
-  // =========================
-  initAnalytics();
-  renderHeaderAndMenu();
-  renderFooter();
-  wireMenu();
-  wireTracking();
-
-  loadWeather();
-  setInterval(loadWeather, 5 * 60 * 1000);
-})();
+  updateTheme();
+  window.addEventListener('scroll', updateTheme, { passive: true });
+  window.addEventListener('resize', updateTheme);
+}
