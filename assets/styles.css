@@ -370,6 +370,9 @@ main{
   gap:.5rem;
 }
 
+.footer-row > *:first-child{ text-align:left; }
+.footer-row > *:last-child{ text-align:right; }
+
 /* =========================
    Subpages
    ========================= */
