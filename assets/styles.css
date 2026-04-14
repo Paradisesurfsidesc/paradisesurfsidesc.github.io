@@ -5,8 +5,8 @@
 /* Author - David Taylor */
 
 :root{
-  --bg:#0b1b2a;
-  --surface:rgba(10,30,55,.94);
+  --bg: #071525;             /* slightly darker page background so card pops */
+  --surface: rgba(20, 65, 110, 0.96);  /* richer ocean blue for header + overlays */
   --surfaceSoft:rgba(10,30,55,.88);
   --text:#fff;
   --muted:rgba(255,255,255,.82);
@@ -90,7 +90,7 @@ img{
 }
 
 .site-header.is-solid {
-  background: rgba(15, 55, 95, 0.96);  /* brighter blue vs the near-black before */
+  background: rgba(20, 65, 110, 0.96);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
   border-radius: 0 0 18px 18px;
@@ -382,9 +382,9 @@ main{
   width:100%;
   max-width:var(--max);
   border-radius:26px;
-  background:rgba(0,0,0,.15);
-  border:1px solid rgba(255,255,255,.12);
-  box-shadow:var(--shadow);
+  background: rgba(20, 65, 110, 0.6);  /* matches header but slightly transparent */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow);
   overflow:hidden;
 }
 
