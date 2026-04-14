@@ -167,13 +167,7 @@
   <script>
     document.getElementById('acknowledgeBtn').addEventListener('click', () => {
       document.getElementById('safetyModal').style.display = 'none';
-      sessionStorage.setItem('poolAcknowledged', 'true');
     });
-
-    // Don't show again if already acknowledged this session
-    if (sessionStorage.getItem('poolAcknowledged') === 'true') {
-      document.getElementById('safetyModal').style.display = 'none';
-    }
   </script>
 
 </body>
