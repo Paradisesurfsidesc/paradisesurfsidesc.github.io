@@ -1,22 +1,24 @@
 /* assets/styles.css */
 /* Date - 2026-04-14 */
-/* Version - 1.1.0 */
-/* Notes - Regenerated global styles; cleaned header system to match injected site.js; preserved hero and subpage layout */
+/* Version - 1.2.0 */
+/* Notes - Rebuilt styles for injected header with logo, weather chip, and hamburger menu; preserved hero and subpage layout */
 /* Author - David Taylor */
 
 :root{
   --bg:#0b1b2a;
-  --surface:rgba(10,30,55,.92);
+  --surface:rgba(10,30,55,.94);
+  --surfaceSoft:rgba(10,30,55,.88);
   --text:#fff;
   --muted:rgba(255,255,255,.82);
   --accent:#f2c14b;
-  --blue:rgba(31,105,160,.9);
+  --blue:rgba(31,105,160,.92);
   --focus:#ffde7a;
   --max:820px;
 
   --card:rgba(255,255,255,.08);
   --cardBorder:rgba(255,255,255,.18);
   --shadow:0 10px 24px rgba(0,0,0,.25);
+  --shadowLarge:0 30px 80px rgba(0,0,0,.45);
 }
 
 *{box-sizing:border-box}
@@ -49,7 +51,7 @@ img{
 }
 
 /* =========================
-   Injected Header (site.js)
+   Injected Header
    ========================= */
 
 #siteHeader{
@@ -71,13 +73,14 @@ img{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:1rem;
+  gap:.75rem;
 
   padding:.85rem 1rem;
   transition:
     background-color .25s ease,
     box-shadow .25s ease,
-    backdrop-filter .25s ease;
+    backdrop-filter .25s ease,
+    border-radius .25s ease;
 }
 
 .site-header.is-dark{
@@ -120,39 +123,101 @@ img{
   display:block;
 }
 
-.menu-toggle{
-  width:auto;
+.site-header-actions{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  margin-left:auto;
+}
+
+.weather{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
   min-height:42px;
-  padding:.7rem 1rem;
+  padding:.45rem .75rem;
   border-radius:999px;
-  border:1px solid rgba(255,255,255,.22);
   background:rgba(255,255,255,.08);
-  font-size:.95rem;
+  border:1px solid rgba(255,255,255,.18);
   font-weight:700;
+  font-size:.95rem;
+  white-space:nowrap;
+  color:var(--text);
+}
+
+.weather:hover,
+.weather:focus-visible{
+  background:rgba(255,255,255,.14);
+}
+
+.site-header.is-solid .weather{
+  background:rgba(255,255,255,.10);
+}
+
+.menu-toggle{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.08);
+  font-size:1.15rem;
+  font-weight:800;
   cursor:pointer;
   color:var(--text);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+}
+
+.menu-toggle:hover,
+.menu-toggle:focus-visible{
+  background:rgba(255,255,255,.14);
 }
 
 .site-header.is-solid .menu-toggle{
-  background:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.10);
 }
 
+/* Hamburger menu behavior on all sizes */
 .site-menu{
+  position:absolute;
+  top:calc(100% + .5rem);
+  right:1rem;
+  width:min(360px, calc(100vw - 2rem));
+  display:none;
+  flex-direction:column;
+  gap:.65rem;
+  padding:1rem;
+  background:var(--surface);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:20px;
+  box-shadow:var(--shadowLarge);
+  backdrop-filter:blur(12px);
+}
+
+.site-menu.is-open{
   display:flex;
-  align-items:center;
-  gap:1rem;
 }
 
 .site-menu a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  width:100%;
+  padding:.9rem 1rem;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.07);
   color:var(--text);
-  text-decoration:none;
-  font-weight:700;
+  font-weight:800;
   white-space:nowrap;
 }
 
 .site-menu a:hover,
 .site-menu a:focus-visible{
-  opacity:.86;
+  background:rgba(255,255,255,.12);
 }
 
 /* =========================
@@ -177,7 +242,6 @@ main{
   overflow:hidden;
   position:relative;
   background:#000;
-
   display:flex;
   flex-direction:column;
 }
@@ -205,10 +269,8 @@ main{
   position:relative;
   z-index:2;
   flex:1;
-
   display:grid;
   grid-template-rows:1fr auto;
-
   padding:2rem 1.25rem 1.25rem;
   text-align:center;
 }
@@ -371,7 +433,7 @@ main{
 
 /* =========================
    Legacy Overlay Menu Styles
-   Kept in case used elsewhere
+   Kept if reused elsewhere
    ========================= */
 
 .menu-overlay{
@@ -394,7 +456,7 @@ main{
   background:var(--surface);
   border:1px solid rgba(255,255,255,.18);
   border-radius:22px;
-  box-shadow:0 30px 80px rgba(0,0,0,.45);
+  box-shadow:var(--shadowLarge);
 }
 
 .menu-head{
@@ -486,7 +548,6 @@ main{
 
 @media (max-width:900px){
   .site-header{
-    flex-wrap:wrap;
     left:0;
     transform:none;
     max-width:none;
@@ -498,31 +559,43 @@ main{
     max-width:220px;
   }
 
+  .weather{
+    font-size:.9rem;
+    padding:.42rem .65rem;
+  }
+
   .site-menu{
-    display:none;
-    width:100%;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:.75rem;
-    padding:.75rem 0 .25rem;
-  }
-
-  .site-menu.is-open{
-    display:flex;
-  }
-
-  .site-menu a{
-    width:100%;
-    padding:.85rem 1rem;
-    border-radius:14px;
-    background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.14);
+    right:1rem;
+    width:min(340px, calc(100vw - 2rem));
   }
 }
 
-@media (min-width:901px){
+@media (max-width:640px){
+  .site-header{
+    gap:.5rem;
+  }
+
+  .site-header-actions{
+    gap:.45rem;
+  }
+
+  .weather{
+    min-height:38px;
+    padding:.4rem .6rem;
+    font-size:.85rem;
+  }
+
   .menu-toggle{
-    display:none;
+    width:38px;
+    height:38px;
+  }
+
+  .site-menu{
+    width:calc(100vw - 2rem);
+  }
+
+  .cta-row{
+    grid-template-columns:1fr;
   }
 }
 
@@ -532,45 +605,8 @@ main{
     text-align:center;
   }
 
-  .cta-row{
-    grid-template-columns:1fr;
-  }
-}
-.site-header-actions{
-  display:flex;
-  align-items:center;
-  gap:.6rem;
-}
-
-.weather{
-  display:inline-flex;
-  align-items:center;
-  gap:.45rem;
-  padding:.45rem .7rem;
-  border-radius:999px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.18);
-  font-weight:600;
-  font-size:.95rem;
-  white-space:nowrap;
-}
-
-.weather:hover,
-.weather:focus-visible{
-  background:rgba(255,255,255,.14);
-}
-
-.site-header.is-solid .weather{
-  background:rgba(255,255,255,.1);
-}
-
-@media (max-width:900px){
-  .site-header-actions{
-    margin-left:auto;
-  }
-
-  .weather{
-    font-size:.9rem;
-    padding:.42rem .65rem;
+  .site-logo{
+    height:36px;
+    max-width:190px;
   }
 }
