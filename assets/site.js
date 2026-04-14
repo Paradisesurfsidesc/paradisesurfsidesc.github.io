@@ -31,17 +31,17 @@ function injectHeader() {
 
   headerHost.innerHTML = `
     <div class="site-header is-dark">
-      <a class="site-brand" href="index.html" aria-label="Paradise home">
+      <a class="site-brand" href="/index.html" aria-label="Paradise home">
         <img
           class="site-logo logo-dark"
-          src="images/Paradise.png"
+          src="/images/Paradise.png"
           alt="Paradise Surfside Beach, SC"
           decoding="async"
           fetchpriority="high"
         >
         <img
           class="site-logo logo-light"
-          src="images/Paradise-white.png"
+          src="/images/Paradise-white.png"
           alt="Paradise Surfside Beach, SC"
           decoding="async"
           fetchpriority="high"
@@ -75,10 +75,10 @@ function injectHeader() {
       </div>
 
       <nav class="site-menu" id="siteMenu" aria-label="Site navigation">
-        <a href="index.html">Home <span>›</span></a>
-        <a href="paradise-info.html">Paradise Info <span>›</span></a>
-        <a href="plan-your-stay.html">Plan Your Stay <span>›</span></a>
-        <a href="signup.html">📧 Stay in the Loop <span>›</span></a>
+        <a href="/index.html">Home <span>›</span></a>
+        <a href="/paradise-info.html">Paradise Info <span>›</span></a>
+        <a href="/plan-your-stay.html">Plan Your Stay <span>›</span></a>
+        <a href="/signup.html">📧 Stay in the Loop <span>›</span></a>
         <a
           href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
           target="_blank"
