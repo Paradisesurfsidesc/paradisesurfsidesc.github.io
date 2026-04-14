@@ -1,7 +1,7 @@
 <!-- paradise-info.html -->
 <!-- Date - 2026-04-14 -->
-<!-- Version - 1.1.0 -->
-<!-- Notes - Refocused Paradise Info page to feature house exploration links including photos, floor plans, videos, and virtual tour -->
+<!-- Version - 1.2.0 -->
+<!-- Notes - Converted to fully clickable cards; matched Plan Your Stay styling -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -10,9 +10,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Paradise Info | Paradise</title>
-
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/site.js" defer></script>
+
+  <style>
+    a.card {
+      display: grid;
+      gap: .55rem;
+      text-decoration: none;
+      color: inherit;
+      transition: background .18s ease, border-color .18s ease, transform .18s ease;
+      cursor: pointer;
+    }
+
+    a.card:hover,
+    a.card:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: rgba(255,255,255,.3);
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 
 <body>
@@ -23,51 +40,30 @@
 
       <div class="page-header">
         <h1>Paradise Info</h1>
-        <p>
-          Explore the home, layout, amenities, and everything that makes Paradise special.
-        </p>
+        <p>Explore the home, layout, amenities, and everything that makes Paradise special.</p>
       </div>
 
       <div class="grid">
 
-        <article class="card">
-          <h2>🏠 The House</h2>
-          <p>
-            Learn about the home’s layout, comfort, amenities, and spaces designed for relaxing coastal stays.
-          </p>
-        </article>
-
-        <article class="card">
+        <a class="card" href="photos.html">
           <h2>🖼️ Photos</h2>
-          <p>
-            Browse interior, exterior, balcony, kitchen, bedroom, and beach-area photos.
-          </p>
-          <p><a href="photos.html">View Photos</a></p>
-        </article>
+          <p>Browse interior, exterior, balcony, kitchen, bedroom, and beach-area photos.</p>
+        </a>
 
-        <article class="card">
+        <a class="card" href="floor-plans.html">
           <h2>📐 Floor Plans</h2>
-          <p>
-            See the layout and room flow to better understand how the home is arranged.
-          </p>
-          <p><a href="floor-plans.html">View Floor Plans</a></p>
-        </article>
+          <p>See the layout and room flow to better understand how the home is arranged.</p>
+        </a>
 
-        <article class="card">
+        <a class="card" href="videos.html">
           <h2>🎥 Videos</h2>
-          <p>
-            Watch walkthroughs and highlights of the property and key spaces.
-          </p>
-          <p><a href="videos.html">Watch Videos</a></p>
-        </article>
+          <p>Watch walkthroughs and highlights of the property and key spaces.</p>
+        </a>
 
-        <article class="card">
+        <a class="card" href="tour.html">
           <h2>🧭 Virtual Tour</h2>
-          <p>
-            Take an interactive Matterport walk-through and explore the house at your own pace.
-          </p>
-          <p><a href="tour.html">Open Virtual Tour</a></p>
-        </article>
+          <p>Take an interactive Matterport walk-through and explore the house at your own pace.</p>
+        </a>
 
       </div>
 
