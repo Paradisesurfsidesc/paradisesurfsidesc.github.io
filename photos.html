@@ -1,7 +1,7 @@
 <!-- photos.html -->
 <!-- Date - 2026-03-16 -->
-<!-- Version - 1.0.0 -->
-<!-- Notes - Photo gallery page for Paradise using locally hosted images and existing global header/footer injection -->
+<!-- Version - 1.2.0 -->
+<!-- Notes - Final Paradise photo gallery with exact filenames, custom ordering, and corrected descriptions -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -31,7 +31,7 @@
     .gallery-hero-image {
       display: block;
       width: 100%;
-      max-height: 520px;
+      max-height: 560px;
       object-fit: cover;
       object-position: center;
     }
@@ -59,6 +59,10 @@
       flex-wrap: wrap;
       gap: .75rem;
       margin: 1rem 0 1.25rem;
+    }
+
+    .section-title {
+      margin: 1.5rem 0 .9rem;
     }
 
     .gallery-grid {
@@ -161,8 +165,8 @@
       <div class="page-header">
         <h1>Photo Gallery</h1>
         <p>
-          Browse Paradise inside and out — exterior views, balconies, pool area, beach proximity,
-          and interior spaces throughout the home.
+          Browse Paradise inside and out — from featured marketing visuals to room-by-room photos,
+          balconies, pool area, exterior views, and aerial beach shots.
         </p>
       </div>
 
@@ -170,12 +174,12 @@
         <div class="gallery-hero-card">
           <img
             class="gallery-hero-image"
-            src="images/2-web-or-mls-0.jpg"
-            alt="Paradise Surfside exterior at dusk">
+            src="images/1-web-or-mls-MAIN THUMBNAIL (2).jpg"
+            alt="Paradise featured promotional image">
           <div class="gallery-hero-overlay">
-            <h2>Paradise at Dusk</h2>
+            <h2>Featured Look at Paradise</h2>
             <p>
-              A signature exterior view of the home and one of the strongest first-impression images in the gallery.
+              Start with the featured overview images, then explore the home room by room below.
             </p>
           </div>
         </div>
@@ -189,205 +193,427 @@
         <a class="btn secondary" href="floor-plans.html">View Floor Plans</a>
       </div>
 
-      <section class="gallery-grid" aria-label="Paradise photo thumbnails">
+      <h2 class="section-title">Featured Images</h2>
+      <section class="gallery-grid" aria-label="Featured Paradise images">
+
+        <a class="gallery-item" href="images/1-web-or-mls-MAIN THUMBNAIL (2).jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/1-web-or-mls-MAIN THUMBNAIL (2).jpg" alt="Paradise main thumbnail image">
+          <div class="gallery-caption">
+            <h3>Main Thumbnail</h3>
+            <p>Primary featured image for Paradise.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/4-web-or-mls-For social media.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/4-web-or-mls-For social media.jpg" alt="Paradise social media promotional image">
+          <div class="gallery-caption">
+            <h3>Social Media Feature</h3>
+            <p>Promotional image formatted for social sharing.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/9-web-or-mls-INTERIOR.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/9-web-or-mls-INTERIOR.jpg" alt="Paradise interior promotional image">
+          <div class="gallery-caption">
+            <h3>Interior Feature</h3>
+            <p>Featured interior promotional image.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/39-web-or-mls-Outdoor.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/39-web-or-mls-Outdoor.jpg" alt="Paradise outdoor promotional image">
+          <div class="gallery-caption">
+            <h3>Outdoor Feature</h3>
+            <p>Featured outdoor promotional image.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/48-web-or-mls-Location.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/48-web-or-mls-Location.jpg" alt="Paradise location promotional image">
+          <div class="gallery-caption">
+            <h3>Location Feature</h3>
+            <p>Featured location image highlighting the area.</p>
+          </div>
+        </a>
+
+      </section>
+
+      <h2 class="section-title">Full Photo Gallery</h2>
+      <section class="gallery-grid" aria-label="Paradise room by room photo gallery">
+
+        <a class="gallery-item" href="images/2-web-or-mls-0.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/2-web-or-mls-0.jpg" alt="Living and dining room">
+          <div class="gallery-caption">
+            <h3>Living & Dining Room</h3>
+            <p>Main shared living and dining space.</p>
+          </div>
+        </a>
 
         <a class="gallery-item" href="images/3-web-or-mls-1.jpg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/3-web-or-mls-1.jpg" alt="Paradise exterior daytime front view">
+          <img class="gallery-thumb" src="images/3-web-or-mls-1.jpg" alt="Living room view one">
           <div class="gallery-caption">
-            <h3>Exterior Front</h3>
-            <p>Daytime curb view of the home.</p>
+            <h3>Living Room</h3>
+            <p>First living room view.</p>
           </div>
         </a>
 
-        <a class="gallery-item" href="images/29.JPG" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/29.JPG" alt="Paradise exterior property view">
+        <a class="gallery-item" href="images/5-web-or-mls-2.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/5-web-or-mls-2.jpg" alt="Living room view two">
           <div class="gallery-caption">
-            <h3>Property Exterior</h3>
-            <p>Wide exterior perspective of the property.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/30.JPG" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/30.JPG" alt="Paradise balcony or exterior neighborhood view">
-          <div class="gallery-caption">
-            <h3>Neighborhood View</h3>
-            <p>Open view from the property toward the surrounding area.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/31.jpg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/31.jpg" alt="Paradise pool and outdoor area">
-          <div class="gallery-caption">
-            <h3>Pool Area</h3>
-            <p>Shared outdoor pool and seating area.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/35.jpg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/35.jpg" alt="Paradise balcony with seating">
-          <div class="gallery-caption">
-            <h3>Balcony Seating</h3>
-            <p>Relaxed outdoor space for morning coffee or evening wind-down.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/41.JPG" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/41.JPG" alt="Aerial view near Paradise Surfside">
-          <div class="gallery-caption">
-            <h3>Aerial View</h3>
-            <p>Property location and surrounding coastal area.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/44.JPG" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/44.JPG" alt="Beach and ocean aerial view near Paradise">
-          <div class="gallery-caption">
-            <h3>Beach Proximity</h3>
-            <p>Coastline and beach access perspective.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/4-web-or-mls-3.jpg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/4-web-or-mls-3.jpg" alt="Paradise living room">
-          <div class="gallery-caption">
-            <h3>Living Area</h3>
-            <p>Main living room with open seating layout.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/6.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/6.jpeg" alt="Paradise open living and dining space">
-          <div class="gallery-caption">
-            <h3>Open Living Space</h3>
-            <p>Bright main area connecting seating and dining.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/7.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/7.jpeg" alt="Paradise dining space">
-          <div class="gallery-caption">
-            <h3>Dining Area</h3>
-            <p>Gathering space for meals and group seating.</p>
+            <h3>Living Room</h3>
+            <p>Second living room view.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/10-web-or-mls-6.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/10-web-or-mls-6.jpeg" alt="Paradise kitchen">
+          <img class="gallery-thumb" src="images/10-web-or-mls-6.jpeg" alt="Dining room view one">
           <div class="gallery-caption">
-            <h3>Kitchen</h3>
-            <p>Clean, bright kitchen with prep and storage space.</p>
+            <h3>Dining Room</h3>
+            <p>First dining room angle.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/11-web-or-mls-7.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/11-web-or-mls-7.jpeg" alt="Paradise kitchen alternate view">
+          <img class="gallery-thumb" src="images/11-web-or-mls-7.jpeg" alt="Dining room view two">
           <div class="gallery-caption">
-            <h3>Kitchen View 2</h3>
-            <p>Alternate kitchen angle with additional detail.</p>
+            <h3>Dining Room</h3>
+            <p>Second dining room angle.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/12-web-or-mls-8.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/12-web-or-mls-8.JPG" alt="Lower balcony">
+          <div class="gallery-caption">
+            <h3>Lower Balcony</h3>
+            <p>Main lower balcony outdoor seating and view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/13-web-or-mls-9.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/13-web-or-mls-9.jpeg" alt="Kitchen view one">
+          <div class="gallery-caption">
+            <h3>Kitchen</h3>
+            <p>Kitchen view one.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/14-web-or-mls-10.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/14-web-or-mls-10.jpeg" alt="Paradise bedroom">
+          <img class="gallery-thumb" src="images/14-web-or-mls-10.jpeg" alt="Kitchen view two">
           <div class="gallery-caption">
-            <h3>Bedroom</h3>
-            <p>Comfortable sleeping space with coastal styling.</p>
+            <h3>Kitchen</h3>
+            <p>Kitchen view two.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/15-web-or-mls-11.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/15-web-or-mls-11.jpeg" alt="Paradise bedroom alternate view">
+          <img class="gallery-thumb" src="images/15-web-or-mls-11.jpeg" alt="Kitchen view three">
           <div class="gallery-caption">
-            <h3>Bedroom View 2</h3>
-            <p>Additional bedroom angle and layout view.</p>
+            <h3>Kitchen</h3>
+            <p>Kitchen view three.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/16-web-or-mls-12a.jpg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/16-web-or-mls-12a.jpg" alt="Paradise bathroom">
+          <img class="gallery-thumb" src="images/16-web-or-mls-12a.jpg" alt="Kitchen view four">
           <div class="gallery-caption">
-            <h3>Bathroom</h3>
-            <p>Clean bath space with bright finishes.</p>
+            <h3>Kitchen</h3>
+            <p>Kitchen view four.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/17-web-or-mls-13.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/17-web-or-mls-13.jpeg" alt="Paradise shower or bathroom detail">
+          <img class="gallery-thumb" src="images/17-web-or-mls-13.jpeg" alt="Kitchen view five">
           <div class="gallery-caption">
-            <h3>Bath Detail</h3>
-            <p>Additional bathroom or shower detail.</p>
+            <h3>Kitchen</h3>
+            <p>Kitchen view five.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/18-web-or-mls-14.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/18-web-or-mls-14.jpeg" alt="Paradise bedroom or bunk room">
+          <img class="gallery-thumb" src="images/18-web-or-mls-14.jpeg" alt="Downstairs queen bedroom">
           <div class="gallery-caption">
-            <h3>Guest Room</h3>
-            <p>Additional sleeping space for guests or kids.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/19-web-or-mls-15.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/19-web-or-mls-15.jpeg" alt="Paradise bedroom setup">
-          <div class="gallery-caption">
-            <h3>Bedroom View 3</h3>
-            <p>Another bedroom setup and furnishing view.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/20-web-or-mls-16.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/20-web-or-mls-16.jpeg" alt="Paradise bedroom detail">
-          <div class="gallery-caption">
-            <h3>Bedroom Detail</h3>
-            <p>Additional sleeping arrangement detail.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/21-web-or-mls-17.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/21-web-or-mls-17.jpeg" alt="Paradise bathroom mirror and sink area">
-          <div class="gallery-caption">
-            <h3>Bath Vanity</h3>
-            <p>Sink, mirror, and bathroom finish detail.</p>
-          </div>
-        </a>
-
-        <a class="gallery-item" href="images/22-web-or-mls-18.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/22-web-or-mls-18.jpeg" alt="Paradise bathroom or hallway area">
-          <div class="gallery-caption">
-            <h3>Interior Detail</h3>
-            <p>Additional interior finish and layout view.</p>
+            <h3>Downstairs Queen Bedroom</h3>
+            <p>Guest bedroom on the main level with a queen bed.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/23-web-or-mls-19.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/23-web-or-mls-19.jpeg" alt="Paradise bedroom with twin beds or bunks">
+          <img class="gallery-thumb" src="images/23-web-or-mls-19.jpeg" alt="Downstairs bedroom with two doubles view one">
           <div class="gallery-caption">
-            <h3>Guest Sleeping Area</h3>
-            <p>Flexible sleeping arrangements for groups.</p>
+            <h3>Downstairs Bedroom with Two Doubles</h3>
+            <p>First view of the downstairs bedroom with two double beds.</p>
           </div>
         </a>
 
         <a class="gallery-item" href="images/24-web-or-mls-20.jpeg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/24-web-or-mls-20.jpeg" alt="Paradise bedroom corner detail">
+          <img class="gallery-thumb" src="images/24-web-or-mls-20.jpeg" alt="Downstairs bedroom with two doubles view two">
           <div class="gallery-caption">
-            <h3>Bedroom Corner</h3>
-            <p>Additional room perspective and details.</p>
+            <h3>Downstairs Bedroom with Two Doubles</h3>
+            <p>Second view of the downstairs bedroom with two double beds.</p>
           </div>
         </a>
 
-        <a class="gallery-item" href="images/25-web-or-mls-21.jpg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/25-web-or-mls-21.jpg" alt="Paradise bath or sink detail">
+        <a class="gallery-item" href="images/25-web-or-mls-21.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/25-web-or-mls-21.jpeg" alt="Downstairs bathroom view one">
           <div class="gallery-caption">
-            <h3>Bathroom Detail</h3>
-            <p>Clean finish detail from one of the baths.</p>
+            <h3>Downstairs Bathroom</h3>
+            <p>First view of the downstairs bathroom.</p>
           </div>
         </a>
 
-        <a class="gallery-item" href="images/26-web-or-mls-22.jpg" target="_blank" rel="noopener">
-          <img class="gallery-thumb" src="images/26-web-or-mls-22.jpg" alt="Paradise bunk room">
+        <a class="gallery-item" href="images/30-web-or-mls-25a.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/30-web-or-mls-25a.JPG" alt="Downstairs bathroom view two">
+          <div class="gallery-caption">
+            <h3>Downstairs Bathroom</h3>
+            <p>Second view of the downstairs bathroom.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/14-web-or-mls-10.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/14-web-or-mls-10.jpeg" alt="Upstairs master bedroom with king view one">
+          <div class="gallery-caption">
+            <h3>Upstairs Master Bedroom</h3>
+            <p>First view of the upstairs master with a king bed.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/15-web-or-mls-11.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/15-web-or-mls-11.jpeg" alt="Upstairs master bedroom with king view two">
+          <div class="gallery-caption">
+            <h3>Upstairs Master Bedroom</h3>
+            <p>Second view of the upstairs master with a king bed.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/16-web-or-mls-12a.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/16-web-or-mls-12a.jpg" alt="Master bath view one">
+          <div class="gallery-caption">
+            <h3>Master Bath</h3>
+            <p>First view of the upstairs master bath.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/17-web-or-mls-13.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/17-web-or-mls-13.jpeg" alt="Master bath view two">
+          <div class="gallery-caption">
+            <h3>Master Bath</h3>
+            <p>Second view of the upstairs master bath.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/35-web-or-mls-30a.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/35-web-or-mls-30a.jpg" alt="Upstairs balcony view one">
+          <div class="gallery-caption">
+            <h3>Upstairs Balcony</h3>
+            <p>First upstairs balcony view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/36-web-or-mls-31.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/36-web-or-mls-31.JPG" alt="Upstairs balcony view two">
+          <div class="gallery-caption">
+            <h3>Upstairs Balcony</h3>
+            <p>Second upstairs balcony view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/37-web-or-mls-31a.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/37-web-or-mls-31a.jpg" alt="Upstairs balcony view three">
+          <div class="gallery-caption">
+            <h3>Upstairs Balcony</h3>
+            <p>Third upstairs balcony view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/38-web-or-mls-32.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/38-web-or-mls-32.jpeg" alt="Upstairs balcony view four">
+          <div class="gallery-caption">
+            <h3>Upstairs Balcony</h3>
+            <p>Fourth upstairs balcony view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/19-web-or-mls-15.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/19-web-or-mls-15.jpeg" alt="Upstairs queen bedroom with sleeper sofa view one">
+          <div class="gallery-caption">
+            <h3>Upstairs Queen Bedroom + Sleeper Sofa</h3>
+            <p>First view of the upstairs bedroom with queen bed and sleeper sofa.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/20-web-or-mls-16.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/20-web-or-mls-16.jpeg" alt="Upstairs queen bedroom with sleeper sofa view two">
+          <div class="gallery-caption">
+            <h3>Upstairs Queen Bedroom + Sleeper Sofa</h3>
+            <p>Second view of the upstairs bedroom with queen bed and sleeper sofa.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/21-web-or-mls-17.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/21-web-or-mls-17.jpeg" alt="Attached bathroom to upstairs queen bedroom view one">
+          <div class="gallery-caption">
+            <h3>Attached Bathroom</h3>
+            <p>First view of the attached upstairs bathroom.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/22-web-or-mls-18.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/22-web-or-mls-18.jpeg" alt="Attached bathroom to upstairs queen bedroom view two">
+          <div class="gallery-caption">
+            <h3>Attached Bathroom</h3>
+            <p>Second view of the attached upstairs bathroom.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/31-web-or-mls-26.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/31-web-or-mls-26.jpeg" alt="Bunk room with four twin beds view one">
           <div class="gallery-caption">
             <h3>Bunk Room</h3>
-            <p>Built-in sleeping space for kids or groups.</p>
+            <p>First view of the bunk room with four twin beds.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/32-web-or-mls-27.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/32-web-or-mls-27.jpeg" alt="Bunk room with four twin beds view two">
+          <div class="gallery-caption">
+            <h3>Bunk Room</h3>
+            <p>Second view of the bunk room with four twin beds.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/33-web-or-mls-28.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/33-web-or-mls-28.jpeg" alt="Bunk room with four twin beds view three">
+          <div class="gallery-caption">
+            <h3>Bunk Room</h3>
+            <p>Third view of the bunk room with four twin beds.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/34-web-or-mls-29.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/34-web-or-mls-29.jpeg" alt="Upstairs laundry room">
+          <div class="gallery-caption">
+            <h3>Upstairs Laundry Room</h3>
+            <p>Laundry area located upstairs for guest convenience.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/40-web-or-mls-33a.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/40-web-or-mls-33a.jpg" alt="Private heated or cooled pool view one">
+          <div class="gallery-caption">
+            <h3>Private Heated/Cooled Pool</h3>
+            <p>First pool view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/41-web-or-mls-33.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/41-web-or-mls-33.jpeg" alt="Private heated or cooled pool view two">
+          <div class="gallery-caption">
+            <h3>Private Heated/Cooled Pool</h3>
+            <p>Second pool view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/43-web-or-mls-35.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/43-web-or-mls-35.jpeg" alt="Private heated or cooled pool view three">
+          <div class="gallery-caption">
+            <h3>Private Heated/Cooled Pool</h3>
+            <p>Third pool view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/44-web-or-mls-36.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/44-web-or-mls-36.jpg" alt="Private heated or cooled pool view four">
+          <div class="gallery-caption">
+            <h3>Private Heated/Cooled Pool</h3>
+            <p>Fourth pool view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/45-web-or-mls-36a.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/45-web-or-mls-36a.jpg" alt="Private heated or cooled pool view five">
+          <div class="gallery-caption">
+            <h3>Private Heated/Cooled Pool</h3>
+            <p>Fifth pool view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/46-web-or-mls-37.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/46-web-or-mls-37.jpeg" alt="Private heated or cooled pool view six">
+          <div class="gallery-caption">
+            <h3>Private Heated/Cooled Pool</h3>
+            <p>Sixth pool view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/47-web-or-mls-38.jpg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/47-web-or-mls-38.jpg" alt="Private heated or cooled pool view seven">
+          <div class="gallery-caption">
+            <h3>Private Heated/Cooled Pool</h3>
+            <p>Seventh pool view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/42-web-or-mls-34.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/42-web-or-mls-34.jpeg" alt="Outdoor shower with foot washing station">
+          <div class="gallery-caption">
+            <h3>Outdoor Shower</h3>
+            <p>Outdoor shower with foot washing station.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/49-web-or-mls-39.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/49-web-or-mls-39.JPG" alt="Exterior front">
+          <div class="gallery-caption">
+            <h3>Exterior Front</h3>
+            <p>Front exterior of Paradise.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/50-web-or-mls-40.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/50-web-or-mls-40.JPG" alt="Exterior rear view one">
+          <div class="gallery-caption">
+            <h3>Exterior Rear</h3>
+            <p>First rear exterior view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/55-web-or-mls-43.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/55-web-or-mls-43.JPG" alt="Exterior rear view two">
+          <div class="gallery-caption">
+            <h3>Exterior Rear</h3>
+            <p>Second rear exterior view.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/51-web-or-mls-41.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/51-web-or-mls-41.JPG" alt="Aerial view">
+          <div class="gallery-caption">
+            <h3>Aerial View</h3>
+            <p>Bird’s-eye view of the property and surrounding area.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/52-web-or-mls-41a.jpeg" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/52-web-or-mls-41a.jpeg" alt="Aerial view identifying Paradise">
+          <div class="gallery-caption">
+            <h3>Aerial View with Paradise Marked</h3>
+            <p>Identifies which home is Paradise.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/53-web-or-mls-42.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/53-web-or-mls-42.JPG" alt="Aerial beach shot one">
+          <div class="gallery-caption">
+            <h3>Aerial Beach View</h3>
+            <p>Coastline and beach view from above.</p>
+          </div>
+        </a>
+
+        <a class="gallery-item" href="images/56-web-or-mls-44.JPG" target="_blank" rel="noopener">
+          <img class="gallery-thumb" src="images/56-web-or-mls-44.JPG" alt="Aerial beach shot two">
+          <div class="gallery-caption">
+            <h3>Aerial Beach View</h3>
+            <p>Additional aerial coastline perspective.</p>
           </div>
         </a>
 
