@@ -1,7 +1,7 @@
 <!-- plan-your-stay.html -->
 <!-- Date - 2026-04-14 -->
-<!-- Version - 1.1.0 -->
-<!-- Notes - Fixed header overlap; converted cards to fully clickable links -->
+<!-- Version - 1.2.0 -->
+<!-- Notes - Moved Stay in the Loop card into grid; removed inline styles now in global CSS -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -9,47 +9,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Plan Your Stay | Paradise</title>
-
+  <title>Plan Your Stay | Paradise | Surfside Beach, SC</title>
+  <meta name="description" content="Plan your Surfside Beach vacation — local restaurants, breweries, things to do, events, weather, and insider tips near Paradise vacation rental.">
+  <link rel="canonical" href="https://paradisesurfsidesc.com/plan-your-stay.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://paradisesurfsidesc.com/plan-your-stay.html">
+  <meta property="og:title" content="Plan Your Stay | Paradise | Surfside Beach, SC">
+  <meta property="og:description" content="Local restaurants, breweries, things to do, events, and insider tips near Paradise vacation rental in Surfside Beach, SC.">
+  <meta property="og:image" content="https://paradisesurfsidesc.com/images/48-web-or-mls-Location.jpg">
+  <meta property="og:site_name" content="Paradise Surfside Beach">
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/site.js" defer></script>
-
-  <style>
-    /* Push content below fixed header */
-    main {
-      padding-top: 100px;
-    }
-
-    /* Clickable card */
-    a.card {
-      display: grid;
-      gap: .55rem;
-      text-decoration: none;
-      color: inherit;
-      transition: background .18s ease, border-color .18s ease, transform .18s ease;
-      cursor: pointer;
-    }
-
-    a.card:hover,
-    a.card:focus-visible {
-      background: rgba(255,255,255,.13);
-      border-color: rgba(255,255,255,.3);
-      transform: translateY(-2px);
-    }
-
-    /* Multi-button card (House Visuals) */
-    .card-multi {
-      display: grid;
-      gap: .55rem;
-    }
-
-    .card-multi-btns {
-      display: flex;
-      gap: .5rem;
-      flex-wrap: wrap;
-      margin-top: .25rem;
-    }
-  </style>
 </head>
 
 <body>
@@ -60,15 +30,7 @@
 
       <div class="page-header">
         <h1>Plan Your Stay</h1>
-        <p>
-          Start here — quick answers, best local spots, and what to do while you're in town.
-          Whether you're here for a long weekend or a full week, these links will help you plan fast.
-        </p>
-        <a class="card" href="signup.html">
-          <h2>📧 Stay in the Loop</h2>
-          <p>Sign up for occasional promotions, updates, and insider tips from the owners of Paradise.</p>
-        </a>
-
+        <p>Start here — quick answers, best local spots, and what to do while you're in town. Whether you're here for a long weekend or a full week, these links will help you plan fast.</p>
       </div>
 
       <div class="grid">
@@ -79,8 +41,8 @@
         </a>
 
         <a class="card" href="breweries.html">
-          <h2>🍺 Breweries & Craft Beer</h2>
-          <p>Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.</p>
+          <h2>🍺 Local Breweries</h2>
+          <p>Enjoy local breweries on the Myrtle Beach Beer Trail — great for post-beach and rainy days.</p>
         </a>
 
         <a class="card" href="things-to-do.html">
@@ -89,7 +51,7 @@
         </a>
 
         <a class="card" href="https://www.visitsurfsidebeach.com/" target="_blank" rel="noopener noreferrer">
-          <h2>🎉 Events This Week</h2>
+          <h2>🎉 Surfside Beach Visitor Guide</h2>
           <p>What's happening while you're here — live music, shows, and annual events.</p>
         </a>
 
@@ -103,11 +65,16 @@
           <p>Official visitor guide with attractions, dining, events, and trip planning resources.</p>
         </a>
 
-
+        <a class="card" href="signup.html">
+          <h2>📧 Stay in the Loop</h2>
+          <p>Sign up for occasional promotions, updates, and insider tips from the owners of Paradise.</p>
+        </a>
 
       </div>
 
-      <footer id="siteFooter"></footer>
+      <div class="page-footer">
+        <a class="btn secondary" href="index.html">← Home</a>
+      </div>
 
     </section>
   </main>
