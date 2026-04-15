@@ -231,4 +231,237 @@
   </script>
 
 </body>
+</html><!-- guest/help.html -->
+<!-- Date - 2026-04-14 -->
+<!-- Version - 1.0.0 -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Help & Contacts | Paradise Guest Guide</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/site.js" defer></script>
+
+  <style>
+    .form-group {
+      display: grid;
+      gap: .5rem;
+    }
+
+    .form-group label {
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: .75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .18s ease;
+      resize: vertical;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(255,255,255,.45);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: rgba(255,255,255,.5);
+      background: rgba(255,255,255,.12);
+    }
+
+    .form-group select option {
+      background: #0b1b2a;
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #1b1b1b;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity .18s ease;
+    }
+
+    .form-submit:hover { opacity: .88; }
+
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+    }
+
+    .success-msg h2 {
+      color: #fff;
+      margin: 0 0 .5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="Help and contacts">
+
+      <div class="page-header">
+        <h1>🙋 Help & Contacts</h1>
+        <p>Need assistance? Contact Southern Coast Vacations or submit a maintenance request below.</p>
+      </div>
+
+      <div class="grid">
+
+        <div class="card">
+          <h2>📞 Southern Coast Vacations</h2>
+          <p><strong>Phone:</strong> <a href="tel:18009784988" style="color:var(--accent)">1-800-978-4988</a></p>
+          <p><strong>Local:</strong> <a href="tel:18436636063" style="color:var(--accent)">843-663-6063 option 2</a></p>
+          <p><strong>Email:</strong> <a href="mailto:stay@southerncoastvacations.com" style="color:var(--accent)">stay@southerncoastvacations.com</a></p>
+          <p><strong>Hours:</strong> Mon–Fri 9am–5pm · Summer Sat 9am–5pm · Closed Sun</p>
+        </div>
+
+        <div class="card">
+          <h2>🚨 Emergency</h2>
+          <p style="font-size:1.1rem; font-weight:800; color:#f87171;">In any emergency dial <a href="tel:911" style="color:#f87171;">911</a></p>
+        </div>
+
+        <div class="card">
+          <h2>🚔 Non-Emergency Numbers</h2>
+          <p><strong>Police Dispatch:</strong> <a href="tel:8439136368" style="color:var(--accent)">843-913-6368</a></p>
+          <p><strong>Fire Department:</strong> <a href="tel:8439136369" style="color:var(--accent)">843-913-6369</a></p>
+          <p><strong>Fire Marshal:</strong> <a href="tel:8439136352" style="color:var(--accent)">843-913-6352</a></p>
+          <p><strong>Public Works:</strong> <a href="tel:8439136360" style="color:var(--accent)">843-913-6360</a></p>
+          <p><strong>Power Outages (Santee Cooper):</strong> <a href="tel:8887697688" style="color:var(--accent)">888-769-7688</a></p>
+          <p><strong>Lost Children:</strong> <a href="tel:8439136368" style="color:var(--accent)">843-913-6368</a></p>
+          <p><strong>Beach Wheelchairs:</strong> <a href="tel:8439136368" style="color:var(--accent)">843-913-6368</a> (8am–5pm)</p>
+        </div>
+
+        <div class="card">
+          <h2>🏥 Local Essentials</h2>
+          <p><strong>Urgent Care:</strong> <a href="https://www.google.com/search?q=urgent+care+near+Surfside+Beach+SC" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Find Nearest Urgent Care ↗</a></p>
+          <p><strong>Hospital:</strong> <a href="https://www.google.com/search?q=hospital+near+Surfside+Beach+SC" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Find Nearest Hospital ↗</a></p>
+          <p><strong>Pharmacy:</strong> <a href="https://www.google.com/search?q=pharmacy+near+Surfside+Beach+SC" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Find Nearest Pharmacy ↗</a></p>
+          <p><strong>Grocery:</strong> <a href="https://www.google.com/search?q=grocery+store+near+Surfside+Beach+SC" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Find Nearest Grocery ↗</a></p>
+          <p><strong>Gas:</strong> <a href="https://www.google.com/search?q=gas+station+near+Surfside+Beach+SC" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Find Nearest Gas Station ↗</a></p>
+        </div>
+
+      </div>
+
+      <!-- Maintenance Request Form -->
+      <div style="padding: 0 1.25rem 1.25rem;">
+        <div class="card" style="margin-top:.5rem">
+          <h2>🔧 Maintenance Request</h2>
+          <p style="color:var(--muted); margin-bottom:1rem;">Something needs attention? Let us know and we'll get it sorted.</p>
+
+          <div id="maintenanceForm" style="display:grid; gap:1rem;">
+            <div class="form-group">
+              <label for="mName">Your Name</label>
+              <input type="text" id="mName" placeholder="Jane Smith">
+            </div>
+            <div class="form-group">
+              <label for="mEmail">Your Email</label>
+              <input type="email" id="mEmail" placeholder="jane@email.com">
+            </div>
+            <div class="form-group">
+              <label for="mType">Issue Type</label>
+              <select id="mType">
+                <option value="" disabled selected>Select one...</option>
+                <option>Plumbing</option>
+                <option>Electrical</option>
+                <option>Pool</option>
+                <option>Appliance</option>
+                <option>AC / Heat</option>
+                <option>TV / Internet</option>
+                <option>Grill</option>
+                <option>Exterior / Grounds</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="mDesc">Description</label>
+              <textarea id="mDesc" rows="4" placeholder="Please describe the issue..."></textarea>
+            </div>
+            <button class="form-submit" id="mSubmit">Submit Request</button>
+          </div>
+
+          <div class="success-msg" id="mSuccess">
+            <h2>✅ Request Submitted</h2>
+            <p>Southern Coast Vacations has been notified and will follow up shortly. For urgent issues call <strong>843-663-6063</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="index.html">← Guest Guide</a>
+        <p style="font-size:.8rem; color:rgba(255,255,255,.45); margin:0; text-align:right;">*All information provided as a courtesy only. Paradise LLC is not responsible for delayed, incorrect, or missing data. Always dial 911 in an emergency.</p>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('mSubmit').addEventListener('click', async () => {
+      const name = document.getElementById('mName').value.trim();
+      const email = document.getElementById('mEmail').value.trim();
+      const type = document.getElementById('mType').value;
+      const desc = document.getElementById('mDesc').value.trim();
+
+      if (!email || !desc) {
+        alert('Please provide your email and a description of the issue.');
+        return;
+      }
+
+      const btn = document.getElementById('mSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      // Uses Formspree — replace YOUR_FORM_ID with your Formspree form ID
+      // Sign up free at formspree.io and create a form pointed at stay@southerncoastvacations.com + paradise.surfsidesc@gmail.com
+      try {
+        const res = await fetch('https://formspree.io/f/xaqanvoa', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            email,
+            issue_type: type,
+            description: desc,
+            property: 'Paradise - Surfside Beach, SC'
+          })
+        });
+
+        if (res.ok) {
+          document.getElementById('maintenanceForm').style.display = 'none';
+          document.getElementById('mSuccess').style.display = 'block';
+        } else {
+          throw new Error('Failed');
+        }
+      } catch {
+        alert('Something went wrong. Please call 843-663-6063 directly.');
+        btn.disabled = false;
+        btn.textContent = 'Submit Request';
+      }
+    });
+  </script>
+
+</body>
 </html>
