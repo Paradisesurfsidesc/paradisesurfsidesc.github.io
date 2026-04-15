@@ -1,0 +1,268 @@
+<!-- guest/checkin.html -->
+<!-- Date - 2026-04-14 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Check-in inspection page; encourages guests to report issues immediately -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Check-In | Paradise Guest Guide</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/site.js" defer></script>
+
+  <style>
+    .checklist {
+      display: grid;
+      gap: .65rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      padding: .75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      font-size: .95rem;
+      line-height: 1.5;
+      cursor: pointer;
+      transition: background .18s ease;
+    }
+
+    .checklist li.done {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.3);
+      text-decoration: line-through;
+      opacity: .7;
+    }
+
+    .checklist li input[type="checkbox"] {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: #22c55e;
+      cursor: pointer;
+    }
+
+    .form-group {
+      display: grid;
+      gap: .5rem;
+    }
+
+    .form-group label {
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: .75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .18s ease;
+      resize: vertical;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(255,255,255,.45);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: rgba(255,255,255,.5);
+      background: rgba(255,255,255,.12);
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #1b1b1b;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity .18s ease;
+    }
+
+    .form-submit:hover { opacity: .88; }
+
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+    }
+
+    .success-msg h2 {
+      color: #fff;
+      margin: 0 0 .5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="Check-in inspection">
+
+      <div class="page-header">
+        <h1>🏠 Check-In</h1>
+        <p>Welcome to Paradise! Please take a few minutes to walk through the property and complete this check-in inspection.</p>
+      </div>
+
+      <!-- Important Notice -->
+      <div style="padding: 1rem 1.25rem 0;">
+        <div style="
+          background: rgba(242,193,75,.1);
+          border: 2px solid rgba(242,193,75,.4);
+          border-radius: 18px;
+          padding: 1.25rem 1.5rem;
+        ">
+          <h2 style="margin: 0 0 .5rem; color: var(--accent);">⚠️ Important — Report Issues & Damage Immediately</h2>
+          <p style="margin: 0; line-height: 1.6;">Please walk through the entire property upon arrival and report any pre-existing damage, cleanliness concerns, or missing items <strong>immediately</strong> using the form below.</p>
+          <p style="margin: .75rem 0 0; line-height: 1.6;"><strong>Any damage discovered during or after your stay may result in damage charges being applied to the current guest.</strong> This includes but is not limited to:</p>
+          <ul style="margin: .5rem 0 0 1.25rem; display:grid; gap:.35rem; color:rgba(255,255,255,.85);">
+            <li>Broken windows, doors, or screens</li>
+            <li>Damaged floors, walls, or furniture</li>
+            <li>Evidence of smoking, vaping, or e-cigarettes inside the property</li>
+            <li>Damage to pool equipment or pool area</li>
+            <li>Missing or damaged appliances, TVs, or remotes</li>
+            <li>Stains or damage to linens, towels, or bedding</li>
+          </ul>
+          <p style="margin: .75rem 0 0; line-height: 1.6;">Reporting pre-existing damage at check-in <strong>protects you</strong> and ensures you are not held responsible for something that was not caused by you.</p>
+          <p style="margin: .75rem 0 0; line-height: 1.6;">Southern Coast Vacations is committed to resolving any issue in a <strong>reasonable and timely manner</strong> during your stay — but we can only help if we know about it. Do not wait until departure or leave concerns in a review.</p>
+        </div>
+      </div>
+
+      <!-- Check-In Checklist -->
+      <div style="padding: 1rem 1.25rem 0;">
+        <div class="card">
+          <h2>✅ Walk-Through Checklist</h2>
+          <p style="color:var(--muted); margin-bottom: 1rem;">Tap each item as you check it. If anything looks off, report it below.</p>
+          <ul class="checklist" id="checklist">
+            <li><input type="checkbox"> All exterior doors and locks are working properly</li>
+            <li><input type="checkbox"> All windows open, close, and lock correctly</li>
+            <li><input type="checkbox"> All bedrooms checked — beds, linens, and furniture in good condition</li>
+            <li><input type="checkbox"> All bathrooms clean and in working order</li>
+            <li><input type="checkbox"> Kitchen appliances working — stove, microwave, dishwasher, coffee maker</li>
+            <li><input type="checkbox"> All TVs and remotes working</li>
+            <li><input type="checkbox"> WiFi connecting properly</li>
+            <li><input type="checkbox"> AC and thermostats working</li>
+            <li><input type="checkbox"> Pool area clean and in good condition</li>
+            <li><input type="checkbox"> Grill clean and ready for use</li>
+            <li><input type="checkbox"> Both balconies checked — furniture and railings in good condition</li>
+            <li><input type="checkbox"> Outdoor shower working</li>
+            <li><input type="checkbox"> No visible damage to walls, floors, or furniture</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Issue Report Form -->
+      <div style="padding: 1rem 1.25rem 1.25rem;">
+        <div class="card">
+          <h2>📋 Report an Issue</h2>
+          <p style="color:var(--muted); margin-bottom: 1rem;">Found something that needs attention? Let us know right away.</p>
+
+          <div id="issueForm" style="display:grid; gap:1rem;">
+            <div class="form-group">
+              <label for="iName">Your Name</label>
+              <input type="text" id="iName" placeholder="Jane Smith">
+            </div>
+            <div class="form-group">
+              <label for="iEmail">Your Email</label>
+              <input type="email" id="iEmail" placeholder="jane@email.com">
+            </div>
+            <div class="form-group">
+              <label for="iDesc">What did you find?</label>
+              <textarea id="iDesc" rows="4" placeholder="Please describe the issue and where in the property it is..."></textarea>
+            </div>
+            <button class="form-submit" id="iSubmit">Submit Report</button>
+          </div>
+
+          <div class="success-msg" id="iSuccess">
+            <h2>✅ Report Received</h2>
+            <p>Thank you for letting us know. Southern Coast Vacations has been notified and will follow up with you shortly. For urgent issues call <strong>843-663-6063 option 2</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="index.html">← Guest Guide</a>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // Checklist interaction
+    document.querySelectorAll('#checklist li').forEach(li => {
+      const cb = li.querySelector('input[type="checkbox"]');
+      li.addEventListener('click', (e) => {
+        if (e.target !== cb) cb.checked = !cb.checked;
+        li.classList.toggle('done', cb.checked);
+      });
+    });
+
+    // Issue report form
+    document.getElementById('iSubmit').addEventListener('click', async () => {
+      const name = document.getElementById('iName').value.trim();
+      const email = document.getElementById('iEmail').value.trim();
+      const desc = document.getElementById('iDesc').value.trim();
+
+      if (!email || !desc) {
+        alert('Please provide your email and a description of the issue.');
+        return;
+      }
+
+      const btn = document.getElementById('iSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      try {
+        const res = await fetch('https://formspree.io/f/xaqanvoa', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            email,
+            description: desc,
+            type: 'Check-In Issue Report',
+            property: 'Paradise - Surfside Beach, SC'
+          })
+        });
+
+        if (res.ok) {
+          document.getElementById('issueForm').style.display = 'none';
+          document.getElementById('iSuccess').style.display = 'block';
+        } else {
+          throw new Error('Failed');
+        }
+      } catch {
+        alert('Something went wrong. Please call 843-663-6063 option 2 directly.');
+        btn.disabled = false;
+        btn.textContent = 'Submit Report';
+      }
+    });
+  </script>
+
+</body>
+</html>
