@@ -1,7 +1,7 @@
 <!-- guest/checkin.html -->
 <!-- Date - 2026-04-14 -->
-<!-- Version - 1.0.0 -->
-<!-- Notes - Check-in inspection page; encourages guests to report issues immediately -->
+<!-- Version - 1.1.0 -->
+<!-- Notes - Aligned to site template; removed inline padding wrappers -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -38,8 +38,8 @@
     }
 
     .checklist li.done {
-      background: rgba(34, 197, 94, 0.12);
-      border-color: rgba(34, 197, 94, 0.3);
+      background: rgba(34,197,94,.12);
+      border-color: rgba(34,197,94,.3);
       text-decoration: line-through;
       opacity: .7;
     }
@@ -115,6 +115,34 @@
       color: #fff;
       margin: 0 0 .5rem;
     }
+
+    .notice-card {
+      background: rgba(242,193,75,.08);
+      border: 2px solid rgba(242,193,75,.35);
+      border-radius: 18px;
+      padding: 1rem;
+      display: grid;
+      gap: .55rem;
+    }
+
+    .notice-card h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--accent);
+    }
+
+    .notice-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .notice-card ul {
+      margin: .25rem 0 0 1.25rem;
+      display: grid;
+      gap: .35rem;
+      color: rgba(255,255,255,.85);
+    }
   </style>
 </head>
 
@@ -129,18 +157,14 @@
         <p>Welcome to Paradise! Please take a few minutes to walk through the property and complete this check-in inspection.</p>
       </div>
 
-      <!-- Important Notice -->
-      <div style="padding: 1rem 1.25rem 0;">
-        <div style="
-          background: rgba(242,193,75,.1);
-          border: 2px solid rgba(242,193,75,.4);
-          border-radius: 18px;
-          padding: 1.25rem 1.5rem;
-        ">
-          <h2 style="margin: 0 0 .5rem; color: var(--accent);">⚠️ Important — Report Issues & Damage Immediately</h2>
-          <p style="margin: 0; line-height: 1.6;">Please walk through the entire property upon arrival and report any pre-existing damage, cleanliness concerns, or missing items <strong>immediately</strong> using the form below.</p>
-          <p style="margin: .75rem 0 0; line-height: 1.6;"><strong>Any damage discovered during or after your stay may result in damage charges being applied to the current guest.</strong> This includes but is not limited to:</p>
-          <ul style="margin: .5rem 0 0 1.25rem; display:grid; gap:.35rem; color:rgba(255,255,255,.85);">
+      <div class="grid">
+
+        <!-- Important Notice -->
+        <div class="notice-card" style="grid-column: 1 / -1;">
+          <h2>⚠️ Important — Report Issues & Damage Immediately</h2>
+          <p>Please walk through the entire property upon arrival and report any pre-existing damage, cleanliness concerns, or missing items <strong>immediately</strong> using the form below.</p>
+          <p><strong>Any damage discovered during or after your stay may result in damage charges being applied to the current guest.</strong> This includes but is not limited to:</p>
+          <ul>
             <li>Broken windows, doors, or screens</li>
             <li>Damaged floors, walls, or furniture</li>
             <li>Evidence of smoking, vaping, or e-cigarettes inside the property</li>
@@ -148,16 +172,14 @@
             <li>Missing or damaged appliances, TVs, or remotes</li>
             <li>Stains or damage to linens, towels, or bedding</li>
           </ul>
-          <p style="margin: .75rem 0 0; line-height: 1.6;">Reporting pre-existing damage at check-in <strong>protects you</strong> and ensures you are not held responsible for something that was not caused by you.</p>
-          <p style="margin: .75rem 0 0; line-height: 1.6;">Southern Coast Vacations is committed to resolving any issue in a <strong>reasonable and timely manner</strong> during your stay — but we can only help if we know about it. Do not wait until departure or leave concerns in a review.</p>
+          <p>Reporting pre-existing damage at check-in <strong>protects you</strong> and ensures you are not held responsible for something that was not caused by you.</p>
+          <p>Southern Coast Vacations is committed to resolving any issue in a <strong>reasonable and timely manner</strong> during your stay — but we can only help if we know about it. Do not wait until departure or leave concerns in a review.</p>
         </div>
-      </div>
 
-      <!-- Check-In Checklist -->
-      <div style="padding: 1rem 1.25rem 0;">
-        <div class="card">
+        <!-- Walk-Through Checklist -->
+        <div class="card" style="grid-column: 1 / -1;">
           <h2>✅ Walk-Through Checklist</h2>
-          <p style="color:var(--muted); margin-bottom: 1rem;">Tap each item as you check it. If anything looks off, report it below.</p>
+          <p style="color:var(--muted);">Tap each item as you check it. If anything looks off, report it below.</p>
           <ul class="checklist" id="checklist">
             <li><input type="checkbox"> All exterior doors and locks are working properly</li>
             <li><input type="checkbox"> All windows open, close, and lock correctly</li>
@@ -174,13 +196,11 @@
             <li><input type="checkbox"> No visible damage to walls, floors, or furniture</li>
           </ul>
         </div>
-      </div>
 
-      <!-- Issue Report Form -->
-      <div style="padding: 1rem 1.25rem 1.25rem;">
-        <div class="card">
+        <!-- Issue Report Form -->
+        <div class="card" style="grid-column: 1 / -1;">
           <h2>📋 Report an Issue</h2>
-          <p style="color:var(--muted); margin-bottom: 1rem;">Found something that needs attention? Let us know right away.</p>
+          <p style="color:var(--muted);">Found something that needs attention? Let us know right away.</p>
 
           <div id="issueForm" style="display:grid; gap:1rem;">
             <div class="form-group">
@@ -200,9 +220,10 @@
 
           <div class="success-msg" id="iSuccess">
             <h2>✅ Report Received</h2>
-            <p>Thank you for letting us know. Southern Coast Vacations has been notified and will follow up with you shortly. For urgent issues call <strong>843-663-6063 option 2</strong>.</p>
+            <p>Thank you for letting us know. Southern Coast Vacations has been notified and will follow up shortly. For urgent issues call <strong>843-663-6063 option 2</strong>.</p>
           </div>
         </div>
+
       </div>
 
       <div class="page-footer">
@@ -213,7 +234,6 @@
   </main>
 
   <script>
-    // Checklist interaction
     document.querySelectorAll('#checklist li').forEach(li => {
       const cb = li.querySelector('input[type="checkbox"]');
       li.addEventListener('click', (e) => {
@@ -222,7 +242,6 @@
       });
     });
 
-    // Issue report form
     document.getElementById('iSubmit').addEventListener('click', async () => {
       const name = document.getElementById('iName').value.trim();
       const email = document.getElementById('iEmail').value.trim();
