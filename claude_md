@@ -1,0 +1,155 @@
+# Paradise Surfside Beach — Project Context for Claude
+
+## Project Overview
+Static guest guide website for Paradise, a vacation rental property at 714B S Ocean Blvd, Surfside Beach, SC 29575.
+Hosted on GitHub Pages at paradisesurfsidesc.com.
+Built with vanilla HTML, CSS, and JavaScript — no frameworks.
+
+## Author
+David Taylor — paradise.surfsidesc@gmail.com
+
+## Site Structure
+```
+/
+├── index.html                  # Landing page (hero, day/night photo swap)
+├── paradise-info.html          # House info hub (photos, floor plans, videos, tour)
+├── plan-your-stay.html         # Guest planning hub
+├── restaurants.html            # Owner favorite restaurants
+├── things-to-do.html           # Nearby places & day trips
+├── signup.html                 # Klaviyo email signup (GDPR compliant)
+├── privacy.html                # Privacy policy
+├── sitemap.xml                 # SEO sitemap
+├── robots.txt                  # SEO robots
+├── photos.html                 # Photo gallery with lightbox
+├── videos.html                 # Video gallery
+├── floor-plans.html            # Floor plans (stub)
+├── tour.html                   # Matterport virtual tour embed
+├── breweries.html              # (stub)
+├── weather.html                # Redirects to NOAA (to be replaced)
+├── assets/
+│   ├── styles.css              # Global stylesheet (target: v1.3.1)
+│   └── site.js                 # Injected header, menu, weather, hero image
+├── images/
+│   ├── Paradise.png            # Dark logo
+│   ├── Paradise-white.png      # Light logo (used on solid header)
+│   ├── day.jpg                 # Daytime hero image
+│   ├── night.jpg               # Nighttime hero image
+│   └── [photo gallery images]
+└── guest/
+    ├── index.html              # Guest hub
+    ├── checkin.html            # Check-in inspection + issue report form
+    ├── checkout.html           # Checkout checklist + notification form
+    ├── quick-start.html        # WiFi, check-in/out times
+    ├── house.html              # TVs, AC, laundry, kitchen, grill
+    ├── pool.html               # Pool rules, hours, heat/cool
+    ├── parking.html            # Parking info
+    ├── trash.html              # Trash & recycling
+    └── help.html               # Contacts, emergency, maintenance form
+```
+
+## Key Integrations
+- **Weather:** Cloudflare Worker at `https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather`
+- **Email marketing:** Klaviyo (Public API Key: `UhvABe`, List ID: `SbCFKU`)
+- **Forms:** Formspree
+  - Maintenance/Check-in: `xaqanvoa`
+  - Checkout notification: [PENDING — create at formspree.io]
+- **Analytics:** GA4 (ID: `G-HFN4RF1QVT`) — not yet in current site.js, needs adding
+- **Booking:** https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise
+- **Tides:** NOAA API station `8661070` (Myrtle Beach)
+
+## Property Manager
+Southern Coast Vacations
+- Phone: 1-800-978-4988 / 843-663-6063 option 2
+- Email: stay@southerncoastvacations.com
+- Hours: Mon–Fri 9am–5pm | Summer: also Sat 9am–5pm | Closed Sun
+- Emergency: 843-663-6063 (listen for emergency prompt)
+
+## CSS Architecture
+- Single stylesheet: `assets/styles.css`
+- CSS variables in `:root` — always use these, never hardcode colors
+- `--headerH: 110px` — used by `#siteHeader` height and `.hero` calc
+- Logo: `.site-logo` at `90px` desktop, scales down at breakpoints
+- Page cards: `.page` class with `margin-top: 8px`
+- Cards: `.card` and `a.card` (clickable version with hover)
+- `.notice-card` — yellow bordered card for warnings (check-in page)
+- Breakpoints: 760px (2-col grid), 900px (mobile header), 640px, 420px
+
+## JavaScript Architecture
+- Single file: `assets/site.js`
+- Self-contained, no dependencies
+- Functions: `injectHeader()`, `setupMenu()`, `applyHeaderTheme()`, `setupScrollTheme()`, `applyHeroImage()`, `loadWeather()`
+- All image/nav paths must use **absolute paths** (e.g. `/images/Paradise.png`) so they work from subfolders like `/guest/`
+- Weather auto-refreshes every 5 minutes via `setTimeout`
+- Hero image swaps day/night at hour 7 (7am) and hour 19 (7pm)
+
+## Current File Versions
+| File | Version | Status |
+|------|---------|--------|
+| assets/styles.css | 1.2.0 | ⚠️ Needs update to 1.3.1 |
+| assets/site.js | 1.3.1 | ⚠️ Check absolute paths deployed |
+| index.html | 1.1.3 | ✅ |
+| paradise-info.html | 1.3.0 | ✅ |
+| plan-your-stay.html | 1.2.0 | ✅ |
+| restaurants.html | 1.0.0 | ⚠️ Descriptions need review |
+| things-to-do.html | 2.3.0 | ✅ |
+| signup.html | 1.0.0 | ✅ |
+| privacy.html | 1.0.0 | ✅ |
+| guest/index.html | 1.1.0 | ✅ |
+| guest/checkin.html | 1.1.0 | ✅ |
+| guest/checkout.html | 1.0.0 | ⚠️ Needs notification form |
+| guest/pool.html | 1.1.0 | ✅ |
+| guest/house.html | 1.0.0 | ✅ |
+| guest/help.html | 1.0.0 | ✅ |
+| guest/trash.html | 1.0.0 | ⚠️ Needs pickup days filled in |
+| guest/parking.html | 1.0.0 | ⚠️ Needs Surfside parking link |
+| guest/quick-start.html | 1.0.0 | ⚠️ Needs WiFi details filled in |
+| sitemap.xml | 1.0.0 | ⚠️ Not yet deployed |
+| robots.txt | 1.0.0 | ⚠️ Not yet deployed |
+
+## Pending Fixes (Priority Order)
+1. **styles.css** — Update to v1.3.1 (fix duplicate .site-logo, hero height calc, --headerH variable, .notice-card class, logo to 90px, footer mobile alignment)
+2. **site.js** — Ensure absolute paths for images and nav links (critical for /guest/ subfolder)
+3. **guest/checkout.html** — Add last name field + submit button that emails Southern Coast + paradise Gmail + cleaners (Formspree ID pending)
+4. **Paradise Info gap** — `margin-top: 8px` on `.page` in styles.css
+5. **photos.html** — Mobile sizing fixes for photo cards and description text
+6. **Logo** — Try increasing beyond 90px
+7. **weather.html** — Replace NOAA redirect with custom page:
+   - Live conditions (Tempest Worker)
+   - Hourly forecast (Open-Meteo API, free, no key)
+   - Daily forecast
+   - Tide schedule (NOAA API station 8661070)
+   - Beach condition indicator
+8. **guest/parking.html** — Add card linking to https://www.surfsidebeach.org/202/Parking
+9. **restaurants.html** — Review and fix all descriptions (currently placeholder/guessed)
+10. **GA4** — Add back to site.js (ID: G-HFN4RF1QVT)
+
+## Placeholder Data Still Needed
+- WiFi network name and password → `guest/quick-start.html`
+- Trash pickup day → `guest/trash.html`
+- Recycling pickup day → `guest/trash.html`
+- Cleaners contact info → Formspree checkout form
+- Formspree checkout form ID → `guest/checkout.html`
+- Vehicle parking limit → `guest/parking.html`
+- Pool opening time (dawn assumed) → `guest/pool.html`
+- Restaurant descriptions reviewed by owner → `restaurants.html`
+
+## Coding Conventions
+- All HTML files include version comment at top
+- Use semantic HTML — `<section>`, `<article>`, `<nav>`, `<main>`, `<header>`, `<footer>`
+- No inline styles except for `grid-column: 1 / -1` span overrides
+- No external CSS frameworks — Tailwind, Bootstrap etc not used
+- External links always use `target="_blank" rel="noopener noreferrer"`
+- All forms use Formspree for submission
+- `meta name="robots" content="noindex"` on all guest pages
+- Images use `loading="lazy"` except hero/above-fold images
+- Accessibility: `aria-label` on interactive elements, `alt` on all images
+
+## Design System
+- Background: `#071525`
+- Surface/Header: `rgba(20, 65, 110, 0.96)`
+- Accent: `#f2c14b` (gold/yellow)
+- Blue buttons: `rgba(31,105,160,.92)`
+- Card background: `rgba(255,255,255,.08)`
+- Border radius: 26px (page cards), 18px (cards), 12px (inputs), 999px (buttons/pills)
+- Font: system-ui stack
+- Headings: Georgia serif

@@ -1,4 +1,4 @@
-<!-- plan-your-stay.html -->
+<!-- weather.html -->
 <!-- Date - 2026-04-14 -->
 <!-- Version - 1.1.0 -->
 <!-- Notes - Fixed header overlap; converted cards to fully clickable links -->
@@ -9,46 +9,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Plan Your Stay | Paradise</title>
+  <title>Weather & Tides | Paradise</title>
 
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/site.js" defer></script>
 
   <style>
-    /* Push content below fixed header */
-    main {
-      padding-top: 100px;
-    }
-
-    /* Clickable card */
-    a.card {
-      display: grid;
-      gap: .55rem;
-      text-decoration: none;
-      color: inherit;
-      transition: background .18s ease, border-color .18s ease, transform .18s ease;
-      cursor: pointer;
-    }
-
-    a.card:hover,
-    a.card:focus-visible {
-      background: rgba(255,255,255,.13);
-      border-color: rgba(255,255,255,.3);
-      transform: translateY(-2px);
-    }
-
-    /* Multi-button card (House Visuals) */
-    .card-multi {
-      display: grid;
-      gap: .55rem;
-    }
-
-    .card-multi-btns {
-      display: flex;
-      gap: .5rem;
-      flex-wrap: wrap;
-      margin-top: .25rem;
-    }
+    main { padding-top: var(--headerH); }
   </style>
 </head>
 
