@@ -191,14 +191,13 @@ Southern Coast Vacations
 | guest/help.html | 1.0.0 | ✅ |
 | guest/trash.html | 1.0.0 | ✅ |
 | guest/parking.html | 1.0.0 | ✅ |
-| guest/quick-start.html | 1.0.0 | ⚠️ Retired — superseded by wifi.html; keep until confirmed |
+| guest/quick-start.html | — | 🗑️ Deleted — content moved to wifi.html and guest/index.html |
 
 ## Pending Fixes (Priority Order)
 1. **Cloudflare Worker route** — Add `paradisesurfsidesc.com/go/*` in Cloudflare dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route (also enables /api/events)
 2. **worker redeploy** — Run `cd worker && wrangler deploy` after Cloudflare route fix
 3. **weather-worker** — Deploy v1.1.0: `cd weather-worker && wrangler deploy`
 4. **restaurants.html** — Complete owner review, then retire in favour of dining.html
-5. **guest/quick-start.html** — Delete once confirmed redundant (content now in wifi.html)
 
 ## Placeholder Data Still Needed
 - Restaurant descriptions — owner review in progress
