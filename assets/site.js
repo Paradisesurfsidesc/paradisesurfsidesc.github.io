@@ -1,7 +1,7 @@
 // site.js
 // Date - 2026-04-19
-// Version - 1.3.2
-// Notes - applyHeaderTheme uses full path; weather nav links to internal page
+// Version - 1.3.3
+// Notes - Guest/public menu split; logo links to guest hub on guest pages; Sign Up — Stay in the Loop
 // Author - David Taylor
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,28 +11,46 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScrollTheme();
   applyHeroImage();
   loadWeather();
-  loadGA4();
 });
-
-function applyHeroImage() {
-  const heroBg = document.querySelector('.hero-bg');
-  if (!heroBg) return;
-
-  const hour = new Date().getHours();
-  const isNight = hour < 7 || hour >= 19;
-
-  heroBg.style.backgroundImage = isNight
-    ? 'url("/images/night.jpg")'
-    : 'url("/images/day.jpg")';
-}
 
 function injectHeader() {
   const headerHost = document.getElementById('siteHeader');
   if (!headerHost) return;
 
+  const isGuest = window.location.pathname.includes('/guest/');
+
+  const guestMenu = `
+    <a href="/guest/index.html">🏠 Welcome <span>›</span></a>
+    <a href="/guest/checkin.html">🏠 Check-In <span>›</span></a>
+    <a href="/guest/checkout.html">✅ Checkout <span>›</span></a>
+    <a href="/guest/wifi.html">📶 WiFi <span>›</span></a>
+    <a href="/dining-entertainment.html">🍽️ Dining & Entertainment <span>›</span></a>
+    <a href="/guest/pool.html">🏊 Pool <span>›</span></a>
+    <a href="/guest/house.html">🏡 The House <span>›</span></a>
+    <a href="/guest/trash.html">🗑️ Trash & Recycling <span>›</span></a>
+    <a href="/guest/parking.html">🚗 Parking <span>›</span></a>
+    <a href="/guest/help.html">🙋 Help & Contacts <span>›</span></a>
+    <hr style="border-color:rgba(255,255,255,.12); margin:.25rem 0;">
+    <a href="/plan-your-stay.html">🧭 Plan Your Stay <span>›</span></a>
+    <a href="/paradise-info.html">🏠 Paradise Info <span>›</span></a>
+    <a href="/index.html">🌐 Paradise Home <span>›</span></a>
+  `;
+
+  const publicMenu = `
+    <a href="/index.html">Home <span>›</span></a>
+    <a href="/paradise-info.html">Paradise Info <span>›</span></a>
+    <a href="/plan-your-stay.html">Plan Your Stay <span>›</span></a>
+    <a href="/signup.html">📧 Sign Up — Stay in the Loop <span>›</span></a>
+    <a
+      href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
+      target="_blank"
+      rel="noopener noreferrer"
+    >Book Now <span>↗</span></a>
+  `;
+
   headerHost.innerHTML = `
     <div class="site-header is-dark">
-      <a class="site-brand" href="/index.html" aria-label="Paradise home">
+      <a class="site-brand" href="${isGuest ? '/guest/index.html' : '/index.html'}" aria-label="Paradise home">
         <img
           class="site-logo logo-dark"
           src="/images/Paradise.png"
@@ -74,15 +92,7 @@ function injectHeader() {
       </div>
 
       <nav class="site-menu" id="siteMenu" aria-label="Site navigation">
-        <a href="/index.html">Home <span>›</span></a>
-        <a href="/paradise-info.html">Paradise Info <span>›</span></a>
-        <a href="/plan-your-stay.html">Plan Your Stay <span>›</span></a>
-        <a href="/signup.html">📧 Stay in the Loop <span>›</span></a>
-        <a
-          href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Book Now <span>↗</span></a>
+        ${isGuest ? guestMenu : publicMenu}
       </nav>
     </div>
   `;
@@ -129,8 +139,8 @@ function applyHeaderTheme() {
   const siteHeader = document.querySelector('.site-header');
   if (!siteHeader) return;
 
-  const path = window.location.pathname;
-  const isHeroPage = path === '/' || path === '/index.html' || path === '';
+  const page = window.location.pathname.split('/').pop() || 'index.html';
+  const isHeroPage = ['index.html', ''].includes(page);
 
   if (!isHeroPage) {
     siteHeader.classList.remove('is-dark');
@@ -156,21 +166,22 @@ function setupScrollTheme() {
   window.addEventListener('resize', updateTheme);
 }
 
-function loadGA4() {
-  const s = document.createElement('script');
-  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HFN4RF1QVT';
-  s.async = true;
-  document.head.appendChild(s);
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  window.gtag = gtag;
-  gtag('js', new Date());
-  gtag('config', 'G-HFN4RF1QVT');
+function applyHeroImage() {
+  const heroBg = document.querySelector('.hero-bg');
+  if (!heroBg) return;
+
+  const hour = new Date().getHours();
+  const isNight = hour < 7 || hour >= 19;
+
+  heroBg.style.backgroundImage = isNight
+    ? 'url("/images/night.jpg")'
+    : 'url("/images/day.jpg")';
 }
 
 async function loadWeather() {
   const tempEl = document.getElementById('weatherTemp');
   const condEl = document.getElementById('weatherCond');
+  const iconEl = document.getElementById('weatherIcon');
 
   if (!tempEl || !condEl) return;
 
@@ -181,7 +192,6 @@ async function loadWeather() {
     const data = await response.json();
     if (!data || data.ok !== true) throw new Error('Bad payload');
 
-    const iconEl = document.getElementById('weatherIcon');
     const temp = Number.isFinite(Number(data.temp_f)) ? `${Math.round(data.temp_f)}°` : '--°';
     tempEl.textContent = temp;
     condEl.textContent = data.condition || 'Live Weather';
@@ -191,6 +201,5 @@ async function loadWeather() {
     condEl.textContent = 'Live Weather';
   }
 
-  // Refresh every 5 minutes
   setTimeout(loadWeather, 5 * 60 * 1000);
 }

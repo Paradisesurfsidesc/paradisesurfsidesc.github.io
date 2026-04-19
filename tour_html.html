@@ -1,0 +1,130 @@
+<!-- tour.html -->
+<!-- Date - 2026-04-19 -->
+<!-- Version - 1.1.0 -->
+<!-- Notes - Replaced eager iframe with click-to-load poster pattern for Matterport embed -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Virtual Tour | Paradise | Surfside Beach, SC</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+
+  <style>
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+      cursor: pointer;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-poster {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-play-btn {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.35);
+      transition: background .2s ease;
+    }
+
+    .video-wrap:hover .video-play-btn {
+      background: rgba(0,0,0,.5);
+    }
+
+    .video-play-btn svg {
+      width: 72px;
+      height: 72px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.5));
+    }
+
+    .video-wrap.loaded .video-poster,
+    .video-wrap.loaded .video-play-btn {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="Virtual tour">
+
+      <div class="page-header">
+        <h1>🧭 Virtual Tour</h1>
+        <p>Take an interactive Matterport walk-through and explore every room of Paradise at your own pace.</p>
+      </div>
+
+      <div class="grid">
+
+        <div class="card" style="grid-column: 1 / -1;">
+          <h2>Interactive Walk-Through</h2>
+          <p>Click to start — then use your mouse or finger to look around every room.</p>
+          <div class="video-wrap" id="tourWrap">
+            <img
+              class="video-poster"
+              src="images/49-web-or-mls-39.JPG"
+              alt="Click to start the Paradise virtual tour"
+            >
+            <div class="video-play-btn" id="tourPlayBtn" role="button" tabindex="0" aria-label="Start virtual tour">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="40" fill="rgba(255,255,255,0.15)"/>
+                <polygon points="32,22 62,40 32,58" fill="white"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="paradise-info.html">← Paradise Info</a>
+        <a class="btn secondary" href="photos.html">Photos</a>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    function loadTour() {
+      var wrap = document.getElementById('tourWrap');
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://my.matterport.com/show/?m=514mJVRB8oL&brand=0&mls=1';
+      iframe.allow = 'fullscreen';
+      iframe.allowFullscreen = true;
+      wrap.appendChild(iframe);
+      wrap.classList.add('loaded');
+    }
+
+    document.getElementById('tourPlayBtn').addEventListener('click', loadTour);
+    document.getElementById('tourPlayBtn').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') loadTour();
+    });
+  </script>
+
+</body>
+</html>
