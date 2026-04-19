@@ -1,0 +1,7 @@
+name = "paradise-weather"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Secrets (set via wrangler secret put):
+#   TEMPEST_TOKEN       — your WeatherFlow personal access token
+#   TEMPEST_STATION_ID  — station ID (default: 204460)

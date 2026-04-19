@@ -17,7 +17,7 @@
   <style>
     .page-shell {
       min-height: 100vh;
-      padding: 120px 20px 40px;
+      padding: calc(var(--headerH) + 12px) 20px 40px;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -202,12 +202,15 @@
 
     @media (max-width: 640px) {
       .page-shell {
-        padding: 105px 14px 28px;
+        padding: 90px 14px 28px;
       }
 
       .photo-grid {
         grid-template-columns: 1fr;
       }
+
+      .photo-copy h3 { font-size: .95rem; }
+      .photo-copy p  { font-size: .88rem; }
 
       .lightbox {
         padding: 14px;
@@ -216,6 +219,12 @@
       .lightbox-close {
         top: 8px;
         right: 8px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .page-shell {
+        padding: 82px 10px 24px;
       }
     }
   </style>

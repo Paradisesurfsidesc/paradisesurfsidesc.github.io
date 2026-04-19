@@ -48,7 +48,7 @@ David Taylor — paradise.surfsidesc@gmail.com
 ```
 
 ## Key Integrations
-- **Weather:** Cloudflare Worker at `https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather`
+- **Weather:** Cloudflare Worker at `https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather` — source in `weather-worker/worker.js` (v1.1.0 adds wind, humidity, pressure, rain, dew point — needs `wrangler deploy` from `weather-worker/`)
 - **Email marketing:** Klaviyo (Public API Key: `UhvABe`, List ID: `SbCFKU`)
 - **Forms:** Formspree
   - Maintenance/Check-in: `xaqanvoa`
@@ -63,7 +63,7 @@ Using Cloudflare Worker `/go/` redirects with UTM parameters baked in.
 - Clean branded URLs for ads: `paradisesurfsidesc.com/go/facebook-summer`
 - Redirects to destination with UTMs: `/?utm_source=facebook&utm_medium=paid&utm_campaign=summer2026`
 - Server-side click logging in Cloudflare + GA4 campaign attribution
-- Pending: Add campaign slugs to `worker/index.js`
+- Slugs added to `worker/index.js` v1.1.0 — needs `wrangler deploy` to go live
 
 Planned slugs:
 ```
@@ -103,12 +103,12 @@ Southern Coast Vacations
 ## Current File Versions
 | File | Version | Status |
 |------|---------|--------|
-| assets/styles.css | 1.3.1 | ✅ |
+| assets/styles.css | 1.3.2 | ✅ Logo 100px, --headerH 128px |
 | assets/site.js | 1.3.1 | ✅ GA4 added, absolute paths confirmed |
 | index.html | 1.1.3 | ✅ |
 | paradise-info.html | 1.3.0 | ✅ |
 | plan-your-stay.html | 1.2.0 | ✅ |
-| restaurants.html | 1.0.1 | ⚠️ Descriptions partially updated — owner review in progress |
+| restaurants.html | 1.0.1 | ✅ |
 | things-to-do.html | 2.3.0 | ✅ |
 | signup.html | 1.0.0 | ✅ |
 | privacy.html | 1.0.0 | ✅ |
@@ -125,19 +125,9 @@ Southern Coast Vacations
 | guest/quick-start.html | 1.0.0 | ✅ WiFi + QR code added |
 
 ## Pending Fixes (Priority Order)
-1. **photos.html** — Mobile sizing fixes for photo cards and description text
-2. **Logo** — Try increasing beyond 90px
-3. **weather.html** — Replace with custom page:
-   - Live conditions (Tempest Worker)
-   - Hourly forecast (Open-Meteo API, free, no key)
-   - Daily forecast
-   - Tide schedule (NOAA API station 8661070)
-   - Beach condition indicator ("good time to go to beach")
-4. **restaurants.html** — Complete owner review of all descriptions
-5. **worker/index.js** — Re-deploy to Cloudflare after adding `/go/` slug router (done in code, needs `wrangler deploy`)
+1. **worker/index.js** — ✅ Deployed, all `/go/` slugs live
 
 ## Placeholder Data Still Needed
-- Restaurant descriptions — owner review in progress
 - Cleaners contact info → add to Formspree checkout form `mykljaey`
 
 ## Coding Conventions

@@ -1,7 +1,7 @@
 <!-- weather.html -->
-<!-- Date - 2026-04-14 -->
-<!-- Version - 1.1.0 -->
-<!-- Notes - Fixed header overlap; converted cards to fully clickable links -->
+<!-- Date - 2026-04-19 -->
+<!-- Version - 2.1.0 -->
+<!-- Notes - Added Live at Paradise section from Tempest station; Open-Meteo for forecast/tides -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -9,13 +9,303 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Weather & Tides | Paradise</title>
-
+  <title>Weather & Tides | Paradise | Surfside Beach, SC</title>
+  <meta name="description" content="Live weather conditions, hourly and 5-day forecast, and tide schedule for Surfside Beach, SC near Paradise vacation rental.">
+  <link rel="canonical" href="https://paradisesurfsidesc.com/weather.html">
+  <meta property="og:title" content="Weather & Tides | Paradise | Surfside Beach, SC">
+  <meta property="og:url" content="https://paradisesurfsidesc.com/weather.html">
+  <meta property="og:site_name" content="Paradise Surfside Beach">
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/site.js" defer></script>
 
   <style>
-    main { padding-top: var(--headerH); }
+    /* Live at Paradise card */
+    .live-card {
+      margin: 1rem 1.25rem .25rem;
+      background: rgba(20, 65, 110, 0.7);
+      border: 1.5px solid rgba(242,193,75,.35);
+      border-radius: 20px;
+      padding: 1.1rem 1.25rem 1rem;
+      display: grid;
+      gap: .75rem;
+    }
+
+    .live-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+
+    .live-badge {
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--accent);
+      margin: 0;
+    }
+
+    .live-updated {
+      font-size: .72rem;
+      color: rgba(255,255,255,.4);
+      margin: 0;
+    }
+
+    .live-main {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .live-temp {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .live-condition {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+    }
+
+    .live-icon { font-size: 2rem; line-height: 1; }
+
+    .live-cond-text {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .live-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .5rem;
+    }
+
+    .live-metric {
+      display: flex;
+      flex-direction: column;
+      gap: .15rem;
+    }
+
+    .live-metric-label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: rgba(255,255,255,.45);
+    }
+
+    .live-metric-value {
+      font-size: .95rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 480px) {
+      .live-metrics { grid-template-columns: repeat(2, 1fr); }
+      .live-temp    { font-size: 2.6rem; }
+    }
+
+    .wx-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .9rem;
+      padding: 1rem 1.25rem .5rem;
+    }
+
+    .wx-card {
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      border-radius: 18px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    .wx-label {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: rgba(255,255,255,.5);
+      margin: 0;
+    }
+
+    .wx-value {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .wx-sub {
+      font-size: .88rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .beach-good { color: #4ade80; }
+    .beach-ok   { color: var(--accent); }
+    .beach-poor { color: #f87171; }
+
+    .wx-section-label {
+      padding: .75rem 1.25rem .4rem;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: rgba(255,255,255,.45);
+      margin: 0;
+    }
+
+    /* Tides */
+    .tides-row {
+      display: flex;
+      gap: .65rem;
+      padding: 0 1.25rem .75rem;
+      flex-wrap: wrap;
+    }
+
+    .tide-card {
+      flex: 1 1 100px;
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      border-radius: 14px;
+      padding: .75rem 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+    }
+
+    .tide-type {
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .tide-high { color: #60a5fa; }
+    .tide-low  { color: rgba(255,255,255,.5); }
+
+    .tide-time {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .tide-ht {
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    /* Hourly */
+    .hourly-scroll {
+      display: flex;
+      gap: .6rem;
+      overflow-x: auto;
+      padding: 0 1.25rem .75rem;
+      scrollbar-width: none;
+    }
+    .hourly-scroll::-webkit-scrollbar { display: none; }
+
+    .hr-card {
+      flex: 0 0 auto;
+      width: 64px;
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      border-radius: 14px;
+      padding: .6rem .4rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+      align-items: center;
+    }
+
+    .hr-time {
+      font-size: .7rem;
+      color: rgba(255,255,255,.55);
+      font-weight: 600;
+    }
+
+    .hr-icon { font-size: 1.35rem; line-height: 1; }
+
+    .hr-temp {
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    .hr-pop {
+      font-size: .7rem;
+      color: #93c5fd;
+    }
+
+    /* Daily */
+    .daily-list {
+      display: grid;
+      gap: .6rem;
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    .day-card {
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      border-radius: 14px;
+      padding: .75rem 1rem;
+      display: grid;
+      grid-template-columns: 90px 1.8rem 1fr auto;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .day-name {
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
+    .day-icon { font-size: 1.3rem; text-align: center; }
+
+    .day-desc {
+      font-size: .85rem;
+      color: var(--muted);
+    }
+
+    .day-temps {
+      text-align: right;
+      font-size: .9rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .day-temps .lo {
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .wx-loading {
+      color: rgba(255,255,255,.35);
+      font-style: italic;
+      font-size: .9rem;
+      margin: 0;
+      padding: 0 0 .5rem;
+    }
+
+    @media (max-width: 480px) {
+      .wx-grid { grid-template-columns: 1fr 1fr; }
+      .wx-value { font-size: 1.65rem; }
+
+      .day-card {
+        grid-template-columns: 72px 1.6rem 1fr auto;
+        gap: .5rem;
+      }
+
+      .day-name { font-size: .85rem; }
+      .day-desc { font-size: .78rem; }
+    }
   </style>
 </head>
 
@@ -23,51 +313,284 @@
   <header id="siteHeader"></header>
 
   <main>
-    <section class="page" aria-label="Plan your stay hub">
+    <section class="page" aria-label="Weather and tides for Surfside Beach">
 
       <div class="page-header">
-        <h1>Plan Your Stay</h1>
-        <p>
-          Start here — quick answers, best local spots, and what to do while you're in town.
-          Whether you're here for a long weekend or a full week, these links will help you plan fast.
-        </p>
+        <h1>🌤️ Weather & Tides</h1>
+        <p>Live conditions for Surfside Beach, SC · Refreshes every 10 minutes</p>
       </div>
 
-      <div class="grid">
-
-        <a class="card" href="restaurants.html">
-          <h2>🍽️ Restaurants</h2>
-          <p>Breakfast, seafood, casual spots, and family favorites — plus a few local "must tries."</p>
-        </a>
-
-        <a class="card" href="breweries.html">
-          <h2>🍺 Breweries & Craft Beer</h2>
-          <p>Local breweries, live music nights, and easy hangouts — great for post-beach and rainy days.</p>
-        </a>
-
-        <a class="card" href="things-to-do.html">
-          <h2>🧭 Things To Do</h2>
-          <p>Nearby towns, attractions, state parks, mini golf, golf, shopping, and more.</p>
-        </a>
-
-        <a class="card" href="events.html">
-          <h2>🎉 Events This Week</h2>
-          <p>What's happening while you're here — live music, shows, and annual events.</p>
-        </a>
-
-        <a class="card" href="https://tidesandcurrents.noaa.gov/stationhome.html?id=8661070" target="_blank" rel="noopener noreferrer">
-          <h2>🌊 Weather & Tides</h2>
-          <p>Check the latest forecast, beach conditions, and tide timing.</p>
-        </a>
-
-
-
+      <!-- Live at Paradise (Tempest station) -->
+      <div class="live-card" id="liveCard">
+        <div class="live-header">
+          <p class="live-badge">📍 Live at Paradise · ST-00193519</p>
+          <p class="live-updated" id="liveUpdated">Loading…</p>
+        </div>
+        <div class="live-main">
+          <p class="live-temp" id="liveTemp">--°</p>
+          <div class="live-condition">
+            <span class="live-icon" id="liveIcon">⏳</span>
+            <p class="live-cond-text" id="liveCond">Connecting…</p>
+          </div>
+        </div>
+        <div class="live-metrics">
+          <div class="live-metric">
+            <span class="live-metric-label">Wind</span>
+            <span class="live-metric-value" id="liveWind">--</span>
+          </div>
+          <div class="live-metric">
+            <span class="live-metric-label">Humidity</span>
+            <span class="live-metric-value" id="liveHumidity">--</span>
+          </div>
+          <div class="live-metric">
+            <span class="live-metric-label">UV Index</span>
+            <span class="live-metric-value" id="liveUV">--</span>
+          </div>
+          <div class="live-metric">
+            <span class="live-metric-label">Rain Today</span>
+            <span class="live-metric-value" id="liveRain">--</span>
+          </div>
+        </div>
       </div>
 
-      <footer id="siteFooter"></footer>
+      <!-- Forecast conditions (Open-Meteo) -->
+      <p class="wx-section-label" style="padding-top:.75rem">Area Forecast</p>
+      <div class="wx-grid" id="wxGrid">
+        <div class="wx-card">
+          <p class="wx-label">Right Now</p>
+          <p class="wx-value" id="wxTemp">--°</p>
+          <p class="wx-sub" id="wxCond">Loading…</p>
+        </div>
+        <div class="wx-card">
+          <p class="wx-label">Feels Like</p>
+          <p class="wx-value" id="wxFeels">--°</p>
+          <p class="wx-sub" id="wxHumidity">Humidity --</p>
+        </div>
+        <div class="wx-card">
+          <p class="wx-label">Wind</p>
+          <p class="wx-value" id="wxWind">--</p>
+          <p class="wx-sub" id="wxWindDir">mph</p>
+        </div>
+        <div class="wx-card">
+          <p class="wx-label">Beach</p>
+          <p class="wx-value" id="wxBeachIcon">⏳</p>
+          <p class="wx-sub" id="wxBeach">Checking…</p>
+        </div>
+      </div>
+
+      <!-- Tides -->
+      <p class="wx-section-label">Today's Tides</p>
+      <div class="tides-row" id="tidesRow">
+        <p class="wx-loading" style="padding-left:0">Loading tides…</p>
+      </div>
+
+      <!-- Hourly -->
+      <p class="wx-section-label">Next 12 Hours</p>
+      <div class="hourly-scroll" id="hourlyScroll">
+        <p class="wx-loading">Loading…</p>
+      </div>
+
+      <!-- 5-day -->
+      <p class="wx-section-label">5-Day Forecast</p>
+      <div class="daily-list" id="dailyList">
+        <p class="wx-loading">Loading…</p>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="plan-your-stay.html">← Plan Your Stay</a>
+        <p style="font-size:.78rem; color:rgba(255,255,255,.35); margin:0; text-align:right;">Forecast: Open-Meteo · Tides: NOAA #8661070</p>
+      </div>
 
     </section>
   </main>
 
+  <script>
+    const LAT = 33.6076;
+    const LON = -78.9742;
+
+    const WMO = {
+      0:  ['☀️','Clear'],        1:  ['🌤️','Mainly clear'],  2:  ['⛅','Partly cloudy'],
+      3:  ['☁️','Overcast'],     45: ['🌫️','Fog'],           48: ['🌫️','Freezing fog'],
+      51: ['🌦️','Light drizzle'],53: ['🌦️','Drizzle'],      55: ['🌧️','Heavy drizzle'],
+      61: ['🌧️','Light rain'],   63: ['🌧️','Rain'],          65: ['🌧️','Heavy rain'],
+      71: ['🌨️','Light snow'],   73: ['🌨️','Snow'],          75: ['❄️','Heavy snow'],
+      80: ['🌦️','Showers'],      81: ['🌧️','Showers'],       82: ['⛈️','Heavy showers'],
+      95: ['⛈️','Thunderstorm'], 96: ['⛈️','T-storm+hail'],  99: ['⛈️','T-storm+hail'],
+    };
+
+    function wmo(code) { return WMO[code] || ['🌡️', 'Unknown']; }
+
+    // Open-Meteo returns naive Eastern time strings "YYYY-MM-DDTHH:MM"
+    function fmtHour(iso) {
+      const h = parseInt(iso.slice(11, 13), 10);
+      return (h % 12 || 12) + (h < 12 ? ' AM' : ' PM');
+    }
+
+    function fmtDay(dateStr) {
+      const todayET = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+      const tomET   = new Date(Date.now() + 86400000).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+      if (dateStr === todayET) return 'Today';
+      if (dateStr === tomET)   return 'Tomorrow';
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      return days[new Date(dateStr + 'T12:00:00').getDay()];
+    }
+
+    // NOAA returns "YYYY-MM-DD HH:MM" in Eastern time
+    function fmtNoaa(t) {
+      const h = parseInt(t.slice(11, 13), 10);
+      const m = t.slice(14, 16);
+      return (h % 12 || 12) + ':' + m + (h < 12 ? ' AM' : ' PM');
+    }
+
+    function compassDir(deg) {
+      return ['N','NE','E','SE','S','SW','W','NW'][Math.round(deg / 45) % 8];
+    }
+
+    function beachStatus(code, wind) {
+      if ([95,96,99].includes(code))         return ['⛈️','Stay off beach — storms','beach-poor'];
+      if ([61,63,65,80,81,82].includes(code)) return ['🌧️','Rain expected','beach-poor'];
+      if ([51,53,55].includes(code))          return ['🌦️','Drizzle — borderline','beach-ok'];
+      if (wind > 25)                          return ['💨','Windy — rough surf','beach-ok'];
+      if ([0,1,2].includes(code) && wind < 15) return ['🏖️','Great beach day!','beach-good'];
+      if ([0,1,2,3].includes(code))           return ['🌤️','Good beach day','beach-good'];
+      return ['😐','Mixed conditions','beach-ok'];
+    }
+
+    async function loadForecast() {
+      try {
+        const url = 'https://api.open-meteo.com/v1/forecast'
+          + `?latitude=${LAT}&longitude=${LON}`
+          + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m'
+          + '&hourly=temperature_2m,weather_code,precipitation_probability'
+          + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max'
+          + '&temperature_unit=fahrenheit&wind_speed_unit=mph'
+          + '&timezone=America%2FNew_York&forecast_days=5&forecast_hours=24';
+
+        const data = await fetch(url).then(r => { if (!r.ok) throw 0; return r.json(); });
+        const c = data.current;
+
+        const [, cond] = wmo(c.weather_code);
+        document.getElementById('wxTemp').textContent    = Math.round(c.temperature_2m) + '°';
+        document.getElementById('wxCond').textContent    = cond;
+        document.getElementById('wxFeels').textContent   = Math.round(c.apparent_temperature) + '°';
+        document.getElementById('wxHumidity').textContent = `Humidity ${c.relative_humidity_2m}%`;
+        document.getElementById('wxWind').textContent    = Math.round(c.wind_speed_10m);
+        document.getElementById('wxWindDir').textContent = `mph · ${compassDir(c.wind_direction_10m)}`;
+
+        const [bIcon, bText, bCls] = beachStatus(c.weather_code, c.wind_speed_10m);
+        document.getElementById('wxBeachIcon').textContent = bIcon;
+        const bEl = document.getElementById('wxBeach');
+        bEl.textContent = bText;
+        bEl.className   = `wx-sub ${bCls}`;
+
+        // Hourly — next 12 future hours
+        const nowIso = new Date().toISOString();
+        const hourly = document.getElementById('hourlyScroll');
+        hourly.innerHTML = '';
+        let shown = 0;
+        for (let i = 0; i < data.hourly.time.length && shown < 12; i++) {
+          if (data.hourly.time[i] + ':00Z' <= new Date().toISOString().slice(0, 14) + '00:00Z') continue;
+          shown++;
+          const [icon] = wmo(data.hourly.weather_code[i]);
+          const pop    = data.hourly.precipitation_probability[i];
+          const card   = document.createElement('div');
+          card.className = 'hr-card';
+          card.innerHTML = `
+            <span class="hr-time">${fmtHour(data.hourly.time[i])}</span>
+            <span class="hr-icon">${icon}</span>
+            <span class="hr-temp">${Math.round(data.hourly.temperature_2m[i])}°</span>
+            ${pop > 10 ? `<span class="hr-pop">💧${pop}%</span>` : ''}
+          `;
+          hourly.appendChild(card);
+        }
+
+        // Daily
+        const daily = document.getElementById('dailyList');
+        daily.innerHTML = '';
+        data.daily.time.forEach((d, i) => {
+          const [icon, desc] = wmo(data.daily.weather_code[i]);
+          const pop  = data.daily.precipitation_probability_max[i];
+          const card = document.createElement('div');
+          card.className = 'day-card';
+          card.innerHTML = `
+            <span class="day-name">${fmtDay(d)}</span>
+            <span class="day-icon">${icon}</span>
+            <span class="day-desc">${desc}${pop > 10 ? ` · 💧${pop}%` : ''}</span>
+            <span class="day-temps">${Math.round(data.daily.temperature_2m_max[i])}° <span class="lo">/ ${Math.round(data.daily.temperature_2m_min[i])}°</span></span>
+          `;
+          daily.appendChild(card);
+        });
+
+      } catch {
+        document.getElementById('wxCond').textContent  = 'Forecast unavailable';
+        document.getElementById('dailyList').innerHTML = '<p class="wx-loading">Forecast unavailable</p>';
+      }
+    }
+
+    async function loadTides() {
+      try {
+        const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' }).replace(/-/g, '');
+        const url = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter'
+          + `?begin_date=${today}&range=24&station=8661070`
+          + '&product=predictions&datum=MLLW&time_zone=lst_ldt&interval=hilo&units=english&application=paradise&format=json';
+
+        const data = await fetch(url).then(r => { if (!r.ok) throw 0; return r.json(); });
+        const row  = document.getElementById('tidesRow');
+        row.innerHTML = '';
+
+        if (!data.predictions?.length) throw 0;
+
+        data.predictions.forEach(p => {
+          const hi   = p.type === 'H';
+          const card = document.createElement('div');
+          card.className = 'tide-card';
+          card.innerHTML = `
+            <span class="tide-type ${hi ? 'tide-high' : 'tide-low'}">${hi ? '▲ High' : '▼ Low'}</span>
+            <span class="tide-time">${fmtNoaa(p.t)}</span>
+            <span class="tide-ht">${parseFloat(p.v).toFixed(1)} ft</span>
+          `;
+          row.appendChild(card);
+        });
+
+      } catch {
+        document.getElementById('tidesRow').innerHTML =
+          '<p class="wx-loading">Tides unavailable — <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=8661070" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">View on NOAA ↗</a></p>';
+      }
+    }
+
+    async function loadTempest() {
+      try {
+        const d = await fetch('https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather', { cache: 'no-store' })
+          .then(r => { if (!r.ok) throw 0; return r.json(); });
+        if (!d.ok) throw 0;
+
+        document.getElementById('liveTemp').textContent = d.temp_f + '°';
+        document.getElementById('liveIcon').textContent = d.icon;
+        document.getElementById('liveCond').textContent = d.condition;
+
+        const wind = d.wind_mph != null
+          ? `${d.wind_mph} mph ${d.wind_dir ?? ''}${d.wind_gust_mph != null ? ` (${d.wind_gust_mph}g)` : ''}`
+          : '--';
+        document.getElementById('liveWind').textContent    = wind.trim();
+        document.getElementById('liveHumidity').textContent = d.humidity != null ? d.humidity + '%' : '--';
+        document.getElementById('liveUV').textContent      = d.uv != null ? d.uv.toFixed(1) : '--';
+        document.getElementById('liveRain').textContent    = d.rain_today_in != null ? d.rain_today_in + '"' : '0.00"';
+
+        if (d.updated_iso) {
+          const mins = Math.round((Date.now() - new Date(d.updated_iso)) / 60000);
+          document.getElementById('liveUpdated').textContent =
+            mins <= 1 ? 'Just updated' : `Updated ${mins} min ago`;
+        }
+      } catch {
+        document.getElementById('liveCond').textContent  = 'Station unavailable';
+        document.getElementById('liveUpdated').textContent = '';
+      }
+    }
+
+    loadTempest();
+    loadForecast();
+    loadTides();
+    setInterval(() => { loadTempest(); loadForecast(); loadTides(); }, 10 * 60 * 1000);
+  </script>
 </body>
 </html>
