@@ -1,7 +1,7 @@
 // site.js
-// Date - 2026-04-14
-// Version - 1.3.1
-// Notes - Fixed applyHeroImage scope; all functions now correctly outside DOMContentLoaded
+// Date - 2026-04-19
+// Version - 1.3.2
+// Notes - applyHeaderTheme uses full path; weather nav links to internal page
 // Author - David Taylor
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -53,9 +53,7 @@ function injectHeader() {
         <a
           class="weather"
           id="weatherChip"
-          href="https://tempestwx.com/station/204460/"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/weather.html"
           aria-label="Live weather for Surfside Beach"
         >
           <span id="weatherIcon">⛅</span>
@@ -131,8 +129,8 @@ function applyHeaderTheme() {
   const siteHeader = document.querySelector('.site-header');
   if (!siteHeader) return;
 
-  const page = window.location.pathname.split('/').pop() || 'index.html';
-  const isHeroPage = ['index.html', ''].includes(page);
+  const path = window.location.pathname;
+  const isHeroPage = path === '/' || path === '/index.html' || path === '';
 
   if (!isHeroPage) {
     siteHeader.classList.remove('is-dark');
