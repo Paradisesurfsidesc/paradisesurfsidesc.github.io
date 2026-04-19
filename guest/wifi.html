@@ -1,0 +1,60 @@
+<!-- guest/wifi.html -->
+<!-- Date - 2026-04-19 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Standalone WiFi info with QR code -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>WiFi | Paradise Guest Guide</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/site.js" defer></script>
+</head>
+
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="WiFi">
+
+      <div class="page-header">
+        <h1>📶 WiFi</h1>
+        <p>Connect in seconds.</p>
+      </div>
+
+      <div class="grid">
+
+        <div class="card">
+          <h2>📶 Network Info</h2>
+          <p><strong>Network:</strong> Paradise</p>
+          <p><strong>Password:</strong> Tim3ToR3l@x!</p>
+          <div id="wifiQR" style="margin-top:.75rem; display:flex; justify-content:center;"></div>
+        </div>
+
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="index.html">← Guest Guide</a>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    new QRCode(document.getElementById('wifiQR'), {
+      text: 'WIFI:T:WPA;S:Paradise;P:Tim3ToR3l@x!;;',
+      width: 180,
+      height: 180,
+      colorDark: '#ffffff',
+      colorLight: '#0a1e37',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  </script>
+
+</body>
+</html>

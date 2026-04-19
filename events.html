@@ -1,1 +1,97 @@
+<!-- events.html -->
+<!-- Date - 2026-04-19 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Surfside Beach events from town calendar -->
+<!-- Author - David Taylor -->
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Events | Paradise | Surfside Beach, SC</title>
+  <meta name="description" content="Upcoming events in Surfside Beach, SC — live music, festivals, and local happenings near Paradise vacation rental.">
+  <link rel="canonical" href="https://paradisesurfsidesc.com/events.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://paradisesurfsidesc.com/events.html">
+  <meta property="og:title" content="Events | Paradise | Surfside Beach, SC">
+  <meta property="og:description" content="Upcoming events in Surfside Beach, SC — live music, festivals, and local happenings near Paradise vacation rental.">
+  <meta property="og:image" content="https://paradisesurfsidesc.com/images/48-web-or-mls-Location.jpg">
+  <meta property="og:site_name" content="Paradise Surfside Beach">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
+
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="Surfside Beach events">
+
+      <div class="page-header">
+        <h1>🎉 Surfside Beach Events</h1>
+        <p>Upcoming events from the Town of Surfside Beach — live music, festivals, and local happenings near Paradise.</p>
+      </div>
+
+      <div id="eventsGrid" class="grid">
+        <!-- JS populates this -->
+        <div class="card" style="grid-column: 1 / -1">
+          <p>Loading events…</p>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="plan-your-stay.html">← Plan Your Stay</a>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    async function loadEvents() {
+      const grid = document.getElementById('eventsGrid');
+      if (!grid) return;
+
+      try {
+        const res = await fetch('https://paradise-events-and-go.paradise-surfsidesc.workers.dev/api/events');
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const data = await res.json();
+        if (!data.ok || !data.events?.length) throw new Error('No events');
+
+        grid.innerHTML = data.events.map(ev => {
+          const date = new Date(ev.start);
+          const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' });
+          const timeStr = ev.start.includes('T') ? date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' }) : 'All day';
+
+          const inner = `
+            <h2>${escHtml(ev.summary)}</h2>
+            <p><strong>${escHtml(dateStr)}</strong> · ${escHtml(timeStr)}</p>
+            ${ev.location ? `<p>📍 ${escHtml(ev.location)}</p>` : ''}
+            ${ev.description ? `<p>${escHtml(ev.description).slice(0, 200)}${ev.description.length > 200 ? '…' : ''}</p>` : ''}
+          `;
+
+          if (ev.url) {
+            return `<a class="card" href="${escHtml(ev.url)}" target="_blank" rel="noopener noreferrer">${inner}<p style="color:var(--accent);margin-top:.5rem">More info ↗</p></a>`;
+          }
+          return `<div class="card">${inner}</div>`;
+        }).join('');
+
+      } catch {
+        grid.innerHTML = `
+          <div class="card" style="grid-column: 1 / -1">
+            <h2>🎉 Check the Town Calendar</h2>
+            <p>Visit the Town of Surfside Beach website for the latest events calendar.</p>
+            <p style="margin-top:.5rem"><a href="https://www.surfsidebeach.org/calendar" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">surfsidebeach.org/calendar ↗</a></p>
+          </div>
+        `;
+      }
+    }
+
+    function escHtml(str) {
+      return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    loadEvents();
+  </script>
+</body>
+</html>

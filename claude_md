@@ -6,7 +6,7 @@ Hosted on GitHub Pages at paradisesurfsidesc.com.
 Built with vanilla HTML, CSS, and JavaScript — no frameworks.
 
 ## Author
-David Taylor — paradise.surfsidesc@gmail.com
+David Taylor — hello@paradisesurfsidesc.com
 
 ## Site Structure
 ```
@@ -14,7 +14,11 @@ David Taylor — paradise.surfsidesc@gmail.com
 ├── index.html                  # Landing page (hero, day/night photo swap)
 ├── paradise-info.html          # House info hub (photos, floor plans, videos, tour)
 ├── plan-your-stay.html         # Guest planning hub
-├── restaurants.html            # Owner favorite restaurants
+├── dining-entertainment.html   # Hub: Dining, Breweries, Attractions (NEW)
+├── dining.html                 # Owner favorites + Surfside dining categories (NEW)
+├── breweries.html              # Myrtle Beach Beer Trail + individual breweries (NEW)
+├── attractions.html            # 19 Surfside attractions static cards (NEW)
+├── restaurants.html            # Owner favorite restaurants (to be absorbed into dining.html)
 ├── things-to-do.html           # Nearby places & day trips
 ├── signup.html                 # Klaviyo email signup (GDPR compliant)
 ├── privacy.html                # Privacy policy
@@ -24,8 +28,8 @@ David Taylor — paradise.surfsidesc@gmail.com
 ├── videos.html                 # Video gallery
 ├── floor-plans.html            # Floor plans (stub)
 ├── tour.html                   # Matterport virtual tour embed
-├── breweries.html              # (stub)
-├── weather.html                # Custom weather page: live Tempest, forecast, tides v2.1.0
+├── weather.html                # Custom weather: live Tempest, forecast, NOAA tides v2.1.0
+├── events.html                 # Events feed (stub — Cloudflare Worker ICS feed ready)
 ├── assets/
 │   ├── styles.css              # Global stylesheet v1.3.2
 │   └── site.js                 # Injected header, menu, weather, hero image v1.3.2
@@ -36,10 +40,11 @@ David Taylor — paradise.surfsidesc@gmail.com
 │   ├── night.jpg               # Nighttime hero image
 │   └── [photo gallery images]
 └── guest/
-    ├── index.html              # Guest hub
+    ├── index.html              # Guest hub v1.2.0
     ├── checkin.html            # Check-in inspection + issue report form
     ├── checkout.html           # Checkout checklist + notification form
-    ├── quick-start.html        # WiFi, check-in/out times
+    ├── wifi.html               # WiFi info — standalone page (NEW)
+    ├── quick-start.html        # To be renamed Help & Contacts, moved to last card
     ├── house.html              # TVs, AC, laundry, kitchen, grill
     ├── pool.html               # Pool rules, hours, heat/cool
     ├── parking.html            # Parking info
@@ -47,41 +52,75 @@ David Taylor — paradise.surfsidesc@gmail.com
     └── help.html               # Contacts, emergency, maintenance form
 ```
 
+## Dining & Entertainment Structure
+Single shared page set used by both Plan Your Stay and Guest Hub — update once, reflects everywhere:
+
+- `dining-entertainment.html` — Hub with 3 cards: Dining, Breweries, Attractions
+- `dining.html` — Owner's Favorites + Surfside dining category links
+- `breweries.html` — Myrtle Beach Beer Trail + individual brewery cards
+- `attractions.html` — 19 Surfside Beach attractions (static, sourced Apr 2026)
+
+Dining categories (visitsurfsidebeach.com):
+- Breakfast & Lunch → /Dining.html?cid=105
+- Dessert & Bakery → /Dining.html?cid=110
+- Fast Food → /Dining.html?cid=115
+- Full Service → /Dining.html?cid=120
+- Pizza & Deli → /Dining.html?cid=125
+- Specialty, Other → /Dining.html?cid=130
+- Take-Out & Delivery → /Dining.html?cid=135
+- Lounges & Pubs → /Dining.html?cid=140
+
+Attractions categories (visitsurfsidebeach.com):
+- Amusements & Fun Parks → /Attractions.html?cid=105
+- Golf, Sports, Mini Golf → /Attractions.html?cid=110
+- Museums, Gardens, Libraries → /Attractions.html?cid=115
+- Parks, Zoo, Outdoors → /Attractions.html?cid=120
+- Shows, Movies, Theater → /Attractions.html?cid=125
+- Water Sports & Fishing → /Attractions.html?cid=130
+- Nearby Attractions → /Attractions.html?cid=135
+
+## Guest Hub Restructure (Pending)
+New card order for `guest/index.html`:
+1. 🏠 Check-In → checkin.html (add check-in time 4PM)
+2. ✅ Checkout → checkout.html (add check-out time 10AM)
+3. 📶 WiFi → wifi.html (new standalone page)
+4. 🍽️ Dining & Entertainment → dining-entertainment.html (shared page)
+5. 🏊 Pool → pool.html
+6. 🏠 The House → house.html
+7. 🗑️ Trash & Recycling → trash.html
+8. 🚗 Parking → parking.html
+9. 🙋 Help & Contacts → help.html (last card — replaces quick-start)
+
+Changes:
+- `quick-start.html` → retired, content moved to help.html and wifi.html
+- Door access card dropped
+- Check-in/out times added to respective cards
+- Dining & Entertainment card added
+
 ## Key Integrations
-- **Weather:** Cloudflare Worker at `https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather` — source in `weather-worker/worker.js` (v1.1.0, needs `wrangler deploy` from `weather-worker/`)
+- **Weather:** Cloudflare Worker at `https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather` — source in `weather-worker/worker.js` (v1.1.0 — needs `wrangler deploy` from `weather-worker/`)
 - **Email marketing:** Klaviyo (Public API Key: `UhvABe`, List ID: `SbCFKU`)
 - **Forms:** Formspree
   - Maintenance/Check-in: `xgorzvan` → account: `maintenance@paradisesurfsidesc.com`
   - Checkout notification: `xlgalddj` → account: `checkout@paradisesurfsidesc.com`
   - `notifications@paradisesurfsidesc.com` — reserved for future use
-  - Old deprecated forms: `xaqanvoa`, `mykljaey`, `xeevzqdr`, `xjgjovqk`
-- **Analytics:** GA4 (ID: `G-HFN4RF1QVT`) — added to site.js v1.3.1
+  - Deprecated: `xaqanvoa`, `mykljaey`, `xeevzqdr`, `xjgjovqk`
+- **Analytics:** GA4 (ID: `G-HFN4RF1QVT`) — in site.js v1.3.2
 - **Booking:** https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise
 - **Tides:** NOAA API station `8661070` (Myrtle Beach)
-- **URL Redirects:** Cloudflare Worker `/go/` slugs — source in `worker/index.js` v1.1.0 (deployed). Route `paradisesurfsidesc.com/go/*` must be added manually in Cloudflare dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route.
+- **URL Redirects:** Cloudflare Worker `/go/` slugs — `worker/index.js` v1.1.0 deployed
+  - Route `paradisesurfsidesc.com/go/*` must be added in Cloudflare dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route
+- **Events:** Cloudflare Worker ICS feed (env.ICS_URL = surfsidebeach.org calendar) — frontend page pending
 
-## URL Redirect Strategy (No Bitly Needed)
-Using Cloudflare Worker `/go/` redirects with UTM parameters baked in.
-- Clean branded URLs for ads: `paradisesurfsidesc.com/go/facebook-summer`
-- Redirects to destination with UTMs: `/?utm_source=facebook&utm_medium=paid&utm_campaign=summer2026`
-- Server-side click logging in Cloudflare + GA4 campaign attribution
-
-Live slugs (in `worker/index.js`):
+## URL Redirect Slugs
 ```
 /go/facebook-summer  → /?utm_source=facebook&utm_medium=paid&utm_campaign=summer2026
 /go/facebook-pool    → /?utm_source=facebook&utm_medium=paid&utm_campaign=pool-feature
 /go/instagram        → /?utm_source=instagram&utm_medium=social&utm_campaign=organic
 /go/email-april      → /?utm_source=email&utm_medium=newsletter&utm_campaign=april2026
-/go/book             → [booking URL with UTMs]
+/go/book             → booking URL with UTMs
 /go/guest            → /guest/?utm_source=qr&utm_medium=print&utm_campaign=in-property
 ```
-
-## Email & Survey Strategy
-- **Guest surveys/feedback** — handled via Klaviyo post-stay automation + Microsoft Forms (free with M365)
-  - Klaviyo triggers email 2-3 days after checkout
-  - Links to Microsoft Form survey
-  - Responses stored in M365/Excel automatically
-  - To be built when Klaviyo automations are set up
 
 ## Microsoft 365 Setup
 - Primary licensed account: `hello@paradisesurfsidesc.com`
@@ -91,6 +130,12 @@ Live slugs (in `worker/index.js`):
   - `checkout@paradisesurfsidesc.com` — checkout notifications
   - `notifications@paradisesurfsidesc.com` — reserved for future use
   - `noreply@paradisesurfsidesc.com` — Klaviyo campaign sending address
+
+## Email & Survey Strategy
+- Post-stay surveys via Klaviyo automation + Microsoft Forms (free with M365)
+- Klaviyo triggers email 2-3 days after checkout → links to Microsoft Form
+- Responses stored in M365/Excel automatically
+- To be built when Klaviyo automations are set up
 
 ## Property Manager
 Southern Coast Vacations
@@ -113,7 +158,7 @@ Southern Coast Vacations
 - Single file: `assets/site.js`
 - Self-contained, no dependencies
 - Functions: `injectHeader()`, `setupMenu()`, `applyHeaderTheme()`, `setupScrollTheme()`, `applyHeroImage()`, `loadWeather()`, `loadGA4()`
-- All image/nav paths must use **absolute paths** (e.g. `/images/Paradise.png`) so they work from subfolders like `/guest/`
+- All image/nav paths must use **absolute paths** (e.g. `/images/Paradise.png`)
 - Weather auto-refreshes every 5 minutes via `setTimeout`
 - Hero image swaps day/night at hour 7 (7am) and hour 19 (7pm)
 
@@ -121,42 +166,50 @@ Southern Coast Vacations
 | File | Version | Status |
 |------|---------|--------|
 | assets/styles.css | 1.3.2 | ✅ Logo 100px, --headerH 128px |
-| assets/site.js | 1.3.2 | ✅ Full-path header theme fix, weather chip → /weather.html |
+| assets/site.js | 1.3.2 | ✅ GA4, absolute paths, weather → /weather.html |
 | index.html | 1.1.3 | ✅ |
 | paradise-info.html | 1.3.0 | ✅ |
-| plan-your-stay.html | 1.2.0 | ✅ Weather & Tides card → /weather.html |
+| plan-your-stay.html | 1.3.0 | ✅ Dining & Entertainment + Events cards added |
 | weather.html | 2.1.0 | ✅ Live Tempest, Open-Meteo forecast, NOAA tides |
-| restaurants.html | 1.0.1 | ⚠️ Descriptions partially updated — owner review in progress |
+| dining-entertainment.html | 1.0.0 | ✅ Hub: Dining, Breweries, Attractions |
+| dining.html | 1.0.0 | ✅ Owner picks + Surfside category links |
+| breweries.html | 1.0.0 | ✅ Beer Trail + brewery cards |
+| attractions.html | 1.0.0 | ✅ 19 area attractions + category browse |
+| events.html | 1.0.0 | ✅ ICS feed frontend (needs worker route in Cloudflare) |
+| restaurants.html | 1.0.1 | ⚠️ Owner review in progress — to be absorbed into dining.html |
 | things-to-do.html | 2.3.0 | ✅ |
 | signup.html | 1.0.0 | ✅ |
 | privacy.html | 1.0.0 | ✅ |
 | sitemap.xml | 1.0.0 | ✅ |
 | robots.txt | 1.0.0 | ✅ |
-| guest/index.html | 1.2.0 | ✅ Weather & Tides card added |
+| guest/index.html | 1.3.0 | ✅ Restructured: new card order, WiFi + Dining cards |
 | guest/checkin.html | 1.1.0 | ✅ |
-| guest/checkout.html | 1.1.0 | ✅ Notification form (Formspree xlgalddj) |
+| guest/checkout.html | 1.1.0 | ✅ Formspree xlgalddj |
+| guest/wifi.html | 1.0.0 | ✅ Standalone WiFi + QR code |
 | guest/pool.html | 1.1.0 | ✅ |
 | guest/house.html | 1.0.0 | ✅ |
 | guest/help.html | 1.0.0 | ✅ |
-| guest/trash.html | 1.0.0 | ✅ Pickup days filled in |
-| guest/parking.html | 1.0.0 | ✅ Max 7 vehicles; Surfside parking link added |
-| guest/quick-start.html | 1.0.0 | ✅ WiFi + QR code added |
+| guest/trash.html | 1.0.0 | ✅ |
+| guest/parking.html | 1.0.0 | ✅ |
+| guest/quick-start.html | 1.0.0 | ⚠️ Retired — superseded by wifi.html; keep until confirmed |
 
 ## Pending Fixes (Priority Order)
-1. **Cloudflare Worker route** — Add `paradisesurfsidesc.com/go/*` route manually: Cloudflare Dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route
-2. **weather-worker** — Deploy v1.1.0 with new fields: `cd weather-worker && wrangler deploy`
-3. **restaurants.html** — Complete owner review of all descriptions
-4. **Cleaners contact info** — Add to Formspree checkout form `xlgalddj`
+1. **Cloudflare Worker route** — Add `paradisesurfsidesc.com/go/*` in Cloudflare dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route (also enables /api/events)
+2. **worker redeploy** — Run `cd worker && wrangler deploy` after Cloudflare route fix
+3. **weather-worker** — Deploy v1.1.0: `cd weather-worker && wrangler deploy`
+4. **restaurants.html** — Complete owner review, then retire in favour of dining.html
+5. **guest/quick-start.html** — Delete once confirmed redundant (content now in wifi.html)
 
 ## Placeholder Data Still Needed
 - Restaurant descriptions — owner review in progress
 - Cleaners contact info → add to Formspree checkout form `xlgalddj`
+- WiFi credentials: Network `Paradise`, Password `Tim3ToR3l@x!` → use when building `guest/wifi.html`
 
 ## Coding Conventions
 - All HTML files include version comment at top
 - Use semantic HTML — `<section>`, `<article>`, `<nav>`, `<main>`, `<header>`, `<footer>`
 - No inline styles except for `grid-column: 1 / -1` span overrides
-- No external CSS frameworks — Tailwind, Bootstrap etc not used
+- No external CSS frameworks
 - External links always use `target="_blank" rel="noopener noreferrer"`
 - All forms use Formspree for submission
 - `meta name="robots" content="noindex"` on all guest pages
