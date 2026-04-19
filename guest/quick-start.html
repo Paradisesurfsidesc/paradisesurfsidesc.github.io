@@ -29,8 +29,9 @@
 
         <div class="card">
           <h2>📶 WiFi</h2>
-          <p><strong>Network:</strong> [WIFI_NAME]</p>
-          <p><strong>Password:</strong> [WIFI_PASSWORD]</p>
+          <p><strong>Network:</strong> Paradise</p>
+          <p><strong>Password:</strong> Tim3ToR3l@x!</p>
+          <div id="wifiQR" style="margin-top:.75rem; display:flex; justify-content:center;"></div>
         </div>
 
         <div class="card">
@@ -59,6 +60,18 @@
 
     </section>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    new QRCode(document.getElementById('wifiQR'), {
+      text: 'WIFI:T:WPA;S:Paradise;P:Tim3ToR3l@x!;;',
+      width: 180,
+      height: 180,
+      colorDark: '#ffffff',
+      colorLight: '#0a1e37',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  </script>
 
 </body>
 </html>
