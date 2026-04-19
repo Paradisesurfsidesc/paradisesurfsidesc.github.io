@@ -25,10 +25,10 @@ David Taylor — paradise.surfsidesc@gmail.com
 ├── floor-plans.html            # Floor plans (stub)
 ├── tour.html                   # Matterport virtual tour embed
 ├── breweries.html              # (stub)
-├── weather.html                # To be replaced with custom weather/tides page
+├── weather.html                # Custom weather page: live Tempest, forecast, tides v2.1.0
 ├── assets/
-│   ├── styles.css              # Global stylesheet v1.3.1
-│   └── site.js                 # Injected header, menu, weather, hero image v1.3.1
+│   ├── styles.css              # Global stylesheet v1.3.2
+│   └── site.js                 # Injected header, menu, weather, hero image v1.3.2
 ├── images/
 │   ├── Paradise.png            # Dark logo
 │   ├── Paradise-white.png      # Light logo (used on solid header)
@@ -48,24 +48,25 @@ David Taylor — paradise.surfsidesc@gmail.com
 ```
 
 ## Key Integrations
-- **Weather:** Cloudflare Worker at `https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather` — source in `weather-worker/worker.js` (v1.1.0 adds wind, humidity, pressure, rain, dew point — needs `wrangler deploy` from `weather-worker/`)
+- **Weather:** Cloudflare Worker at `https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather` — source in `weather-worker/worker.js` (v1.1.0, needs `wrangler deploy` from `weather-worker/`)
 - **Email marketing:** Klaviyo (Public API Key: `UhvABe`, List ID: `SbCFKU`)
 - **Forms:** Formspree
-  - Maintenance/Check-in: `xaqanvoa`
-  - Checkout notification: `mykljaey`
+  - Maintenance/Check-in: `xgorzvan` → account: `maintenance@paradisesurfsidesc.com`
+  - Checkout notification: `xlgalddj` → account: `checkout@paradisesurfsidesc.com`
+  - `notifications@paradisesurfsidesc.com` — reserved for future use
+  - Old deprecated forms: `xaqanvoa`, `mykljaey`, `xeevzqdr`, `xjgjovqk`
 - **Analytics:** GA4 (ID: `G-HFN4RF1QVT`) — added to site.js v1.3.1
 - **Booking:** https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise
 - **Tides:** NOAA API station `8661070` (Myrtle Beach)
-- **URL Redirects:** Cloudflare Worker `/go/` slugs (replaces Bitly — no third party needed)
+- **URL Redirects:** Cloudflare Worker `/go/` slugs — source in `worker/index.js` v1.1.0 (deployed). Route `paradisesurfsidesc.com/go/*` must be added manually in Cloudflare dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route.
 
 ## URL Redirect Strategy (No Bitly Needed)
 Using Cloudflare Worker `/go/` redirects with UTM parameters baked in.
 - Clean branded URLs for ads: `paradisesurfsidesc.com/go/facebook-summer`
 - Redirects to destination with UTMs: `/?utm_source=facebook&utm_medium=paid&utm_campaign=summer2026`
 - Server-side click logging in Cloudflare + GA4 campaign attribution
-- Slugs added to `worker/index.js` v1.1.0 — needs `wrangler deploy` to go live
 
-Planned slugs:
+Live slugs (in `worker/index.js`):
 ```
 /go/facebook-summer  → /?utm_source=facebook&utm_medium=paid&utm_campaign=summer2026
 /go/facebook-pool    → /?utm_source=facebook&utm_medium=paid&utm_campaign=pool-feature
@@ -74,6 +75,22 @@ Planned slugs:
 /go/book             → [booking URL with UTMs]
 /go/guest            → /guest/?utm_source=qr&utm_medium=print&utm_campaign=in-property
 ```
+
+## Email & Survey Strategy
+- **Guest surveys/feedback** — handled via Klaviyo post-stay automation + Microsoft Forms (free with M365)
+  - Klaviyo triggers email 2-3 days after checkout
+  - Links to Microsoft Form survey
+  - Responses stored in M365/Excel automatically
+  - To be built when Klaviyo automations are set up
+
+## Microsoft 365 Setup
+- Primary licensed account: `hello@paradisesurfsidesc.com`
+- Shared mailboxes (free):
+  - `privacy@paradisesurfsidesc.com` — GDPR requests
+  - `maintenance@paradisesurfsidesc.com` — maintenance requests
+  - `checkout@paradisesurfsidesc.com` — checkout notifications
+  - `notifications@paradisesurfsidesc.com` — reserved for future use
+  - `noreply@paradisesurfsidesc.com` — Klaviyo campaign sending address
 
 ## Property Manager
 Southern Coast Vacations
@@ -85,8 +102,8 @@ Southern Coast Vacations
 ## CSS Architecture
 - Single stylesheet: `assets/styles.css`
 - CSS variables in `:root` — always use these, never hardcode colors
-- `--headerH: 110px` — used by `#siteHeader` height and `.hero` calc
-- Logo: `.site-logo` at `90px` desktop, scales down at breakpoints
+- `--headerH: 128px` — used by `#siteHeader` height and `.hero` calc
+- Logo: `.site-logo` at `100px` desktop, scales down at breakpoints
 - Page cards: `.page` class with `margin-top: 8px`
 - Cards: `.card` and `a.card` (clickable version with hover)
 - `.notice-card` — yellow bordered card for warnings (check-in page)
@@ -95,7 +112,7 @@ Southern Coast Vacations
 ## JavaScript Architecture
 - Single file: `assets/site.js`
 - Self-contained, no dependencies
-- Functions: `injectHeader()`, `setupMenu()`, `applyHeaderTheme()`, `setupScrollTheme()`, `applyHeroImage()`, `loadWeather()`
+- Functions: `injectHeader()`, `setupMenu()`, `applyHeaderTheme()`, `setupScrollTheme()`, `applyHeroImage()`, `loadWeather()`, `loadGA4()`
 - All image/nav paths must use **absolute paths** (e.g. `/images/Paradise.png`) so they work from subfolders like `/guest/`
 - Weather auto-refreshes every 5 minutes via `setTimeout`
 - Hero image swaps day/night at hour 7 (7am) and hour 19 (7pm)
@@ -104,19 +121,20 @@ Southern Coast Vacations
 | File | Version | Status |
 |------|---------|--------|
 | assets/styles.css | 1.3.2 | ✅ Logo 100px, --headerH 128px |
-| assets/site.js | 1.3.1 | ✅ GA4 added, absolute paths confirmed |
+| assets/site.js | 1.3.2 | ✅ Full-path header theme fix, weather chip → /weather.html |
 | index.html | 1.1.3 | ✅ |
 | paradise-info.html | 1.3.0 | ✅ |
-| plan-your-stay.html | 1.2.0 | ✅ |
-| restaurants.html | 1.0.1 | ✅ |
+| plan-your-stay.html | 1.2.0 | ✅ Weather & Tides card → /weather.html |
+| weather.html | 2.1.0 | ✅ Live Tempest, Open-Meteo forecast, NOAA tides |
+| restaurants.html | 1.0.1 | ⚠️ Descriptions partially updated — owner review in progress |
 | things-to-do.html | 2.3.0 | ✅ |
 | signup.html | 1.0.0 | ✅ |
 | privacy.html | 1.0.0 | ✅ |
 | sitemap.xml | 1.0.0 | ✅ |
 | robots.txt | 1.0.0 | ✅ |
-| guest/index.html | 1.1.0 | ✅ |
+| guest/index.html | 1.2.0 | ✅ Weather & Tides card added |
 | guest/checkin.html | 1.1.0 | ✅ |
-| guest/checkout.html | 1.1.0 | ✅ Notification form added (Formspree mykljaey) |
+| guest/checkout.html | 1.1.0 | ✅ Notification form (Formspree xlgalddj) |
 | guest/pool.html | 1.1.0 | ✅ |
 | guest/house.html | 1.0.0 | ✅ |
 | guest/help.html | 1.0.0 | ✅ |
@@ -125,10 +143,14 @@ Southern Coast Vacations
 | guest/quick-start.html | 1.0.0 | ✅ WiFi + QR code added |
 
 ## Pending Fixes (Priority Order)
-1. **worker/index.js** — ✅ Deployed, all `/go/` slugs live
+1. **Cloudflare Worker route** — Add `paradisesurfsidesc.com/go/*` route manually: Cloudflare Dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route
+2. **weather-worker** — Deploy v1.1.0 with new fields: `cd weather-worker && wrangler deploy`
+3. **restaurants.html** — Complete owner review of all descriptions
+4. **Cleaners contact info** — Add to Formspree checkout form `xlgalddj`
 
 ## Placeholder Data Still Needed
-- Cleaners contact info → add to Formspree checkout form `mykljaey`
+- Restaurant descriptions — owner review in progress
+- Cleaners contact info → add to Formspree checkout form `xlgalddj`
 
 ## Coding Conventions
 - All HTML files include version comment at top
