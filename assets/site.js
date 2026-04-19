@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScrollTheme();
   applyHeroImage();
   loadWeather();
+  loadGA4();
 });
 
 function applyHeroImage() {
@@ -21,8 +22,8 @@ function applyHeroImage() {
   const isNight = hour < 7 || hour >= 19;
 
   heroBg.style.backgroundImage = isNight
-    ? 'url("images/night.jpg")'
-    : 'url("images/day.jpg")';
+    ? 'url("/images/night.jpg")'
+    : 'url("/images/day.jpg")';
 }
 
 function injectHeader() {
@@ -155,6 +156,18 @@ function setupScrollTheme() {
   updateTheme();
   window.addEventListener('scroll', updateTheme, { passive: true });
   window.addEventListener('resize', updateTheme);
+}
+
+function loadGA4() {
+  const s = document.createElement('script');
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HFN4RF1QVT';
+  s.async = true;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-HFN4RF1QVT');
 }
 
 async function loadWeather() {

@@ -85,52 +85,40 @@ Southern Coast Vacations
 ## Current File Versions
 | File | Version | Status |
 |------|---------|--------|
-| assets/styles.css | 1.2.0 | ⚠️ Needs update to 1.3.1 |
-| assets/site.js | 1.3.1 | ⚠️ Check absolute paths deployed |
+| assets/styles.css | 1.3.1 | ✅ |
+| assets/site.js | 1.3.1 | ✅ GA4 added, absolute paths confirmed |
 | index.html | 1.1.3 | ✅ |
 | paradise-info.html | 1.3.0 | ✅ |
 | plan-your-stay.html | 1.2.0 | ✅ |
-| restaurants.html | 1.0.0 | ⚠️ Descriptions need review |
+| restaurants.html | 1.0.0 | ⚠️ Descriptions need owner review |
 | things-to-do.html | 2.3.0 | ✅ |
 | signup.html | 1.0.0 | ✅ |
 | privacy.html | 1.0.0 | ✅ |
 | guest/index.html | 1.1.0 | ✅ |
 | guest/checkin.html | 1.1.0 | ✅ |
-| guest/checkout.html | 1.0.0 | ⚠️ Needs notification form |
+| guest/checkout.html | 1.0.0 | ✅ Notification form added (Formspree mykljaey) |
 | guest/pool.html | 1.1.0 | ✅ |
 | guest/house.html | 1.0.0 | ✅ |
 | guest/help.html | 1.0.0 | ✅ |
-| guest/trash.html | 1.0.0 | ⚠️ Needs pickup days filled in |
-| guest/parking.html | 1.0.0 | ⚠️ Needs Surfside parking link |
-| guest/quick-start.html | 1.0.0 | ⚠️ Needs WiFi details filled in |
+| guest/trash.html | 1.0.0 | ✅ Pickup days filled in |
+| guest/parking.html | 1.0.0 | ✅ Max 7 vehicles; Surfside parking link added |
+| guest/quick-start.html | 1.0.0 | ✅ WiFi + QR code added |
 | sitemap.xml | 1.0.0 | ⚠️ Not yet deployed |
 | robots.txt | 1.0.0 | ⚠️ Not yet deployed |
 
 ## Pending Fixes (Priority Order)
-1. **styles.css** — Update to v1.3.1 (fix duplicate .site-logo, hero height calc, --headerH variable, .notice-card class, logo to 90px, footer mobile alignment)
-2. **site.js** — Ensure absolute paths for images and nav links (critical for /guest/ subfolder)
-3. **guest/checkout.html** — Add last name field + submit button that emails Southern Coast + paradise Gmail + cleaners (Formspree ID pending)
-4. **Paradise Info gap** — `margin-top: 8px` on `.page` in styles.css
-5. **photos.html** — Mobile sizing fixes for photo cards and description text
-6. **Logo** — Try increasing beyond 90px
-7. **weather.html** — Replace NOAA redirect with custom page:
+1. **guest/checkout.html** — Add last name field + submit button that emails Southern Coast + paradise Gmail + cleaners (Formspree ID pending)
+2. **photos.html** — Mobile sizing fixes for photo cards and description text
+3. **Logo** — Try increasing beyond 90px
+4. **weather.html** — Replace with custom page:
    - Live conditions (Tempest Worker)
    - Hourly forecast (Open-Meteo API, free, no key)
    - Daily forecast
    - Tide schedule (NOAA API station 8661070)
    - Beach condition indicator
-8. **guest/parking.html** — Add card linking to https://www.surfsidebeach.org/202/Parking
-9. **restaurants.html** — Review and fix all descriptions (currently placeholder/guessed)
-10. **GA4** — Add back to site.js (ID: G-HFN4RF1QVT)
+5. **restaurants.html** — Review and fix all descriptions (currently placeholder/guessed)
 
 ## Placeholder Data Still Needed
-- WiFi network name and password → `guest/quick-start.html`
-- Trash pickup day → `guest/trash.html`
-- Recycling pickup day → `guest/trash.html`
-- Cleaners contact info → Formspree checkout form
-- Formspree checkout form ID → `guest/checkout.html`
-- Vehicle parking limit → `guest/parking.html`
-- Pool opening time (dawn assumed) → `guest/pool.html`
 - Restaurant descriptions reviewed by owner → `restaurants.html`
 
 ## Coding Conventions
