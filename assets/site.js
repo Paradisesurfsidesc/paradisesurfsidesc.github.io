@@ -1,7 +1,7 @@
 // site.js
 // Date - 2026-04-19
-// Version - 1.3.3
-// Notes - Guest/public menu split; logo links to guest hub on guest pages; Sign Up — Stay in the Loop
+// Version - 1.3.4
+// Notes - GA4 restored; guest/public menu split; logo links to guest hub on guest pages
 // Author - David Taylor
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScrollTheme();
   applyHeroImage();
   loadWeather();
+  loadGA4();
 });
 
 function injectHeader() {
@@ -202,4 +203,16 @@ async function loadWeather() {
   }
 
   setTimeout(loadWeather, 5 * 60 * 1000);
+}
+
+function loadGA4() {
+  const s = document.createElement('script');
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HFN4RF1QVT';
+  s.async = true;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-HFN4RF1QVT');
 }

@@ -14,10 +14,10 @@ David Taylor — hello@paradisesurfsidesc.com
 ├── index.html                  # Landing page (hero, day/night photo swap)
 ├── paradise-info.html          # House info hub (photos, floor plans, videos, tour)
 ├── plan-your-stay.html         # Guest planning hub
-├── dining-entertainment.html   # Hub: Dining, Breweries, Attractions (NEW)
-├── dining.html                 # Owner favorites + Surfside dining categories (NEW)
-├── breweries.html              # Myrtle Beach Beer Trail + individual breweries (NEW)
-├── attractions.html            # 19 Surfside attractions static cards (NEW)
+├── dining-entertainment.html   # Hub: Dining, Breweries, Attractions
+├── dining.html                 # Owner favorites + Surfside dining categories
+├── breweries.html              # Myrtle Beach Beer Trail + individual breweries
+├── attractions.html            # 19 Surfside attractions static cards
 ├── restaurants.html            # Owner favorite restaurants (to be absorbed into dining.html)
 ├── things-to-do.html           # Nearby places & day trips
 ├── signup.html                 # Klaviyo email signup "Sign Up — Stay in the Loop" (GDPR compliant)
@@ -25,14 +25,14 @@ David Taylor — hello@paradisesurfsidesc.com
 ├── sitemap.xml                 # SEO sitemap
 ├── robots.txt                  # SEO robots
 ├── photos.html                 # Photo gallery with lightbox
-├── videos.html                 # Video gallery
+├── videos.html                 # Video gallery — click-to-load Aryeo embed
 ├── floor-plans.html            # Floor plans (stub)
-├── tour.html                   # Matterport virtual tour embed
-├── weather.html                # Custom weather: live Tempest, forecast, NOAA tides v2.1.0
-├── events.html                 # Events feed (stub — Cloudflare Worker ICS feed ready)
+├── tour.html                   # Matterport virtual tour — click-to-load
+├── weather.html                # Custom weather: live Tempest, forecast, NOAA tides
+├── events.html                 # Surfside Beach events from town ICS calendar
 ├── assets/
 │   ├── styles.css              # Global stylesheet v1.3.2
-│   └── site.js                 # Injected header, menu, weather, hero image v1.3.2
+│   └── site.js                 # Injected header, guest/public menu split, weather v1.3.3
 ├── images/
 │   ├── Paradise.png            # Dark logo
 │   ├── Paradise-white.png      # Light logo (used on solid header)
@@ -40,11 +40,10 @@ David Taylor — hello@paradisesurfsidesc.com
 │   ├── night.jpg               # Nighttime hero image
 │   └── [photo gallery images]
 └── guest/
-    ├── index.html              # Guest hub v1.2.0
+    ├── index.html              # Guest hub v1.3.0
     ├── checkin.html            # Check-in inspection + issue report form
     ├── checkout.html           # Checkout checklist + notification form
-    ├── wifi.html               # WiFi info — standalone page (NEW)
-    ├── quick-start.html        # To be renamed Help & Contacts, moved to last card
+    ├── wifi.html               # WiFi info + QR code
     ├── house.html              # TVs, AC, laundry, kitchen, grill
     ├── pool.html               # Pool rules, hours, heat/cool
     ├── parking.html            # Parking info
@@ -79,23 +78,22 @@ Attractions categories (visitsurfsidebeach.com):
 - Water Sports & Fishing → /Attractions.html?cid=130
 - Nearby Attractions → /Attractions.html?cid=135
 
-## Guest Hub Restructure (Pending)
-New card order for `guest/index.html`:
-1. 🏠 Check-In → checkin.html (add check-in time 4PM)
-2. ✅ Checkout → checkout.html (add check-out time 10AM)
-3. 📶 WiFi → wifi.html (new standalone page)
-4. 🍽️ Dining & Entertainment → dining-entertainment.html (shared page)
+## Guest Hub Structure (✅ Complete)
+Card order for `guest/index.html` v1.3.0:
+1. 🏠 Check-In → checkin.html (check-in time 4PM)
+2. ✅ Checkout → checkout.html (check-out time 10AM)
+3. 📶 WiFi → wifi.html
+4. 🍽️ Dining & Entertainment → /dining-entertainment.html (shared page)
 5. 🏊 Pool → pool.html
-6. 🏠 The House → house.html
+6. 🏡 The House → house.html
 7. 🗑️ Trash & Recycling → trash.html
 8. 🚗 Parking → parking.html
-9. 🙋 Help & Contacts → help.html (last card — replaces quick-start)
+9. 🙋 Help & Contacts → help.html (last card)
 
-Changes:
-- `quick-start.html` → retired, content moved to help.html and wifi.html
+Notes:
+- `quick-start.html` retired — content moved to wifi.html + help.html
 - Door access card dropped
-- Check-in/out times added to respective cards
-- Dining & Entertainment card added
+- Dining & Entertainment card added (shared with public site)
 
 ## Key Integrations
 - **Weather:** Cloudflare Worker at `https://paradise-weather.paradise-surfsidesc.workers.dev/api/weather` — source in `weather-worker/worker.js` (v1.1.0 — needs `wrangler deploy` from `weather-worker/`)
@@ -105,12 +103,12 @@ Changes:
   - Checkout notification: `xlgalddj` → account: `checkout@paradisesurfsidesc.com`
   - `notifications@paradisesurfsidesc.com` — reserved for future use
   - Deprecated: `xaqanvoa`, `mykljaey`, `xeevzqdr`, `xjgjovqk`
-- **Analytics:** GA4 (ID: `G-HFN4RF1QVT`) — in site.js v1.3.2
+- **Analytics:** GA4 (ID: `G-HFN4RF1QVT`) — `loadGA4()` in site.js v1.3.4
 - **Booking:** https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise
 - **Tides:** NOAA API station `8661070` (Myrtle Beach)
-- **URL Redirects:** Cloudflare Worker `/go/` slugs — `worker/index.js` v1.1.0 deployed
+- **URL Redirects:** Cloudflare Worker `/go/` slugs — `worker/index.js` v1.2.0 deployed
   - Route `paradisesurfsidesc.com/go/*` must be added in Cloudflare dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route
-- **Events:** Cloudflare Worker ICS feed (env.ICS_URL = surfsidebeach.org calendar) — frontend page pending
+- **Events:** `worker/index.js` `/api/events` endpoint parses ICS feed — `events.html` frontend built
 
 ## URL Redirect Slugs
 ```
@@ -153,6 +151,7 @@ Southern Coast Vacations
 - Cards: `.card` and `a.card` (clickable version with hover)
 - `.notice-card` — yellow bordered card for warnings (check-in page)
 - Breakpoints: 760px (2-col grid), 900px (mobile header), 640px, 420px
+- `.site-menu` — fix `white-space: nowrap` clipping longer guest menu items on mobile (pending)
 
 ## JavaScript Architecture
 - Single file: `assets/site.js`
@@ -160,24 +159,27 @@ Southern Coast Vacations
 - Functions: `injectHeader()`, `setupMenu()`, `applyHeaderTheme()`, `setupScrollTheme()`, `applyHeroImage()`, `loadWeather()`, `loadGA4()`
 - All image/nav paths must use **absolute paths** (e.g. `/images/Paradise.png`)
 - `isGuest` flag — `window.location.pathname.includes('/guest/')` controls menu and logo link
-- Guest menu includes full guest navigation + divider + Plan Your Stay, Paradise Info, Paradise Home
-- Public menu includes Home, Paradise Info, Plan Your Stay, Sign Up — Stay in the Loop, Book Now
+- Guest menu: full guest navigation + divider + Plan Your Stay, Paradise Info, Paradise Home
+- Public menu: Home, Paradise Info, Plan Your Stay, Sign Up — Stay in the Loop, Book Now
+- Weather chip links to `/weather.html`
 - Weather auto-refreshes every 5 minutes via `setTimeout`
 - Hero image swaps day/night at hour 7 (7am) and hour 19 (7pm)
+- Video embeds use click-to-load poster pattern — never load iframe on page load
 
 ## Current File Versions
 | File | Version | Status |
 |------|---------|--------|
 | assets/styles.css | 1.3.2 | ✅ Logo 100px, --headerH 128px |
-| assets/site.js | 1.3.3 | ✅ Guest/public menu split, logo links to guest hub on guest pages, Sign Up — Stay in the Loop |
+| assets/site.js | 1.3.3 | ✅ Guest/public menu split, weather → /weather.html |
 | index.html | 1.1.3 | ✅ |
 | paradise-info.html | 1.3.0 | ✅ |
-| plan-your-stay.html | 1.2.0 | ⚠️ Needs Dining & Entertainment card replacing Restaurants + Breweries |
+| plan-your-stay.html | 1.3.0 | ✅ Dining & Entertainment + Events cards |
 | weather.html | 2.1.0 | ✅ Live Tempest, Open-Meteo forecast, NOAA tides |
-| dining-entertainment.html | — | 🔴 Not yet built |
-| dining.html | — | 🔴 Not yet built |
-| breweries.html | — | 🔴 Not yet built |
-| attractions.html | — | 🔴 Not yet built |
+| dining-entertainment.html | 1.0.0 | ✅ Hub: Dining, Breweries, Attractions |
+| dining.html | 1.0.0 | ✅ Owner picks + Surfside category links |
+| breweries.html | 1.0.0 | ✅ Beer Trail + brewery cards |
+| attractions.html | 1.0.0 | ✅ 19 area attractions + category browse |
+| events.html | 1.0.0 | ✅ ICS feed frontend (needs Cloudflare route) |
 | restaurants.html | 1.0.1 | ⚠️ Owner review in progress — to be absorbed into dining.html |
 | things-to-do.html | 2.3.0 | ✅ |
 | signup.html | 1.0.0 | ✅ |
@@ -186,37 +188,30 @@ Southern Coast Vacations
 | robots.txt | 1.0.0 | ✅ |
 | videos.html | 1.2.0 | ✅ Click-to-load poster pattern (Aryeo embed) |
 | tour.html | 1.1.0 | ✅ Click-to-load poster pattern (Matterport embed) |
-| guest/index.html | 1.2.0 | ⚠️ Needs restructure per Guest Hub Restructure section |
+| worker/index.js | 1.2.0 | ✅ /go/* redirects + /api/events ICS endpoint |
+| guest/index.html | 1.3.0 | ✅ Restructured: WiFi, Dining & Entertainment cards |
 | guest/checkin.html | 1.1.0 | ✅ |
 | guest/checkout.html | 1.1.0 | ✅ Formspree xlgalddj |
-| guest/wifi.html | — | 🔴 Not yet built |
+| guest/wifi.html | 1.0.0 | ✅ WiFi + QR code |
 | guest/pool.html | 1.1.0 | ✅ |
 | guest/house.html | 1.0.0 | ✅ |
-| guest/help.html | 1.0.0 | ✅ |
+| guest/help.html | 1.0.0 | ✅ Formspree xgorzvan |
 | guest/trash.html | 1.0.0 | ✅ |
 | guest/parking.html | 1.0.0 | ✅ |
-| guest/quick-start.html | 1.0.0 | ⚠️ To be retired — content moving to wifi.html + help.html |
 
 ## Pending Fixes (Priority Order)
-1. **site.js** — Confirm GA4 `loadGA4()` function is in live file and add back to v1.3.3 if missing
+1. **GA4** — Confirm `loadGA4()` is in live site.js v1.3.3; add back if missing (ID: G-HFN4RF1QVT)
 2. **Cloudflare Worker route** — Add `paradisesurfsidesc.com/go/*` in Cloudflare dashboard → Workers & Pages → paradise-events-and-go → Triggers → Add Route
-3. **weather-worker** — Deploy v1.1.0: `cd weather-worker && wrangler deploy`
-4. **dining-entertainment.html** — Build hub page with 3 cards
-5. **dining.html** — Owner favorites + Surfside dining category links
-6. **breweries.html** — Beer Trail + individual breweries
-7. **attractions.html** — 19 Surfside attractions as styled cards
-8. **plan-your-stay.html** — Replace Restaurants + Breweries cards with single Dining & Entertainment card
-9. **guest/index.html** — Full restructure per Guest Hub Restructure section
-10. **guest/wifi.html** — New standalone WiFi page
-11. **photos.html** — Mobile sizing fixes
-12. **events.html** — Build frontend using Cloudflare Worker ICS feed
-13. **restaurants.html** — Complete owner review, then retire in favour of dining.html
-14. **site-menu CSS** — Fix white-space:nowrap clipping longer guest menu items on mobile
+3. **worker redeploy** — Run `cd worker && wrangler deploy` after route is added
+4. **weather-worker** — Deploy v1.1.0: `cd weather-worker && wrangler deploy`
+5. **site-menu CSS** — Fix white-space:nowrap clipping longer guest menu items on mobile
+6. **photos.html** — Mobile sizing fixes for photo cards and description text
+7. **restaurants.html** — Complete owner review, then retire in favour of dining.html
+8. **Cleaners contact info** — Add to Formspree checkout form `xlgalddj`
 
 ## Placeholder Data Still Needed
 - Restaurant descriptions — owner review in progress
 - Cleaners contact info → add to Formspree checkout form `xlgalddj`
-- WiFi network name and password → `guest/wifi.html` and `guest/quick-start.html`
 
 ## Coding Conventions
 - All HTML files include version comment at top
@@ -226,7 +221,7 @@ Southern Coast Vacations
 - External links always use `target="_blank" rel="noopener noreferrer"`
 - All forms use Formspree for submission
 - `meta name="robots" content="noindex"` on all guest pages
-- Video embeds use click-to-load poster pattern — never load iframe on page load, always require user click to initialize player
+- Video embeds use click-to-load poster pattern — never load iframe on page load
 - Images use `loading="lazy"` except hero/above-fold images
 - Accessibility: `aria-label` on interactive elements, `alt` on all images
 
@@ -239,3 +234,8 @@ Southern Coast Vacations
 - Border radius: 26px (page cards), 18px (cards), 12px (inputs), 999px (buttons/pills)
 - Font: system-ui stack
 - Headings: Georgia serif
+
+## Marketing
+- Facebook Ad copy drafted (3 variants): Excitement & FOMO, Warm & Inviting, Direct & Promotional
+- Tracking URL for paid Facebook: `paradisesurfsidesc.com/go/facebook-summer`
+- Instagram version pending
