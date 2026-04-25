@@ -87,7 +87,7 @@
 
     .live-metrics {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: .5rem;
     }
 
@@ -356,6 +356,10 @@
             <span class="live-metric-label">Rain Today</span>
             <span class="live-metric-value" id="liveRain">--</span>
           </div>
+          <div class="live-metric">
+            <span class="live-metric-label">Pool Temp</span>
+            <span class="live-metric-value" id="livePoolTemp">--</span>
+          </div>
         </div>
       </div>
 
@@ -581,6 +585,7 @@
         document.getElementById('liveHumidity').textContent = d.humidity != null ? d.humidity + '%' : '--';
         document.getElementById('liveUV').textContent      = d.uv != null ? d.uv.toFixed(1) : '--';
         document.getElementById('liveRain').textContent    = d.rain_today_in != null ? d.rain_today_in + '"' : '0.00"';
+        document.getElementById('livePoolTemp').textContent = d.pool_temp_f != null ? d.pool_temp_f + '°F' : '--';
 
         if (d.updated_iso) {
           const mins = Math.round((Date.now() - new Date(d.updated_iso)) / 60000);
