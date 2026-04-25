@@ -172,9 +172,28 @@ export default {
       return               ['☀️',  'Clear'];
     }
 
+    async function fetchPoolTemp(hubitatToken) {
+      try {
+        const url = `https://cloud.hubitat.com/api/788ef13a-15cc-41ae-808a-2826dbabe598/apps/90/devices/10?access_token=${encodeURIComponent(hubitatToken)}`;
+        const r = await fetch(url, { cf: { cacheTtl: 0, cacheEverything: false } });
+        if (!r.ok) return null;
+        const d = await r.json();
+        const attr = Array.isArray(d.attributes)
+          ? d.attributes.find(a => a.name === 'temperature')
+          : null;
+        const val = attr ? Number(attr.currentValue) : null;
+        return Number.isFinite(val) ? Math.round(val * 10) / 10 : null;
+      } catch {
+        return null;
+      }
+    }
+
     try {
       const apiUrl = `https://swd.weatherflow.com/swd/rest/observations/station/${stationId}?token=${encodeURIComponent(token)}`;
-      const r = await fetch(apiUrl, { cf: { cacheTtl: 0, cacheEverything: false } });
+      const [r, poolTempF] = await Promise.all([
+        fetch(apiUrl, { cf: { cacheTtl: 0, cacheEverything: false } }),
+        env.HUBITAT_TOKEN ? fetchPoolTemp(env.HUBITAT_TOKEN) : Promise.resolve(null),
+      ]);
       const j = await r.json();
 
       if (!r.ok) {
@@ -201,6 +220,7 @@ export default {
         ok:           true,
         station_id:   Number(stationId),
         temp_f:       Math.round(tempF),
+        pool_temp_f:  poolTempF,
         condition,
         icon,
         night:        isNight,
