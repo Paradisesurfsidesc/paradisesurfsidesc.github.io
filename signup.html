@@ -214,12 +214,24 @@
             <!-- Travel Dates -->
             <div class="form-grid form-grid-2">
               <div class="form-group">
-                <label for="travelFrom">Approx. Arrival</label>
-                <input type="month" id="travelFrom">
+                <label for="travelFrom">Approx. Arrival Month</label>
+                <select id="travelFrom">
+                  <option value="" disabled selected>Select month...</option>
+                  <option>January</option><option>February</option><option>March</option>
+                  <option>April</option><option>May</option><option>June</option>
+                  <option>July</option><option>August</option><option>September</option>
+                  <option>October</option><option>November</option><option>December</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="travelTo">Approx. Departure</label>
-                <input type="month" id="travelTo">
+                <label for="travelTo">Approx. Departure Month</label>
+                <select id="travelTo">
+                  <option value="" disabled selected>Select month...</option>
+                  <option>January</option><option>February</option><option>March</option>
+                  <option>April</option><option>May</option><option>June</option>
+                  <option>July</option><option>August</option><option>September</option>
+                  <option>October</option><option>November</option><option>December</option>
+                </select>
               </div>
             </div>
 
@@ -266,8 +278,8 @@
 
     submitBtn.addEventListener('click', async () => {
       const email = document.getElementById('email').value.trim();
-      if (!email) {
-        alert('Please enter your email address.');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Please enter a valid email address.');
         return;
       }
 
@@ -279,17 +291,24 @@
           type: 'subscription',
           attributes: {
             list_id: 'SbCFKU',
-            email: email,
             custom_source: 'Paradise Website Signup',
-            properties: {
-              first_name: document.getElementById('firstName').value.trim(),
-              last_name: document.getElementById('lastName').value.trim(),
-              zip: document.getElementById('zip').value.trim(),
-              heard_from: document.getElementById('source').value,
-              travel_from: document.getElementById('travelFrom').value,
-              travel_to: document.getElementById('travelTo').value,
-              gdpr_consent: true,
-              gdpr_consent_text: 'Opted in via Paradise website signup form'
+            profile: {
+              data: {
+                type: 'profile',
+                attributes: {
+                  email: email,
+                  first_name: document.getElementById('firstName').value.trim(),
+                  last_name: document.getElementById('lastName').value.trim(),
+                  properties: {
+                    zip: document.getElementById('zip').value.trim(),
+                    heard_from: document.getElementById('source').value,
+                    travel_from: document.getElementById('travelFrom').value,
+                    travel_to: document.getElementById('travelTo').value,
+                    gdpr_consent: true,
+                    gdpr_consent_text: 'Opted in via Paradise website signup form'
+                  }
+                }
+              }
             }
           }
         }
@@ -300,7 +319,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'revision': '2023-12-15'
+            'revision': '2024-10-15'
           },
           body: JSON.stringify(payload)
         });
