@@ -1,0 +1,121 @@
+<!-- local-cams.html -->
+<!-- Date - 2026-04-25 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Live webcam feeds near Surfside Beach -->
+<!-- Author - David Taylor -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Local Live Cams | Paradise | Surfside Beach, SC</title>
+  <meta name="description" content="Watch live webcams from Surfside Beach — check beach conditions, surf, and weather before you head out.">
+  <link rel="canonical" href="https://paradisesurfsidesc.com/local-cams.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://paradisesurfsidesc.com/local-cams.html">
+  <meta property="og:title" content="Local Live Cams | Paradise | Surfside Beach, SC">
+  <meta property="og:description" content="Watch live webcams from Surfside Beach — check beach conditions, surf, and weather before you head out.">
+  <meta property="og:image" content="https://paradisesurfsidesc.com/images/48-web-or-mls-Location.jpg">
+  <meta property="og:site_name" content="Paradise Surfside Beach">
+  <!-- Favicons -->
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/paradise-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/paradise-16.png">
+  <link rel="apple-touch-icon" href="images/paradise-180.png">
+  <link rel="manifest" href="images/site.webmanifest">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+  <style>
+    .cam-card {
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cam-card h2 {
+      margin: 0 0 .4rem;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .cam-card .cam-desc {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .cam-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .cam-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .cam-credit {
+      margin-top: .6rem;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    .cam-credit a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .cam-credit a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <section class="page" aria-label="Local live cams">
+
+      <div class="page-header">
+        <h1>📷 Local Live Cams</h1>
+        <p>Check the beach before you pack the cooler — live webcams from Surfside Beach and nearby.</p>
+      </div>
+
+      <div class="cam-card">
+        <h2>🌊 Surfside Beach Pier Cam</h2>
+        <p class="cam-desc">Live view at the Surfside Pier from River City Café — check surf, crowds, and conditions in real time.</p>
+        <div class="cam-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/live_stream?channel=UCOxE9CwlZj-BdLVgxr4eDyA&autoplay=0"
+            title="Surfside Beach Live Webcam — Surfside Pier, SC"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+        <p class="cam-credit">
+          Cam courtesy of <a href="https://www.youtube.com/@gcrbeachcam" target="_blank" rel="noopener noreferrer">Garden City Realty</a> · River City Café, Surfside Beach, SC
+        </p>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="plan-your-stay.html">← Plan Your Stay</a>
+      </div>
+
+    </section>
+  </main>
+
+  <footer id="siteFooter"></footer>
+</body>
+</html>
