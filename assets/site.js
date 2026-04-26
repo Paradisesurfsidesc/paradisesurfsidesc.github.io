@@ -142,8 +142,8 @@ function applyHeaderTheme() {
   const siteHeader = document.querySelector('.site-header');
   if (!siteHeader) return;
 
-  const page = window.location.pathname.split('/').pop() || 'index.html';
-  const isHeroPage = ['index.html', ''].includes(page);
+  const path = window.location.pathname;
+  const isHeroPage = path === '/' || path === '/index.html';
 
   if (!isHeroPage) {
     siteHeader.classList.remove('is-dark');
