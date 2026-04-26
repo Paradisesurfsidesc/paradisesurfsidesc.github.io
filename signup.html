@@ -290,8 +290,12 @@
         data: {
           type: 'subscription',
           attributes: {
-            list_id: 'SbCFKU',
             custom_source: 'Paradise Website Signup',
+            subscriptions: {
+              email: {
+                marketing: { consent: 'SUBSCRIBED' }
+              }
+            },
             profile: {
               data: {
                 type: 'profile',
@@ -310,16 +314,21 @@
                 }
               }
             }
+          },
+          relationships: {
+            list: {
+              data: { type: 'list', id: 'SbCFKU' }
+            }
           }
         }
       };
 
       try {
-        const res = await fetch(`https://a.klaviyo.com/client/subscriptions/?company_id=UhvABe`, {
+        const res = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=UhvABe', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'revision': '2024-10-15'
+            'revision': '2026-04-15'
           },
           body: JSON.stringify(payload)
         });
@@ -328,10 +337,16 @@
           document.getElementById('signupForm').style.display = 'none';
           document.getElementById('successMsg').style.display = 'block';
         } else {
-          throw new Error('Signup failed');
+          const errBody = await res.json().catch(() => ({ errors: [{ detail: 'Unknown error' }] }));
+          const msg = errBody?.errors?.map(e => e.detail).join('; ') || JSON.stringify(errBody);
+          console.error('Klaviyo error', res.status, errBody);
+          alert(`Signup error (${res.status}): ${msg}`);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign Me Up';
         }
-      } catch {
-        alert('Something went wrong. Please try again.');
+      } catch (err) {
+        console.error('Signup exception:', err);
+        alert('Network error — please check your connection and try again.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Sign Me Up';
       }
