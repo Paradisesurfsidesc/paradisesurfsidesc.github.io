@@ -232,11 +232,25 @@
               </div>
             </div>
 
-            <!-- GDPR Consent -->
+            <!-- Mobile / SMS -->
+            <div class="form-group">
+              <label for="mobile">Mobile Number <span style="font-weight:400; color:var(--muted);">(optional — for text updates)</span></label>
+              <input type="tel" id="mobile" placeholder="(555) 555-5555" autocomplete="tel">
+            </div>
+
+            <!-- Email Consent -->
             <div class="gdpr-check">
               <input type="checkbox" id="gdprConsent">
               <label for="gdprConsent">
                 I agree to receive occasional emails from Paradise about promotions, availability, and local tips. I understand I can unsubscribe at any time. See our <a href="privacy.html">Privacy Policy</a>.
+              </label>
+            </div>
+
+            <!-- SMS Consent -->
+            <div class="gdpr-check" id="smsConsentBox" style="display:none;">
+              <input type="checkbox" id="smsConsent">
+              <label for="smsConsent">
+                I agree to receive occasional text messages from Paradise about promotions and availability. Message &amp; data rates may apply. Reply STOP to unsubscribe at any time.
               </label>
             </div>
 
@@ -267,11 +281,26 @@
   <script>
     const consentBox = document.getElementById('gdprConsent');
     const submitBtn = document.getElementById('submitBtn');
+    const mobileInput = document.getElementById('mobile');
+    const smsConsentBox = document.getElementById('smsConsentBox');
 
-    // Enable submit only when consent is given
     consentBox.addEventListener('change', () => {
       submitBtn.disabled = !consentBox.checked;
     });
+
+    // Show SMS consent box when a mobile number is entered
+    mobileInput.addEventListener('input', () => {
+      const hasNumber = mobileInput.value.trim().replace(/\D/g, '').length >= 10;
+      smsConsentBox.style.display = hasNumber ? 'flex' : 'none';
+      if (!hasNumber) document.getElementById('smsConsent').checked = false;
+    });
+
+    function formatPhone(raw) {
+      const digits = raw.replace(/\D/g, '');
+      if (digits.length === 10) return '+1' + digits;
+      if (digits.length === 11 && digits[0] === '1') return '+' + digits;
+      return null;
+    }
 
     submitBtn.addEventListener('click', async () => {
       const email = document.getElementById('email').value.trim();
@@ -293,6 +322,7 @@
                 type: 'profile',
                 attributes: {
                   email: email,
+                  ...(formatPhone(mobileInput.value) ? { phone_number: formatPhone(mobileInput.value) } : {}),
                   first_name: document.getElementById('firstName').value.trim(),
                   last_name: document.getElementById('lastName').value.trim(),
                   properties: {
@@ -301,7 +331,9 @@
                     travel_from: document.getElementById('travelFrom').value,
                     travel_to: document.getElementById('travelTo').value,
                     gdpr_consent: true,
-                    gdpr_consent_text: 'Opted in via Paradise website signup form'
+                    gdpr_consent_text: 'Opted in via Paradise website signup form',
+                    sms_consent: document.getElementById('smsConsent').checked,
+                    sms_consent_text: document.getElementById('smsConsent').checked ? 'Opted in to SMS via Paradise website signup form' : ''
                   }
                 }
               }
