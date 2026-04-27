@@ -39,9 +39,9 @@ function injectHeader() {
   `;
 
   const publicMenu = `
+    <a href="/reviews.html">⭐ Reviews <span>›</span></a>
     <a href="/index.html">Home <span>›</span></a>
     <a href="/paradise-info.html">Paradise Info <span>›</span></a>
-    <a href="/reviews.html">⭐ Reviews <span>›</span></a>
     <a href="/plan-your-stay.html">Plan Your Stay <span>›</span></a>
     <a href="/local-cams.html">📷 Live Cams <span>›</span></a>
     <a href="/signup.html">📧 Sign Up — Stay in the Loop <span>›</span></a>
