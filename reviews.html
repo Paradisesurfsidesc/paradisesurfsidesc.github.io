@@ -1,7 +1,7 @@
 <!-- reviews.html -->
 <!-- Date - 2026-04-26 -->
-<!-- Version - 1.0.0 -->
-<!-- Notes - Platform summaries + individual review cards -->
+<!-- Version - 2.0.0 -->
+<!-- Notes - Rewritten to match site layout and dark theme -->
 <!-- Author - David Taylor -->
 
 <!doctype html>
@@ -28,98 +28,39 @@
   <script src="assets/site.js" defer></script>
 
   <style>
-    /* ── Hero ── */
-    .reviews-hero {
-      background: linear-gradient(135deg, #0a2a4a, #0077b6);
-      color: #fff;
-      padding: 60px 20px;
-      text-align: center;
-    }
-    .reviews-hero__inner { max-width: 860px; margin: 0 auto; }
-    .reviews-hero h1 { font-size: 2.2rem; margin: 0 0 12px; }
-    .reviews-hero p  { font-size: 1.05rem; opacity: 0.88; margin: 0 0 36px; }
-
     .ratings-bar {
       display: flex;
       justify-content: center;
-      align-items: center;
-      gap: 32px;
+      gap: 2rem;
       flex-wrap: wrap;
-      background: rgba(255,255,255,.12);
-      border-radius: 16px;
-      padding: 20px 32px;
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.25rem;
     }
-    .ratings-bar__item  { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .ratings-bar__stars { font-size: 1.1rem; color: #ffd60a; }
-    .ratings-bar__score { font-size: 1.9rem; font-weight: 700; line-height: 1; }
-    .ratings-bar__score small { font-size: 1rem; }
-    .ratings-bar__label { font-size: .82rem; opacity: .85; }
-    .ratings-bar__count { font-size: .78rem; opacity: .7; }
-    .ratings-bar__divider { width: 1px; height: 60px; background: rgba(255,255,255,.25); }
+    .ratings-bar__item  { display: flex; flex-direction: column; align-items: center; gap: .2rem; }
+    .ratings-bar__stars { font-size: 1rem; color: var(--accent); }
+    .ratings-bar__score { font-size: 1.7rem; font-weight: 800; line-height: 1; }
+    .ratings-bar__score small { font-size: .9rem; font-weight: 400; }
+    .ratings-bar__label { font-size: .78rem; color: var(--muted); }
+    .ratings-bar__count { font-size: .72rem; color: var(--muted); opacity: .75; }
+    .ratings-bar__divider { width: 1px; background: var(--cardBorder); align-self: stretch; }
 
-    /* ── Platform Summary Cards ── */
-    .summaries-section {
-      padding: 60px 20px;
-      background: #f0f4f8;
-    }
-    .summaries-section > h2 {
-      text-align: center;
-      font-size: 1.5rem;
-      color: #0b1f33;
-      margin: 0 0 32px;
-    }
-    .summaries-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 24px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .summary-card {
-      background: #fff;
-      border: 1px solid #dde3ea;
-      border-radius: 16px;
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .summary-card__header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .summary-card__score  { font-weight: 700; font-size: 1rem; color: #0b1f33; }
-    .summary-card__scores { display: flex; flex-wrap: wrap; gap: 8px; font-size: .82rem; color: #555; }
-    .summary-card__body   { font-size: .95rem; line-height: 1.65; color: #444; flex: 1; margin: 0; }
-    .summary-card__link   { font-size: .9rem; font-weight: 600; color: #0077b6; text-decoration: none; }
-    .summary-card__link:hover { text-decoration: underline; }
-
-    /* ── Review Cards ── */
-    .reviews-section { padding: 60px 20px; background: #fff; }
-    .reviews-section__title {
-      text-align: center;
-      font-size: 1.7rem;
-      margin: 0 0 36px;
-      color: #0b1f33;
-    }
-    .reviews-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
     .review-card {
-      background: #f8fafc;
-      border: 1px solid #dde3ea;
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
       border-radius: 16px;
-      padding: 28px;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: .75rem;
     }
-    .review-card__stars { font-size: 1rem; color: #ffd60a; font-weight: 700; }
+    .review-card__stars { font-size: .95rem; color: var(--accent); font-weight: 700; }
     .review-card__body  {
-      font-size: .96rem;
+      font-size: .95rem;
       line-height: 1.65;
-      color: #333;
+      color: var(--muted);
       font-style: italic;
       margin: 0;
       flex: 1;
@@ -127,61 +68,58 @@
     .review-card__footer {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 14px;
+      gap: .2rem;
+      border-top: 1px solid var(--cardBorder);
+      padding-top: .75rem;
     }
-    .review-card__name     { font-weight: 700; font-size: .92rem; color: #0b1f33; }
-    .review-card__location { font-size: .83rem; color: #666; }
-    .review-card__date     { font-size: .8rem; color: #999; }
+    .review-card__name     { font-weight: 700; font-size: .9rem; }
+    .review-card__location { font-size: .82rem; color: var(--muted); }
+    .review-card__date     { font-size: .78rem; color: var(--muted); opacity: .7; }
 
-    /* Platform badges */
-    .review-card__platform,
-    .summary-card__platform {
+    .platform-badge {
       display: inline-block;
-      margin-top: 6px;
-      padding: 3px 10px;
+      margin-top: .35rem;
+      padding: 2px 10px;
       border-radius: 20px;
-      font-size: .73rem;
-      font-weight: 600;
+      font-size: .7rem;
+      font-weight: 700;
+      width: fit-content;
     }
-    .platform--vrbo   { background: #dbeeff; color: #005fa3; }
-    .platform--scv    { background: #dcf5e6; color: #1a6e35; }
-    .platform--google { background: #fef3e2; color: #c06000; }
+    .platform--vrbo   { background: rgba(0,119,182,.25); color: #7ecbf7; }
+    .platform--scv    { background: rgba(26,127,60,.25);  color: #72e09a; }
+    .platform--google { background: rgba(230,126,0,.2);   color: #f5b855; }
 
-    /* ── CTAs ── */
-    .reviews-cta { padding: 60px 20px; text-align: center; background: #f0f4f8; }
-    .reviews-cta__inner { max-width: 700px; margin: 0 auto; }
-    .reviews-cta h2 { font-size: 1.7rem; margin: 0 0 10px; color: #0b1f33; }
-    .reviews-cta p  { color: #555; margin: 0 0 32px; }
-    .reviews-cta__buttons {
+    .summary-scores {
       display: flex;
-      gap: 14px;
-      justify-content: center;
       flex-wrap: wrap;
+      gap: .5rem;
+      font-size: .82rem;
+      color: var(--muted);
+      margin: .25rem 0;
     }
-    .reviews-cta__buttons a {
-      padding: 13px 22px;
-      border-radius: 10px;
-      font-size: .93rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all .18s;
-    }
-    .reviews-btn--outline {
-      border: 2px solid #0077b6;
-      color: #0077b6;
-      background: transparent;
-    }
-    .reviews-btn--outline:hover { background: #0077b6; color: #fff; }
-    .reviews-btn--primary { background: #0077b6; color: #fff; border: 2px solid #0077b6; }
-    .reviews-btn--primary:hover { background: #005f91; border-color: #005f91; }
 
-    /* Mobile */
-    @media (max-width: 600px) {
-      .reviews-hero h1 { font-size: 1.6rem; }
+    .cta-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 1rem 1.25rem 1.5rem;
+    }
+    .cta-row a {
+      flex: 1;
+      min-width: 200px;
+      text-align: center;
+      padding: .85rem 1rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .95rem;
+      background: var(--accent);
+      color: #1b1b1b;
+      transition: opacity .18s;
+    }
+    .cta-row a:hover { opacity: .88; }
+
+    @media (max-width: 480px) {
       .ratings-bar__divider { display: none; }
-      .reviews-cta__buttons { flex-direction: column; align-items: center; }
     }
   </style>
 </head>
@@ -190,12 +128,11 @@
   <header id="siteHeader"></header>
 
   <main>
+    <section class="page" aria-label="Guest reviews">
 
-    <!-- Hero -->
-    <section class="reviews-hero">
-      <div class="reviews-hero__inner">
-        <h1>What Our Guests Are Saying</h1>
-        <p>Over 90 reviews across three platforms — and our guests keep coming back.</p>
+      <div class="page-header">
+        <h1>⭐ Guest Reviews</h1>
+        <p>Over 90 verified reviews across three platforms — and our guests keep coming back.</p>
 
         <div class="ratings-bar">
           <div class="ratings-bar__item">
@@ -220,169 +157,154 @@
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Platform Summaries -->
-    <section class="summaries-section">
-      <h2>Reviews by Platform</h2>
-      <div class="summaries-grid">
+      <!-- Platform Summaries -->
+      <h2 style="padding: 1.5rem 1.25rem .25rem; margin: 0; font-size: 1.1rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em;">By Platform</h2>
+      <div class="grid">
 
-        <div class="summary-card">
-          <div class="summary-card__header">
-            <span class="summary-card__platform platform--vrbo">VRBO</span>
-            <span class="summary-card__score">9.6 / 10 · Exceptional</span>
-          </div>
-          <div class="summary-card__scores">
+        <div class="card">
+          <h2>🏠 VRBO &nbsp;<span style="font-size:.85rem; font-weight:400; color:var(--muted);">9.6 / 10 · Exceptional</span></h2>
+          <div class="summary-scores">
             <span>📍 Location 9.8</span>
             <span>✅ Check-in 9.4</span>
             <span>🧹 Cleanliness 9.0</span>
             <span>💬 Communication 9.4</span>
           </div>
-          <p class="summary-card__body">Guests consistently highlight Paradise's unbeatable location — beach access directly across the street, easy walks to the Surfside Pier, and nearby restaurants. The private saltwater pool and spacious layout are top-rated across 55 verified reviews.</p>
-          <a href="https://www.vrbo.com/4554884ha" target="_blank" rel="noopener noreferrer" class="summary-card__link">See all 55 reviews on VRBO →</a>
+          <p>Guests consistently highlight Paradise's unbeatable location — beach access directly across the street, easy walks to the Surfside Pier, and nearby restaurants. The private saltwater pool and spacious layout are top-rated across 55 verified reviews.</p>
+          <a href="https://www.vrbo.com/4554884ha" target="_blank" rel="noopener noreferrer" style="color:var(--accent); font-size:.9rem; margin-top:.25rem; display:inline-block;">See all 55 reviews on VRBO →</a>
         </div>
 
-        <div class="summary-card">
-          <div class="summary-card__header">
-            <span class="summary-card__platform platform--scv">Southern Coast Vacations</span>
-            <span class="summary-card__score">4.8 / 5.0</span>
-          </div>
-          <div class="summary-card__scores">
+        <div class="card">
+          <h2>🌊 Southern Coast Vacations &nbsp;<span style="font-size:.85rem; font-weight:400; color:var(--muted);">4.8 / 5.0</span></h2>
+          <div class="summary-scores">
             <span>📍 Location 5.0</span>
             <span>🧹 Cleanliness 4.9</span>
             <span>🏠 Property Condition 4.8</span>
             <span>🤝 Service 4.9</span>
           </div>
-          <p class="summary-card__body">Families love the spacious, immaculate layout and the private pool that's perfect for days when the surf is rough. Repeat guests are common — many return year after year and mention the front porch, the grill, and the neighborhood feel of Surfside Beach.</p>
-          <a href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise#listing-reviews" target="_blank" rel="noopener noreferrer" class="summary-card__link">See all 31 reviews on Southern Coast →</a>
+          <p>Families love the spacious, immaculate layout and the private pool that's perfect for days when the surf is rough. Repeat guests are common — many return year after year and mention the front porch, the grill, and the neighborhood feel of Surfside Beach.</p>
+          <a href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise#listing-reviews" target="_blank" rel="noopener noreferrer" style="color:var(--accent); font-size:.9rem; margin-top:.25rem; display:inline-block;">See all 31 reviews on Southern Coast →</a>
         </div>
 
-        <div class="summary-card">
-          <div class="summary-card__header">
-            <span class="summary-card__platform platform--google">Google</span>
-            <span class="summary-card__score">4.8 / 5.0</span>
-          </div>
-          <p class="summary-card__body">Guests on Google rate Paradise highly for its location, value, and overall experience.</p>
+        <div class="card">
+          <h2>⭐ Google &nbsp;<span style="font-size:.85rem; font-weight:400; color:var(--muted);">4.8 / 5.0</span></h2>
+          <p>Guests on Google rate Paradise highly for its location, value, and overall experience across 4 verified reviews.</p>
         </div>
 
       </div>
-    </section>
 
-    <!-- Individual Reviews -->
-    <section class="reviews-section">
-      <h2 class="reviews-section__title">What Guests Are Saying</h2>
-      <div class="reviews-grid">
+      <!-- Individual Reviews -->
+      <h2 style="padding: 1.5rem 1.25rem .25rem; margin: 0; font-size: 1.1rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em;">What Guests Are Saying</h2>
+      <div class="grid">
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★ 10/10</div>
           <blockquote class="review-card__body">"The house was great. Clean and close to beach. Really enjoyed our stay."</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Russell Bryant H.</span>
             <span class="review-card__location">Traveled with family and young children</span>
             <span class="review-card__date">July 2025</span>
-            <span class="review-card__platform platform--vrbo">VRBO Verified Review</span>
+            <span class="platform-badge platform--vrbo">VRBO Verified</span>
           </footer>
-        </article>
+        </div>
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★ 10/10</div>
           <blockquote class="review-card__body">"We had an amazing stay at Paradise in Surfside! The rooms were spacious and clean. The location was perfect and the pool was well maintained and a ton of fun! I'm so glad we found this house for our vacation this year."</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Guest from Bealeton, VA</span>
             <span class="review-card__date">July 2025</span>
-            <span class="review-card__platform platform--vrbo">VRBO Verified Review</span>
+            <span class="platform-badge platform--vrbo">VRBO Verified</span>
           </footer>
-        </article>
+        </div>
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★ 10/10</div>
           <blockquote class="review-card__body">"Great location. Everyone in the large group we took really enjoyed the house. Highly recommend."</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Joshua G.</span>
             <span class="review-card__location">Traveled with group</span>
             <span class="review-card__date">April 2024</span>
-            <span class="review-card__platform platform--vrbo">VRBO Verified Review</span>
+            <span class="platform-badge platform--vrbo">VRBO Verified</span>
           </footer>
-        </article>
+        </div>
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★ 10/10</div>
           <blockquote class="review-card__body">"Clean, comfortable and has everything you need. We will be back and we highly recommend!"</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Shawn R.</span>
             <span class="review-card__date">May 2022</span>
-            <span class="review-card__platform platform--vrbo">VRBO Verified Review</span>
+            <span class="platform-badge platform--vrbo">VRBO Verified</span>
           </footer>
-        </article>
+        </div>
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★ 10/10</div>
           <blockquote class="review-card__body">"Great location. The property manager was very helpful. The vacation rental was spotless. The location of the private pool and the pool itself were full of fun! I'm going to come back."</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Verified VRBO Guest</span>
             <span class="review-card__date">2024</span>
-            <span class="review-card__platform platform--vrbo">VRBO Verified Review</span>
+            <span class="platform-badge platform--vrbo">VRBO Verified</span>
           </footer>
-        </article>
+        </div>
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★</div>
           <blockquote class="review-card__body">"This was our family's second time returning to Paradise. We arrived to an immaculately clean home with every amenity you could possibly want — a gorgeous sandy beach directly across the street and a beautiful large heated pool. Easy half mile walk to the new Surfside Pier."</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Lynda P.</span>
             <span class="review-card__location">Fort Mill, SC</span>
             <span class="review-card__date">April 2024</span>
-            <span class="review-card__platform platform--scv">Southern Coast Vacations</span>
+            <span class="platform-badge platform--scv">Southern Coast Vacations</span>
           </footer>
-        </article>
+        </div>
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★</div>
           <blockquote class="review-card__body">"Wow! If you are planning a beach vacation, book this place immediately! It is incredibly spacious, clean, bright and well maintained. Clean, private pool. We are definitely coming back — next time we will bring more family members and stay longer."</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Sara B.</span>
             <span class="review-card__date">June 2018</span>
-            <span class="review-card__platform platform--scv">Southern Coast Vacations</span>
+            <span class="platform-badge platform--scv">Southern Coast Vacations</span>
           </footer>
-        </article>
+        </div>
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★</div>
           <blockquote class="review-card__body">"The house was beautiful, the location was perfect, and the people at Southern Coast Vacations were wonderful! We even like the Surfside community better than Myrtle/North Myrtle! We all voted and want to come back — next time the entire family wants 2 weeks."</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Recent Guest</span>
             <span class="review-card__location">Warren, OH</span>
             <span class="review-card__date">July 2017</span>
-            <span class="review-card__platform platform--scv">Southern Coast Vacations</span>
+            <span class="platform-badge platform--scv">Southern Coast Vacations</span>
           </footer>
-        </article>
+        </div>
 
-        <article class="review-card">
+        <div class="review-card">
           <div class="review-card__stars">★★★★★</div>
           <blockquote class="review-card__body">"Beautiful home for family vacation across from a nice beach. Enjoyed the private pool with plenty of seating. Loved our time on the front porch — a great way to start and end our days. Nice to have local restaurants within walking distance. Definitely would stay here again!"</blockquote>
           <footer class="review-card__footer">
             <span class="review-card__name">Debra M.</span>
             <span class="review-card__location">Naperville, IL</span>
             <span class="review-card__date">May 2021</span>
-            <span class="review-card__platform platform--scv">Southern Coast Vacations</span>
+            <span class="platform-badge platform--scv">Southern Coast Vacations</span>
           </footer>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- CTAs -->
-    <section class="reviews-cta">
-      <div class="reviews-cta__inner">
-        <h2>Love Paradise? Let Others Know!</h2>
-        <p>Your review helps future families find their perfect beach week — and we read every single one.</p>
-        <div class="reviews-cta__buttons">
-          <a href="https://www.vrbo.com/4554884ha" target="_blank" rel="noopener noreferrer" class="reviews-btn--primary">Leave a Review on VRBO</a>
-          <a href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise#listing-reviews" target="_blank" rel="noopener noreferrer" class="reviews-btn--primary">Leave a Review on Southern Coast</a>
         </div>
-      </div>
-    </section>
 
+      </div>
+
+      <!-- CTAs -->
+      <div class="cta-row">
+        <a href="https://www.vrbo.com/4554884ha" target="_blank" rel="noopener noreferrer">Leave a Review on VRBO</a>
+        <a href="https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise#listing-reviews" target="_blank" rel="noopener noreferrer">Leave a Review on Southern Coast</a>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="index.html">← Home</a>
+      </div>
+
+    </section>
   </main>
 
   <footer id="siteFooter"></footer>
