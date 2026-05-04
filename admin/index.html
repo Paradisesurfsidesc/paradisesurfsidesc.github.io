@@ -320,6 +320,63 @@
 
     .empty-note { padding: 2rem; text-align: center; color: var(--muted); }
 
+    /* ── Booking Pace ───────────────────────────────────────── */
+    .pace-grid {
+      display: grid;
+      grid-template-columns: repeat(13, 1fr);
+      gap: .35rem;
+      margin-bottom: .75rem;
+    }
+    .pace-cell {
+      aspect-ratio: 1;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: .62rem;
+      font-weight: 700;
+      cursor: default;
+      position: relative;
+      border: 1px solid rgba(255,255,255,.06);
+      transition: transform .1s;
+    }
+    .pace-cell:hover { transform: scale(1.12); z-index: 10; }
+    .pace-cell .pw { font-size: .55rem; color: rgba(255,255,255,.5); margin-bottom: .1rem; }
+    .pace-cell .pp { font-size: .68rem; }
+    .pace-cell.p0   { background: rgba(255,255,255,.05); }
+    .pace-cell.p1   { background: rgba(251,191,36,.18); }
+    .pace-cell.p50  { background: rgba(251,191,36,.45); }
+    .pace-cell.p100 { background: rgba(52,211,153,.35); }
+
+    .pace-tooltip {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0b1b2a;
+      border: 1px solid var(--cardBorder);
+      border-radius: 8px;
+      padding: .4rem .65rem;
+      white-space: nowrap;
+      font-size: .75rem;
+      font-weight: 400;
+      color: var(--text);
+      pointer-events: none;
+      display: none;
+      z-index: 50;
+    }
+    .pace-cell:hover .pace-tooltip { display: block; }
+
+    .pace-quarter-label {
+      font-size: .72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-weight: 700;
+      margin: .75rem 0 .4rem;
+    }
+
     @media (max-width: 700px) {
       .admin-tabs { gap: .125rem; }
       .admin-tab { padding: .4rem .6rem; font-size: .78rem; }
@@ -357,6 +414,7 @@
         <button class="admin-tab active" id="tabBtnBookings" onclick="showTab('bookings')">📋 Bookings</button>
         <button class="admin-tab" id="tabBtnMarket"   onclick="showTab('market')">📊 Market Trends</button>
         <button class="admin-tab" id="tabBtnEvents"   onclick="showTab('events')">📅 Events</button>
+        <button class="admin-tab" id="tabBtnScv"      onclick="showTab('scv')">🏢 SCV Portfolio</button>
       </div>
       <button class="signout-btn" onclick="signOut()">Sign Out</button>
     </div>
@@ -392,6 +450,18 @@
         </div>
       </div>
 
+        <div class="section-header" style="margin-top:2rem">
+          <h2>Booking Pace — Week by Week</h2>
+          <select id="paceYear" onchange="renderPace(parseInt(this.value))" style="padding:.4rem .75rem;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:var(--text);font-family:inherit;font-size:.875rem;outline:none">
+            <option>2024</option>
+            <option>2025</option>
+            <option selected>2026</option>
+            <option>2027</option>
+          </select>
+        </div>
+        <div id="bookingPace"></div>
+      </div>
+
       <!-- MARKET TAB -->
       <div id="tabMarket" style="display:none">
         <div class="season-tabs">
@@ -410,6 +480,11 @@
           <button class="year-btn"        id="yBtn2025" onclick="showYear(2025,this)">2025</button>
         </div>
         <div class="events-list" id="eventsList"></div>
+      </div>
+
+      <!-- SCV PORTFOLIO TAB -->
+      <div id="tabScv" style="display:none">
+        <div id="scvBody"></div>
       </div>
 
     </div>
@@ -526,11 +601,12 @@
     // ── Tab navigation ──────────────────────────────────────
     let activeTab = 'bookings';
     function showTab(name) {
-      ['bookings','market','events'].forEach(t => {
+      ['bookings','market','events','scv'].forEach(t => {
         document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === name ? '' : 'none';
         document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === name);
       });
       activeTab = name;
+      if (name === 'scv') renderSCV();
     }
 
     // ── Bookings ────────────────────────────────────────────
@@ -865,6 +941,258 @@
           `).join('')}
         </div>
       `).join('');
+    }
+
+    // ── SCV Portfolio ───────────────────────────────────────
+    const SCV_PROPS = [
+      // Houses with private pools
+      {
+        name: 'Paradise', isMe: true, group: 'Houses — Private Pool',
+        location: 'Surfside Beach', beds: 5, baths: 3, sleeps: 16,
+        pool: 'Private saltwater (heated +$50/day)', beach: 'Across the street',
+        pets: false, highlight: 'Only heated saltwater pool in Surfside, sleeps 16',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/paradise',
+      },
+      {
+        name: 'Capital Gains', group: 'Houses — Private Pool',
+        location: 'Surfside Beach', beds: 5, baths: 4.5, sleeps: 18,
+        pool: 'Private pool', beach: 'Steps to beach, ocean views',
+        pets: false, highlight: '3,000+ sq ft, 2 ocean-view balconies',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/capital-gains',
+      },
+      {
+        name: 'Cake by the Ocean', group: 'Houses — Private Pool',
+        location: 'Surfside Beach', beds: 5, baths: 4, sleeps: 12,
+        pool: 'Private pool', beach: '100 steps to beach, ocean views',
+        pets: false, highlight: 'Gas grill, 2-floor ocean-view balconies',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/cake-ocean',
+      },
+      {
+        name: 'Dune Our Thing', group: 'Houses — Private Pool',
+        location: 'Surfside Beach', beds: 6, baths: 4, sleeps: 14,
+        pool: 'Private pool (heated +fee)', beach: '1-min walk',
+        pets: false, highlight: 'Screened breezeway w/ pool table, hammock',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/dune-our-thing',
+      },
+      {
+        name: 'Sunsational Tara', group: 'Houses — Private Pool',
+        location: 'Surfside Beach', beds: 6, baths: 6.5, sleeps: 16,
+        pool: 'Private pool (unheated)', beach: 'Across street from beach access',
+        pets: true, highlight: 'Every bedroom has private bath, industrial icemaker',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/sunsational-tara',
+      },
+      {
+        name: 'Admirals Roost', group: 'Houses — Private Pool',
+        location: 'North Myrtle Beach', beds: 8, baths: 4.5, sleeps: 24,
+        pool: 'Private pool + hot tub (heated +$350)', beach: 'Oceanfront',
+        pets: true, highlight: 'Largest in portfolio, oceanfront, hot tub',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals/admirals-roost',
+      },
+      // Condos & smaller
+      {
+        name: 'Crescent Shores 1410', group: 'Condos & Smaller',
+        location: 'North Myrtle Beach', beds: 4, baths: 4, sleeps: 10,
+        pool: 'Lazy river, oceanfront pool, indoor pool, hot tub', beach: 'Oceanfront',
+        pets: false, highlight: '14th floor views, lazy river, marble garden tub',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Sanddollar — Upstairs', group: 'Condos & Smaller',
+        location: 'Surfside Beach', beds: 4, baths: 4, sleeps: 9,
+        pool: 'Communal outdoor + indoor pool', beach: 'Walkable (Oceanside Village)',
+        pets: true, highlight: 'Tennis, volleyball, fitness center, TV every room',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Atalaya Towers 1205', group: 'Condos & Smaller',
+        location: 'Garden City', beds: 3, baths: 2, sleeps: 7,
+        pool: 'Outdoor + indoor heated pool + hot tub', beach: 'Oceanfront',
+        pets: false, highlight: 'Fireplace, private balcony, granite bar seats 7',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Atalaya Towers 404', group: 'Condos & Smaller',
+        location: 'Garden City', beds: 3, baths: 2, sleeps: 6,
+        pool: 'Outdoor + indoor heated pool + hot tub', beach: 'Oceanfront',
+        pets: false, highlight: 'Full-width balcony, near Garden City Pier',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Crescent Sands I3', group: 'Condos & Smaller',
+        location: 'North Myrtle Beach', beds: 3, baths: 3, sleeps: 6,
+        pool: 'Communal oceanside pool', beach: 'Oceanfront',
+        pets: false, highlight: 'Each bedroom has private bath, private boardwalk',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Dolphin Watch 405', group: 'Condos & Smaller',
+        location: 'Cherry Grove, NMB', beds: 3, baths: 2, sleeps: 6,
+        pool: 'Indoor pool + hot tub', beach: 'Oceanfront',
+        pets: false, highlight: 'Renovated kitchen, oceanfront balcony',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Xanadu I D3', group: 'Condos & Smaller',
+        location: 'Crescent Beach, NMB', beds: 3, baths: 2, sleeps: 6,
+        pool: 'Communal outdoor pool', beach: 'Oceanfront',
+        pets: false, highlight: 'Beach chairs + umbrellas included',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Seabreeze Cottages', group: 'Condos & Smaller',
+        location: 'Myrtle Beach', beds: 3, baths: 2.5, sleeps: 7,
+        pool: 'None', beach: 'Walk to beach',
+        pets: false, highlight: 'Two-car garage, 5.0 rating',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Dolphin Watch 203', group: 'Condos & Smaller',
+        location: 'Cherry Grove, NMB', beds: 2, baths: 2, sleeps: 6,
+        pool: 'Indoor pool + hot tub', beach: 'Oceanfront',
+        pets: false, highlight: 'Ocean-view balcony',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Summer Place B6', group: 'Condos & Smaller',
+        location: 'Cherry Grove, NMB', beds: 2, baths: 2, sleeps: 6,
+        pool: 'Large communal oceanfront pool', beach: 'Oceanfront direct',
+        pets: true, highlight: 'Ocean-view balcony, pets up to 75 lbs',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Firebird Townhomes 5', group: 'Condos & Smaller',
+        location: 'Myrtle Beach', beds: 2, baths: 2.5, sleeps: 6,
+        pool: 'Resort: lazy river, indoor pool, hot tub', beach: '3-min walk',
+        pets: true, highlight: 'Grand Atlantic Resort amenity access',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Hermitage Myrtle Lake D3', group: 'Condos & Smaller',
+        location: 'Surfside Beach', beds: 2, baths: 2, sleeps: 6,
+        pool: 'Communal pool', beach: 'Walking distance to Pier',
+        pets: false, highlight: 'Beach wagon included, near Pizza Hyena & Gracious Pig',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Magnolia Place 4771-203', group: 'Condos & Smaller',
+        location: 'Myrtle Beach', beds: 2, baths: 2, sleeps: 6,
+        pool: 'Communal outdoor pool', beach: 'Not beachfront',
+        pets: false, highlight: 'Private balcony, BBQ area',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Baytree 27', group: 'Condos & Smaller',
+        location: 'Little River', beds: 2, baths: 2, sleeps: 4,
+        pool: 'Communal outdoor + indoor pools', beach: 'Not beachfront (golf community)',
+        pets: false, highlight: 'Golf community, monthly rentals welcome',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'Ocean Forest Plaza 912', group: 'Condos & Smaller',
+        location: 'Myrtle Beach', beds: 1, baths: 1, sleeps: 4,
+        pool: 'Communal outdoor + indoor pool + hot tub', beach: 'Oceanfront',
+        pets: false, highlight: 'Oceanfront balcony, elevator',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+      {
+        name: 'River Oaks 10H', group: 'Condos & Smaller',
+        location: 'Myrtle Beach', beds: 2, baths: 2, sleeps: 6,
+        pool: 'Communal pool', beach: '~5 miles to beach',
+        pets: false, highlight: 'Golf course community, near airport',
+        url: 'https://www.southerncoastvacations.com/myrtle-beach-vacation-rentals',
+      },
+    ];
+
+    let scvFilter = 'all';
+
+    function setScvFilter(f) {
+      scvFilter = f;
+      renderSCV();
+    }
+
+    function renderSCV() {
+      const houses = SCV_PROPS.filter(p => p.group === 'Houses — Private Pool');
+      const paradise = SCV_PROPS.find(p => p.isMe);
+      const otherHouses = houses.filter(p => !p.isMe);
+      const avgSleeps = Math.round(otherHouses.reduce((s, p) => s + p.sleeps, 0) / otherHouses.length);
+
+      const filtered = scvFilter === 'houses'
+        ? SCV_PROPS.filter(p => p.group === 'Houses — Private Pool')
+        : scvFilter === 'condos'
+          ? SCV_PROPS.filter(p => p.group === 'Condos & Smaller')
+          : SCV_PROPS;
+
+      const groups = ['Houses — Private Pool', 'Condos & Smaller'].filter(g => filtered.some(p => p.group === g));
+
+      document.getElementById('scvBody').innerHTML = `
+        <div class="market-summary" style="margin-bottom:1.5rem">
+          <div class="market-summary-item">
+            <div class="ms-label">Total SCV Properties</div>
+            <div class="ms-val">${SCV_PROPS.length}</div>
+          </div>
+          <div class="market-summary-item">
+            <div class="ms-label">Houses w/ Private Pool</div>
+            <div class="ms-val">${houses.length}</div>
+          </div>
+          <div class="market-summary-item">
+            <div class="ms-label">Paradise Sleeps</div>
+            <div class="ms-val" style="color:var(--accent)">${paradise.sleeps}</div>
+          </div>
+          <div class="market-summary-item">
+            <div class="ms-label">Avg Sleeps (houses)</div>
+            <div class="ms-val">${avgSleeps}</div>
+          </div>
+          <div class="market-summary-item">
+            <div class="ms-label">Heated Pool in Surfside</div>
+            <div class="ms-val" style="color:#34d399">✅ Only Paradise</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap">
+          <button class="season-tab ${scvFilter==='all'?'active':''}"    onclick="setScvFilter('all')">All (${SCV_PROPS.length})</button>
+          <button class="season-tab ${scvFilter==='houses'?'active':''}" onclick="setScvFilter('houses')">Houses w/ Pool (${houses.length})</button>
+          <button class="season-tab ${scvFilter==='condos'?'active':''}" onclick="setScvFilter('condos')">Condos & Smaller (${SCV_PROPS.length - houses.length})</button>
+        </div>
+
+        ${groups.map(g => {
+          const props = filtered.filter(p => p.group === g);
+          return `
+            <h3 style="font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:1.25rem 0 .6rem">${g}</h3>
+            <div class="table-wrap" style="margin-bottom:1.25rem">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Property</th>
+                    <th>Location</th>
+                    <th>BR / BA</th>
+                    <th>Sleeps</th>
+                    <th>Pool</th>
+                    <th>Beach</th>
+                    <th>Pets</th>
+                    <th>Standout</th>
+                    <th>Link</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${props.map(p => `
+                    <tr style="${p.isMe ? 'background:rgba(255,200,50,.07)' : ''}">
+                      <td style="font-weight:700;white-space:nowrap">${p.isMe ? '⭐ ' : ''}${p.name}${p.isMe ? ' <span style="font-size:.7rem;color:var(--accent);font-weight:400">(You)</span>' : ''}</td>
+                      <td style="white-space:nowrap;font-size:.85rem">${p.location}</td>
+                      <td style="white-space:nowrap">${p.beds}BR / ${p.baths}BA</td>
+                      <td style="font-weight:700;color:${p.isMe ? 'var(--accent)' : 'inherit'}">${p.sleeps}</td>
+                      <td style="font-size:.8rem;max-width:170px;white-space:normal;line-height:1.35">${p.pool}</td>
+                      <td style="font-size:.8rem;white-space:nowrap">${p.beach}</td>
+                      <td style="text-align:center">${p.pets ? '🐾' : '—'}</td>
+                      <td style="font-size:.8rem;color:var(--muted);max-width:190px;white-space:normal;line-height:1.35">${p.highlight}</td>
+                      <td><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-size:.82rem;white-space:nowrap">View ↗</a></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }).join('')}
+      `;
     }
   </script>
 </body>
