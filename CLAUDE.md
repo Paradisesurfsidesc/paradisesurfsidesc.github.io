@@ -66,6 +66,17 @@ All `.html` files in the repo root are served directly. No build step.
 ### Guest-only pages (`/guest/`)
 Check-in, checkout, WiFi, pool, house rules, trash, parking, help & contacts.
 
+### Admin (`/admin/`)
+Password-protected dashboard — not indexed by search engines (`robots.txt` disallows `/admin/`).
+
+| File | Purpose |
+|------|---------|
+| `admin/index.html` | Login + Bookings management + Market report + Events calendar |
+
+**Login:** username `admin` / password `paradise2025` — change `ADMIN_USER` / `ADMIN_PASS` constants in the file to update.  
+**Data storage:** Bookings saved to `localStorage` (per-browser; not synced across devices).  
+**Tabs:** Bookings (CRUD + revenue KPIs), Market Report (4 seasonal comps vs Paradise), Events (2025/2026 local events calendar).
+
 ---
 
 ## Design System
