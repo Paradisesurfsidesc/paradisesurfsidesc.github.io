@@ -628,6 +628,62 @@
       return `${m}/${day}/${y}`;
     }
 
+    function renderPace(year) {
+      year = year || parseInt(document.getElementById('paceYear')?.value) || new Date().getFullYear();
+      const el = document.getElementById('bookingPace');
+      if (!el) return;
+
+      // Build 52 week windows starting Jan 1
+      const jan1 = new Date(year, 0, 1);
+      const weeks = Array.from({ length: 52 }, (_, i) => {
+        const start = new Date(jan1);
+        start.setDate(1 + i * 7);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        return { num: i + 1, start, end, booked: 0, total: 7 };
+      });
+      // Week 52 runs to Dec 31
+      weeks[51].end = new Date(year, 11, 31);
+      weeks[51].total = Math.round((weeks[51].end - weeks[51].start) / 86400000) + 1;
+
+      // Count booked nights per week from confirmed/tentative bookings
+      bookings.filter(b => b.status !== 'Cancelled' && b.ci && b.co).forEach(b => {
+        let cur = new Date(b.ci);
+        const out = new Date(b.co);
+        while (cur < out) {
+          if (cur.getFullYear() === year) {
+            const dayOfYear = Math.floor((cur - jan1) / 86400000);
+            const wi = Math.min(Math.floor(dayOfYear / 7), 51);
+            weeks[wi].booked++;
+          }
+          cur.setDate(cur.getDate() + 1);
+        }
+      });
+
+      const fmt = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const qLabels = ['Q1 — January through March', 'Q2 — April through June', 'Q3 — July through September', 'Q4 — October through December'];
+
+      let html = '';
+      [0, 13, 26, 39].forEach((start, qi) => {
+        const chunk = weeks.slice(start, start + 13);
+        html += `<div class="pace-quarter-label">${qLabels[qi]}</div><div class="pace-grid">`;
+        chunk.forEach(w => {
+          const pct = w.total > 0 ? Math.round((w.booked / w.total) * 100) : 0;
+          const cls = pct === 0 ? 'p0' : pct === 100 ? 'p100' : pct >= 50 ? 'p50' : 'p1';
+          const label = pct === 0 ? '—' : pct + '%';
+          html += `
+            <div class="pace-cell ${cls}">
+              <span class="pw">W${w.num}</span>
+              <span class="pp">${label}</span>
+              <div class="pace-tooltip">${fmt(w.start)}–${fmt(w.end)}<br>${w.booked}/${w.total} nights · ${pct}%</div>
+            </div>`;
+        });
+        html += '</div>';
+      });
+
+      el.innerHTML = html;
+    }
+
     function renderBookings() {
       const active = bookings.filter(b => b.status !== 'Cancelled');
       const totRev = active.reduce((s, b) => s + calcNights(b.ci, b.co) * (b.rate || 0), 0);
@@ -673,6 +729,8 @@
           </td>
         </tr>`;
       }).join('');
+
+      renderPace();
     }
 
     function openModal(id) {
