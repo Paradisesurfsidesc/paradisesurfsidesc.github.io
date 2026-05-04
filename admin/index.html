@@ -591,15 +591,6 @@
       location.reload();
     }
 
-    if (sessionStorage.getItem('pa_auth') === '1') {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminScreen').classList.add('visible');
-      loadSeedIfEmpty();
-      renderBookings();
-      renderMarket('summer');
-      renderEvents(2026);
-    }
-
     // ── Tab navigation ──────────────────────────────────────
     let activeTab = 'bookings';
     function showTab(name) {
@@ -1496,6 +1487,16 @@
           `;
         }).join('')}
       `;
+    }
+
+    // ── Init if already logged in ───────────────────────────
+    if (sessionStorage.getItem('pa_auth') === '1') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminScreen').classList.add('visible');
+      loadSeedIfEmpty();
+      renderBookings();
+      renderMarket('summer');
+      renderEvents(2026);
     }
   </script>
 </body>
