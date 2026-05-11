@@ -2,6 +2,10 @@ name = "paradise-weather"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
+[[kv_namespaces]]
+binding = "PM_BOOKINGS"
+id = "d73cadcf701c49258dc0d196e1a2dd9a"
+
 # Secrets (set via `wrangler secret put <NAME>` from weather-worker/ directory):
 #   TEMPEST_TOKEN        — WeatherFlow personal access token
 #   TEMPEST_STATION_ID   — station ID (default: 204460 if omitted)

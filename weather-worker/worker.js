@@ -232,6 +232,23 @@ async function handleRainHistory(stationId, token) {
   return { ok: true, data };
 }
 
+// ── /api/pm-bookings ─────────────────────────────────────────────────────────
+// KV key: "bookings" → JSON array of booking objects
+async function handlePmBookingsGet(env) {
+  const raw = await env.PM_BOOKINGS.get('bookings');
+  const bookings = raw ? JSON.parse(raw) : [];
+  return { ok: true, bookings };
+}
+
+async function handlePmBookingsPut(body, env) {
+  let bookings;
+  try { bookings = JSON.parse(body); }
+  catch { return { ok: false, error: 'Invalid JSON' }; }
+  if (!Array.isArray(bookings)) return { ok: false, error: 'Expected array' };
+  await env.PM_BOOKINGS.put('bookings', JSON.stringify(bookings));
+  return { ok: true, count: bookings.length };
+}
+
 // ── /api/lock-codes ───────────────────────────────────────────────────────────
 // Device 1 = Front Door Z-Wave lock. lockCodes attribute = JSON map of slot → {name, code}
 async function handleLockCodes(env) {
@@ -501,6 +518,13 @@ export default {
       if (pathname === '/api/rain-history') {
         if (!env.TEMPEST_TOKEN) return json({ ok: false, error: 'Missing TEMPEST_TOKEN' }, 500);
         return json(await handleRainHistory(env.TEMPEST_STATION_ID || '204460', env.TEMPEST_TOKEN));
+      }
+
+      if (pathname === '/api/pm-bookings') {
+        if (!env.PM_BOOKINGS) return json({ ok: false, error: 'KV not configured' }, 500);
+        if (request.method === 'GET')  return json(await handlePmBookingsGet(env));
+        if (request.method === 'POST') return json(await handlePmBookingsPut(await request.text(), env));
+        return json({ ok: false, error: 'Method not allowed' }, 405);
       }
 
       if (pathname === '/api/lock-codes') {

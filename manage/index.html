@@ -169,6 +169,7 @@ tr:hover td { background: rgba(255,255,255,.03); }
     <span>PM</span>
   </div>
   <div class="brand-sub">Southern Coast Vacations · Guest Lock Codes</div>
+  <div id="saveStatus" style="font-size:.78rem;color:var(--accent);margin-left:auto;min-width:80px;text-align:right"></div>
 </div>
 
 <div class="content">
@@ -279,12 +280,54 @@ tr:hover td { background: rgba(255,255,255,.03); }
 </div>
 
 <script>
-const STORE_KEY  = 'pm_bookings_v1';
-const WORKER     = 'https://paradise-weather.paradise-surfsidesc.workers.dev';
+const CACHE_KEY = 'pm_bookings_v1';
+const WORKER    = 'https://paradise-weather.paradise-surfsidesc.workers.dev';
 
-let bookings   = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
-let editingId  = null;
-let lockCodes  = {};   // slot -> { code, name } from Hubitat
+let bookings  = JSON.parse(localStorage.getItem(CACHE_KEY) || '[]');
+let editingId = null;
+let lockCodes = {};
+let saving    = false;
+
+// ── KV persistence ────────────────────────────────────────────────────────────
+async function loadBookings() {
+  try {
+    const r = await fetch(`${WORKER}/api/pm-bookings`);
+    const j = await r.json();
+    if (j.ok && Array.isArray(j.bookings)) {
+      bookings = j.bookings;
+      localStorage.setItem(CACHE_KEY, JSON.stringify(bookings)); // local cache
+      render();
+    }
+  } catch {
+    // offline or worker down — keep using localStorage cache
+  }
+  setSaveStatus('');
+}
+
+async function persist() {
+  localStorage.setItem(CACHE_KEY, JSON.stringify(bookings)); // instant local cache
+  if (saving) return;
+  saving = true;
+  setSaveStatus('Saving…');
+  try {
+    const r = await fetch(`${WORKER}/api/pm-bookings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bookings),
+    });
+    const j = await r.json();
+    setSaveStatus(j.ok ? '✓ Saved' : '⚠ Save failed');
+  } catch {
+    setSaveStatus('⚠ Offline — saved locally');
+  }
+  saving = false;
+  setTimeout(() => setSaveStatus(''), 3000);
+}
+
+function setSaveStatus(msg) {
+  const el = document.getElementById('saveStatus');
+  if (el) el.textContent = msg;
+}
 
 async function fetchLockCodes() {
   try {
@@ -292,7 +335,7 @@ async function fetchLockCodes() {
     if (!r.ok) return;
     const j = await r.json();
     if (j.ok && j.codes) {
-      lockCodes = j.codes;  // keyed by slot number
+      lockCodes = j.codes;
       render();
     }
   } catch {}
@@ -584,7 +627,8 @@ function delBooking(id) {
   render();
 }
 
-render();
+render();           // instant render from local cache while KV loads
+loadBookings();     // fetch from KV, re-render when ready
 fetchLockCodes();
 setInterval(fetchLockCodes, 30000);
 </script>
