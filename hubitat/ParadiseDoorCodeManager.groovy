@@ -49,6 +49,7 @@ definition(
 )
 
 // ── Constants ─────────────────────────────────────────────────────
+@Field static final Long FRONT_DOOR_ID    = 1L  // hardcoded — Front Door only
 @Field static final int  SLOT_OWNER_MIN   = 1
 @Field static final int  SLOT_OWNER_MAX   = 10
 @Field static final int  SLOT_STAFF_MIN   = 11
@@ -98,13 +99,17 @@ private void initState() {
 
 private void initialize() {
     initState()
-    if (frontDoor) {
-        subscribe(frontDoor, "lock",       lockEventHandler)
-        subscribe(frontDoor, "codeChanged", codeChangedHandler)
+    def lock = getFrontDoor()
+    if (lock) {
+        subscribe(lock, "lock",        lockEventHandler)
+        subscribe(lock, "codeChanged", codeChangedHandler)
     }
-    // Heartbeat every minute for activation/deactivation timing
     schedule("0 * * * * ?", "tickHandler")
-    logInfo "Initialized — monitoring: ${frontDoor?.displayName ?: 'no lock selected'}"
+    logInfo "Initialized — monitoring: ${lock?.displayName ?: 'Front Door not found (device 1)'}"
+}
+
+private def getFrontDoor() {
+    return getDeviceById(FRONT_DOOR_ID)
 }
 
 // ── Pages ─────────────────────────────────────────────────────────
@@ -119,15 +124,9 @@ def mainPage() {
             paragraph state.uiMsg ?: "Ready."
         }
 
-        section("Lock Configuration") {
-            input "frontDoor", "capability.lockCodes",
-                  title: "Front Door Lock",
-                  description: "Pump Room and Owner's Closet are excluded from this app",
-                  multiple: false, required: true
-            if (frontDoor) {
-                def maxSlots = getMaxSlots()
-                paragraph "Lock: ${frontDoor.displayName} · Max slots: ${maxSlots} · Guest pool: slots ${SLOT_GUEST_MIN}–${Math.min(SLOT_GUEST_MAX, maxSlots)}"
-            }
+        section("Lock") {
+            def lock = getFrontDoor()
+            paragraph lock ? "🔒 ${lock.displayName} · Guest slots: ${SLOT_GUEST_MIN}–${SLOT_GUEST_MAX}" : "⚠️ Front Door (device 1) not found on this hub"
         }
 
         section("Notifications (Phase 2)") {
@@ -218,7 +217,7 @@ def addBookingPage() {
             if (!(settings.tmp_autoGen as Boolean)) {
                 input "tmp_manualCode", "string", title: "Manual PIN (digits only)",   required: false
             }
-            input "tmp_len",        "number", title: "PIN length (4–8 digits)",        defaultValue: 6
+            input "tmp_len",        "number", title: "PIN length (4–8 digits)",        defaultValue: 4
             input "tmp_autoDelete", "bool",   title: "Auto-delete code at checkout",   defaultValue: true
         }
         section("Save") {
@@ -268,7 +267,7 @@ def editBookingPage() {
             if (!(settings.e_autoGen as Boolean)) {
                 input "e_manualCode", "string", title: "Manual PIN",              required: false, defaultValue: (b.manualCode ?: "")
             }
-            input "e_len",          "number", title: "PIN length (4–8)",          required: true, defaultValue: (b.len ?: 6)
+            input "e_len",          "number", title: "PIN length (4–8)",          required: true, defaultValue: (b.len ?: 4)
             input "e_autoDelete",   "bool",   title: "Auto-delete at checkout",   required: true, defaultValue: b.autoDelete
         }
         section("Warning") {
@@ -306,7 +305,7 @@ def settingsPage() {
             paragraph "Slots ${SLOT_OWNER_MIN}–${SLOT_OWNER_MAX}: Owner (manual only)\nSlots ${SLOT_STAFF_MIN}–${SLOT_STAFF_MAX}: Staff / PM / Cleaners (manual only)\nSlots ${SLOT_GUEST_MIN}–${SLOT_GUEST_MAX}: STR Bookings (auto-assigned)"
         }
         section("Defaults") {
-            input "defaultCodeLen",    "number", title: "Default PIN length",             defaultValue: 6
+            input "defaultCodeLen",    "number", title: "Default PIN length",             defaultValue: 4
             input "defaultAutoDelete", "bool",   title: "Auto-delete codes at checkout", defaultValue: true
         }
         section("Notifications") {
@@ -401,7 +400,7 @@ def appButtonHandler(btn) {
 // ── Core — Create ─────────────────────────────────────────────────
 
 private void createBookingFromTemps(boolean closeAfter) {
-    if (!frontDoor) { uiWarn("Select the Front Door lock first."); return }
+    if (!getFrontDoor()) { uiWarn("Front Door (device 1) not found on this hub."); return }
     def tz = hubTimezone()
 
     // Required field check
@@ -445,7 +444,7 @@ private void createBookingFromTemps(boolean closeAfter) {
         slot:        slot,
         autoGen:     (settings.tmp_autoGen as Boolean),
         manualCode:  (settings.tmp_manualCode ?: null),
-        len:         Math.max(4, Math.min(8, (settings.tmp_len as Integer) ?: 6)),
+        len:         Math.max(4, Math.min(8, (settings.tmp_len as Integer) ?: 4)),
         autoDelete:  (settings.tmp_autoDelete as Boolean),
         startEpoch:  startDT.time,
         endEpoch:    endDT.time,
@@ -538,7 +537,8 @@ private void saveEditedBooking() {
 private void activateById(String id, boolean force = false) {
     def b = state.bookings[id]
     if (!b) { uiWarn("Booking ${id} not found."); return }
-    if (!frontDoor) { uiWarn("No lock configured."); return }
+    def frontDoor = getFrontDoor()
+    if (!frontDoor) { uiWarn("Front Door (device 1) not found."); return }
 
     def nowTs = new Date().time
 
@@ -564,7 +564,8 @@ private void activateById(String id, boolean force = false) {
 private void deactivateById(String id) {
     def b = state.bookings[id]
     if (!b) { uiWarn("Booking ${id} not found."); return }
-    if (!frontDoor) { uiWarn("No lock configured."); return }
+    def frontDoor = getFrontDoor()
+    if (!frontDoor) { uiWarn("Front Door (device 1) not found."); return }
 
     try {
         frontDoor.deleteCode(b.slot as Integer)
@@ -593,6 +594,7 @@ private void deleteBooking(String id) {
 
     // Remove code from lock if it's still there
     try {
+        def frontDoor = getFrontDoor()
         if (frontDoor && b.codeOnLock && b.autoDelete) {
             frontDoor.deleteCode(b.slot as Integer)
             logInfo "Removed code slot ${b.slot} from lock for deleted booking ${b.name}"
@@ -697,7 +699,7 @@ private Integer nextAvailableSlot(Long startEpoch, Long endEpoch) {
     }
 
     // From live lock codes (catches manually-set codes outside this app)
-    safeJson(frontDoor?.currentValue("lockCodes") ?: "{}")?.keySet()?.each {
+    safeJson(getFrontDoor()?.currentValue("lockCodes") ?: "{}")?.keySet()?.each {
         try { occupied << (it as Integer) } catch (ignored) { }
     }
 
@@ -721,9 +723,9 @@ private boolean slotHasActiveBooking(Integer slot, Long startEpoch, Long endEpoc
 }
 
 private void pushCodeToLock(Map b, String code) {
-    if (!frontDoor) { logWarn "pushCodeToLock: no lock configured"; return }
+    def frontDoor = getFrontDoor()
+    if (!frontDoor) { logWarn "pushCodeToLock: Front Door (device 1) not found"; return }
     String label = "${b.name} ${new Date(b.startEpoch as Long).format('MM/dd')}-${new Date(b.endEpoch as Long).format('MM/dd')}"
-    // Truncate label to 20 chars (Kwikset limit)
     if (label.length() > 20) label = label.substring(0, 20)
     try {
         frontDoor.setCode(b.slot as Integer, code, label)
@@ -749,7 +751,7 @@ private String resolveSlotIdentity(Integer slot) {
 
 private Integer getMaxSlots() {
     try {
-        def mv = frontDoor?.currentValue("maxCodes")
+        def mv = getFrontDoor()?.currentValue("maxCodes")
         return mv != null ? Math.min(mv as Integer, 250) : 250
     } catch (e) { return 250 }
 }
@@ -804,7 +806,12 @@ private boolean windowsOverlap(Long aStart, Long aEnd, Long bStart, Long bEnd) {
 
 private String resolveCode(Map b) {
     if (b.autoGen) {
-        Integer len = Math.max(4, Math.min(8, (b.len as Integer) ?: 6))
+        Integer len = Math.max(4, Math.min(8, (b.len as Integer) ?: 4))
+        // Prefer last N digits of guest phone number
+        if (b.guestPhone) {
+            String digits = (b.guestPhone as String).replaceAll("\\D", "")
+            if (digits.length() >= len) return digits.substring(digits.length() - len)
+        }
         Random rng = new Random()
         return (1..len).collect { rng.nextInt(10).toString() }.join()
     } else {
@@ -884,7 +891,7 @@ private void clearTempInputs() {
     app.updateSetting("tmp_autoSlot",   [value: true, type: "bool"])
     app.updateSetting("tmp_autoGen",    [value: true, type: "bool"])
     app.updateSetting("tmp_autoDelete", [value: true, type: "bool"])
-    app.updateSetting("tmp_len",        [value: 6,    type: "number"])
+    app.updateSetting("tmp_len",        [value: 4,    type: "number"])
 }
 
 private List<String> getCheckedIds() {
