@@ -61,8 +61,10 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, -apple
 .btn-primary { background: var(--accent); color: #071525; }
 .btn-sm { padding: .3rem .7rem; font-size: .78rem; border-radius: 7px; border: 1px solid var(--cardBorder); background: var(--card); color: var(--text); cursor: pointer; font-family: inherit; }
 .btn-sm:hover { background: rgba(255,255,255,.12); }
-.btn-sm.del { color: var(--red); border-color: rgba(248,113,113,.3); }
-.btn-sm.del:hover { background: rgba(248,113,113,.1); }
+.btn-sm.del  { color: var(--red); border-color: rgba(248,113,113,.3); }
+.btn-sm.del:hover  { background: rgba(248,113,113,.1); }
+.btn-sm.send { color: var(--accent); border-color: rgba(242,193,75,.3); }
+.btn-sm.send:hover { background: rgba(242,193,75,.1); }
 
 /* ── Table ── */
 .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--cardBorder); }
@@ -122,12 +124,41 @@ tr:hover td { background: rgba(255,255,255,.03); }
 }
 .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--accent); }
 .form-row textarea { resize: vertical; min-height: 70px; }
+/* date + calendar button wrapper */
+.date-wrap { display: flex; gap: .4rem; align-items: center; }
+.date-wrap input[type="date"] { flex: 1; min-width: 0; }
+.cal-btn {
+  flex-shrink: 0; padding: .6rem .7rem; border-radius: 8px; border: 1px solid var(--cardBorder);
+  background: rgba(255,255,255,.06); color: var(--text); cursor: pointer; font-size: 1rem; line-height: 1;
+}
+.cal-btn:hover { background: rgba(255,255,255,.12); }
+/* time override */
+.time-override-row {
+  grid-column: 1/-1; display: flex; align-items: center; gap: .6rem;
+  padding: .6rem .75rem; border-radius: 8px; border: 1px solid var(--cardBorder);
+  background: rgba(255,255,255,.04); cursor: pointer; user-select: none;
+}
+.time-override-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+.time-override-row span { font-size: .82rem; color: var(--muted); }
+.time-fields {
+  grid-column: 1/-1; display: grid; grid-template-columns: 1fr 1fr; gap: .75rem;
+  padding: .75rem; border-radius: 8px; border: 1px solid rgba(242,193,75,.2);
+  background: rgba(242,193,75,.05);
+}
+.time-fields .form-row label { color: var(--accent); }
+.time-fields input[type="time"] { color-scheme: dark; }
 .modal-actions { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1.25rem; }
 .code-preview {
   margin-top: .75rem; padding: .75rem 1rem; background: rgba(242,193,75,.07);
   border: 1px solid rgba(242,193,75,.2); border-radius: 8px; font-size: .875rem;
 }
 .code-preview .pin { font-family: monospace; font-size: 1.3rem; font-weight: 800; color: var(--accent); letter-spacing: .15em; }
+/* lock code status badges */
+.lcs { display: inline-flex; align-items: center; gap: .3rem; padding: .2rem .55rem; border-radius: 20px; font-size: .72rem; font-weight: 700; white-space: nowrap; }
+.lcs-set     { background: rgba(74,222,128,.15); color: #4ade80; }
+.lcs-pending { background: rgba(251,191,36,.12); color: #fbbf24; }
+.lcs-expired { background: rgba(255,255,255,.08); color: var(--muted); }
+.lcs-none    { background: rgba(255,255,255,.05); color: var(--muted); }
 </style>
 </head>
 <body>
@@ -162,6 +193,7 @@ tr:hover td { background: rgba(255,255,255,.03); }
           <th>Lock Slot</th>
           <th>PIN</th>
           <th>Status</th>
+          <th>Lock Code</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -190,11 +222,31 @@ tr:hover td { background: rgba(255,255,255,.03); }
       </div>
       <div class="form-row">
         <label>Check-In *</label>
-        <input type="date" id="fCheckin">
+        <div class="date-wrap">
+          <input type="date" id="fCheckin">
+          <button type="button" class="cal-btn" onclick="document.getElementById('fCheckin').showPicker()" title="Open calendar">📅</button>
+        </div>
       </div>
       <div class="form-row">
         <label>Check-Out *</label>
-        <input type="date" id="fCheckout">
+        <div class="date-wrap">
+          <input type="date" id="fCheckout">
+          <button type="button" class="cal-btn" onclick="document.getElementById('fCheckout').showPicker()" title="Open calendar">📅</button>
+        </div>
+      </div>
+      <label class="time-override-row" id="timeOverrideRow">
+        <input type="checkbox" id="fTimeOverride" onchange="toggleTimeFields()">
+        <span>⏰ Override default times (Check-in 4:00 PM · Check-out 10:00 AM)</span>
+      </label>
+      <div class="time-fields" id="timeFields" style="display:none">
+        <div class="form-row">
+          <label>Check-In Time</label>
+          <input type="time" id="fCheckinTime" value="16:00" onchange="updatePreviewTimes()">
+        </div>
+        <div class="form-row">
+          <label>Check-Out Time</label>
+          <input type="time" id="fCheckoutTime" value="10:00" onchange="updatePreviewTimes()">
+        </div>
       </div>
       <div class="form-row">
         <label>Lock Slot (31–250)</label>
@@ -217,7 +269,7 @@ tr:hover td { background: rgba(255,255,255,.03); }
     <div class="code-preview" id="codePreview" style="display:none">
       <div style="font-size:.75rem;color:var(--muted);margin-bottom:.35rem">Generated PIN</div>
       <div class="pin" id="previewPin">—</div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:.35rem">Slot <span id="previewSlot">—</span> · Active 4:00 PM check-in → 10:00 AM checkout</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:.35rem">Slot <span id="previewSlot">—</span> · <span id="previewTimes">Active 4:00 PM check-in → 10:00 AM checkout</span></div>
     </div>
     <div class="modal-actions">
       <button class="btn-sm" onclick="closeModal()">Cancel</button>
@@ -227,12 +279,74 @@ tr:hover td { background: rgba(255,255,255,.03); }
 </div>
 
 <script>
-const STORE_KEY = 'pm_bookings_v1';
+const STORE_KEY  = 'pm_bookings_v1';
+const WORKER     = 'https://paradise-weather.paradise-surfsidesc.workers.dev';
 
-let bookings = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
-let editingId = null;
+let bookings   = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+let editingId  = null;
+let lockCodes  = {};   // slot -> { code, name } from Hubitat
+
+async function fetchLockCodes() {
+  try {
+    const r = await fetch(`${WORKER}/api/lock-codes`);
+    if (!r.ok) return;
+    const j = await r.json();
+    if (j.ok && j.codes) {
+      lockCodes = j.codes;  // keyed by slot number
+      render();
+    }
+  } catch {}
+}
+
+function lockCodeStatus(b) {
+  if (!b.slot || !b.pin || b.status === 'Cancelled') return null;
+  const today = new Date().toISOString().slice(0, 10);
+  if (b.co < today) return 'expired';
+  const live = lockCodes[b.slot];
+  if (!live) return 'pending';
+  // Compare PIN — Hubitat stores codes as strings
+  return String(live.code) === String(b.pin) ? 'set' : 'pending';
+}
 
 function persist() { localStorage.setItem(STORE_KEY, JSON.stringify(bookings)); }
+
+function sendCodeEmail(id) {
+  const b = bookings.find(x => x.id === id);
+  if (!b || !b.email || !b.pin) return;
+
+  const ciTime = b.ci_time ? fmt12(b.ci_time) : '4:00 PM';
+  const coTime = b.co_time ? fmt12(b.co_time) : '10:00 AM';
+  const nights = calcNights(b.ci, b.co);
+
+  const subject = `Your Paradise Access Code — ${fmtDate(b.ci)}`;
+
+  const body = `Hi ${b.guest.split(' ')[0]},
+
+Your access code for Paradise is ready. Here are your check-in details:
+
+Property: Paradise — 714B S Ocean Blvd, Surfside Beach, SC 29575
+
+Check-In:  ${fmtDate(b.ci)} at ${ciTime}
+Check-Out: ${fmtDate(b.co)} at ${coTime}
+Nights:    ${nights}
+
+FRONT DOOR CODE: ${b.pin}
+
+Enter this code on the keypad at the front door. The code becomes active at ${ciTime} on your check-in date and expires at ${coTime} on your check-out date.
+
+Guest Guide (WiFi, pool, parking, house rules):
+https://paradisesurfsidesc.com/guest/
+
+If you have any questions before arrival, reply to this email or call/text 404-406-8471.
+
+We look forward to your stay!
+
+David Taylor
+Paradise — Surfside Beach, SC`;
+
+  const mailto = `mailto:${encodeURIComponent(b.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+}
 
 function calcNights(ci, co) {
   const n = (new Date(co) - new Date(ci)) / 86400000;
@@ -311,20 +425,32 @@ function render() {
 
   const SC = { Confirmed:'s-confirmed', Tentative:'s-tentative', Completed:'s-completed', Cancelled:'s-cancelled' };
   tbody.innerHTML = sorted.map(b => {
-    const n = calcNights(b.ci, b.co);
+    const n   = calcNights(b.ci, b.co);
+    const lcs = lockCodeStatus(b);
+    const lcsHtml = lcs === 'set'
+      ? '<span class="lcs lcs-set">✓ Code Set</span>'
+      : lcs === 'pending'
+      ? '<span class="lcs lcs-pending">⏳ Pending</span>'
+      : lcs === 'expired'
+      ? '<span class="lcs lcs-expired">Expired</span>'
+      : '<span class="lcs lcs-none">—</span>';
+    const ciDisplay = b.ci_time ? `${fmtDate(b.ci)}<div style="font-size:.72rem;color:var(--accent)">${fmt12(b.ci_time)}</div>` : fmtDate(b.ci);
+    const coDisplay = b.co_time ? `${fmtDate(b.co)}<div style="font-size:.72rem;color:var(--accent)">${fmt12(b.co_time)}</div>` : fmtDate(b.co);
     return `<tr>
       <td>
         <div style="font-weight:600">${b.guest}</div>
         <div style="font-size:.75rem;color:var(--muted)">${b.phone || b.email || ''}</div>
       </td>
-      <td>${fmtDate(b.ci)}</td>
-      <td>${fmtDate(b.co)}</td>
+      <td>${ciDisplay}</td>
+      <td>${coDisplay}</td>
       <td>${n || '—'}</td>
       <td style="font-weight:600;color:var(--muted)">${b.slot ? `Slot ${b.slot}` : '—'}</td>
       <td>${b.pin ? `<span class="code-chip">${b.pin}</span>` : '<span style="color:var(--muted);font-size:.8rem">—</span>'}</td>
       <td><span class="badge ${SC[b.status] || 's-tentative'}">${b.status}</span></td>
-      <td>
+      <td>${lcsHtml}</td>
+      <td style="white-space:nowrap">
         <button class="btn-sm" onclick="openModal('${b.id}')">Edit</button>
+        ${b.email && b.pin ? `<button class="btn-sm send" onclick="sendCodeEmail('${b.id}')">📧 Send</button>` : `<button class="btn-sm" disabled style="opacity:.35;cursor:default" title="${!b.pin?'No PIN assigned':!b.email?'No guest email on file':''}">📧 Send</button>`}
         <button class="btn-sm del" onclick="delBooking('${b.id}')">Delete</button>
       </td>
     </tr>`;
@@ -332,20 +458,50 @@ function render() {
 }
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
+function fmt12(time24) {
+  if (!time24) return '';
+  const [h, m] = time24.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12  = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function toggleTimeFields() {
+  const on = document.getElementById('fTimeOverride').checked;
+  document.getElementById('timeFields').style.display = on ? '' : 'none';
+  updatePreviewTimes();
+}
+
+function updatePreviewTimes() {
+  const on  = document.getElementById('fTimeOverride').checked;
+  const ci  = on ? fmt12(document.getElementById('fCheckinTime').value)  : '4:00 PM';
+  const co  = on ? fmt12(document.getElementById('fCheckoutTime').value) : '10:00 AM';
+  const el  = document.getElementById('previewTimes');
+  if (el) el.textContent = `Active ${ci} check-in → ${co} checkout`;
+}
+
 function openModal(id) {
   editingId = id || null;
   const b = id ? bookings.find(x => x.id === id) : null;
   document.getElementById('modalTitle').textContent = b ? 'Edit Booking' : 'New Booking';
-  document.getElementById('fGuest').value   = b?.guest   || '';
-  document.getElementById('fPhone').value   = b?.phone   || '';
-  document.getElementById('fEmail').value   = b?.email   || '';
-  document.getElementById('fCheckin').value = b?.ci      || '';
-  document.getElementById('fCheckout').value= b?.co      || '';
-  document.getElementById('fSlot').value    = b?.slot    || '';
-  document.getElementById('fStatus').value  = b?.status  || 'Confirmed';
-  document.getElementById('fNotes').value   = b?.notes   || '';
+  document.getElementById('fGuest').value    = b?.guest   || '';
+  document.getElementById('fPhone').value    = b?.phone   || '';
+  document.getElementById('fEmail').value    = b?.email   || '';
+  document.getElementById('fCheckin').value  = b?.ci      || '';
+  document.getElementById('fCheckout').value = b?.co      || '';
+  document.getElementById('fSlot').value     = b?.slot    || '';
+  document.getElementById('fStatus').value   = b?.status  || 'Confirmed';
+  document.getElementById('fNotes').value    = b?.notes   || '';
 
-  // Show PIN preview for new bookings
+  // Time override
+  const hasCustom = !!(b?.ci_time || b?.co_time);
+  document.getElementById('fTimeOverride').checked   = hasCustom;
+  document.getElementById('fCheckinTime').value      = b?.ci_time  || '16:00';
+  document.getElementById('fCheckoutTime').value     = b?.co_time  || '10:00';
+  document.getElementById('timeFields').style.display = hasCustom ? '' : 'none';
+  updatePreviewTimes();
+
+  // PIN preview for new bookings
   if (!b) {
     const slot = nextSlot();
     const pin  = genPin();
@@ -394,16 +550,19 @@ function saveBooking() {
     ? (bookings.find(b => b.id === editingId)?.pin || null)
     : (slotInput._autoPin || genPin());
 
+  const timeOverride = document.getElementById('fTimeOverride').checked;
   const data = {
-    id:     editingId || Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+    id:      editingId || Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
     guest,
-    phone:  document.getElementById('fPhone').value.trim(),
-    email:  document.getElementById('fEmail').value.trim(),
+    phone:   document.getElementById('fPhone').value.trim(),
+    email:   document.getElementById('fEmail').value.trim(),
     ci, co,
-    slot:   slot || null,
-    pin:    slot ? pin : null,
-    status: document.getElementById('fStatus').value,
-    notes:  document.getElementById('fNotes').value.trim(),
+    ci_time: timeOverride ? document.getElementById('fCheckinTime').value  : null,
+    co_time: timeOverride ? document.getElementById('fCheckoutTime').value : null,
+    slot:    slot || null,
+    pin:     slot ? pin : null,
+    status:  document.getElementById('fStatus').value,
+    notes:   document.getElementById('fNotes').value.trim(),
   };
 
   if (editingId) {
@@ -426,6 +585,8 @@ function delBooking(id) {
 }
 
 render();
+fetchLockCodes();
+setInterval(fetchLockCodes, 30000);
 </script>
 </body>
 </html>

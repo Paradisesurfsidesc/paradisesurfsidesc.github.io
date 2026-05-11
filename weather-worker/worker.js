@@ -232,6 +232,37 @@ async function handleRainHistory(stationId, token) {
   return { ok: true, data };
 }
 
+// ── /api/lock-codes ───────────────────────────────────────────────────────────
+// Device 1 = Front Door Z-Wave lock. lockCodes attribute = JSON map of slot → {name, code}
+async function handleLockCodes(env) {
+  const base = hubBase(env);
+  const tok  = env.HUBITAT_TOKEN;
+  const d = await hubGet(base, '/devices/1', tok);
+  if (!d) return { ok: false, error: 'Could not reach Hubitat' };
+
+  // lockCodes attribute value is a JSON string: {"31":{"name":"Guest","code":"194559"},...}
+  const raw = attr(d, 'lockCodes');
+  let codes = {};
+  if (raw) {
+    try { codes = JSON.parse(typeof raw === 'string' ? raw : JSON.stringify(raw)); }
+    catch {}
+  }
+
+  // Normalize: keys are slot numbers (strings), values have .code and .name
+  const normalized = {};
+  for (const [slot, entry] of Object.entries(codes)) {
+    const s = parseInt(slot);
+    if (s >= 31 && s <= 250) {
+      normalized[s] = {
+        code: entry?.code ?? entry?.userCode ?? entry ?? null,
+        name: entry?.name ?? null,
+      };
+    }
+  }
+
+  return { ok: true, codes: normalized, count: Object.keys(normalized).length };
+}
+
 // ── /api/command ──────────────────────────────────────────────────────────────
 const ALLOWED_COMMANDS = {
   11: ['on', 'off'],  // heater fireman switch (AquaCal SuperQuiet 120)
@@ -470,6 +501,11 @@ export default {
       if (pathname === '/api/rain-history') {
         if (!env.TEMPEST_TOKEN) return json({ ok: false, error: 'Missing TEMPEST_TOKEN' }, 500);
         return json(await handleRainHistory(env.TEMPEST_STATION_ID || '204460', env.TEMPEST_TOKEN));
+      }
+
+      if (pathname === '/api/lock-codes') {
+        if (!env.HUBITAT_TOKEN) return json({ ok: false, error: 'Missing HUBITAT_TOKEN' }, 500);
+        return json(await handleLockCodes(env));
       }
 
       if (pathname === '/api/command') {
