@@ -615,6 +615,9 @@ function openModal(id) {
     document.getElementById('codePreview').style.display = 'none';
   }
 
+  const saveBtn = document.querySelector('.modal .btn-primary');
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Booking'; }
+
   document.getElementById('modalOverlay').classList.remove('hidden');
   document.getElementById('fGuest').focus();
 }
@@ -672,9 +675,13 @@ async function saveBooking() {
 
   const saveBtn = document.querySelector('.modal .btn-primary');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
-  await persist();
-  closeModal();
-  render();
+  try {
+    await persist();
+    closeModal();
+    render();
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Booking'; }
+  }
 }
 
 function delBooking(id) {
