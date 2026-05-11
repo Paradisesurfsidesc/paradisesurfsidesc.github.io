@@ -1,6 +1,6 @@
 /**
  * Paradise Door Code Manager
- * Version: 3.0.0 — 2026-05-10
+ * Version: 3.1.0 — 2026-05-11
  *
  * CHANGES FROM v2.8.5:
  *   BUG FIX 1 — setCode confirmation via lock event subscription (no more silent fails)
@@ -14,6 +14,10 @@
  *   NEW — SecureRandom PIN generation (replaces Math.random)
  *   NEW — Lock event subscription for real-time access tracking
  *   NEW — Notification stubs (ready for SMS/email Phase 2)
+ *
+ * v3.1.0 — 2026-05-11
+ *   NEW — notifyGuest(): sends check-in email via Hubitat sendEmail() at code activation
+ *         Requires SMTP configured in Hub Settings → Notifications → Email
  *   NEW — Pending confirmation state: tracks setCode → confirmed lifecycle
  *   NEW — Front door scope guard (Pump Room and Owner's Closet explicitly excluded)
  *   NEW — Southern Coast PM view (slots 31–250 only)
@@ -554,8 +558,7 @@ private void activateById(String id, boolean force = false) {
     logInfo "Activated: ${b.name} · Slot ${b.slot} · Code ${b.activeCode}"
     uiInfo("✅ Activated: ${b.name} (Slot ${b.slot})")
 
-    // TODO Phase 2: send guest SMS/email notification here
-    // notifyGuest(b)
+    notifyGuest(b)
 }
 
 private void deactivateById(String id) {
@@ -747,8 +750,8 @@ private String resolveSlotIdentity(Integer slot) {
 private Integer getMaxSlots() {
     try {
         def mv = frontDoor?.currentValue("maxCodes")
-        return mv != null ? Math.min(mv as Integer, 250) : 30
-    } catch (e) { return 30 }
+        return mv != null ? Math.min(mv as Integer, 250) : 250
+    } catch (e) { return 250 }
 }
 
 // ── Helpers — Time ────────────────────────────────────────────────
@@ -810,6 +813,49 @@ private String resolveCode(Map b) {
         String clean = (b.manualCode as String).replaceAll("\\D", "")
         if (clean.length() < 4) throw new IllegalArgumentException("Manual code must be at least 4 digits")
         return clean
+    }
+}
+
+// ── Helpers — Notifications ───────────────────────────────────────
+
+private void notifyGuest(Map b) {
+    if (!b.guestEmail) return
+    try {
+        def tz        = hubTimezone()
+        def firstName = (b.name as String)?.tokenize(' ')?.first() ?: b.name
+        def ciDate    = new Date(b.startEpoch as Long)
+        def coDate    = new Date(b.endEpoch   as Long)
+        def ciFmt     = ciDate.format("MMMM d, yyyy 'at' h:mm a z", tz)
+        def coFmt     = coDate.format("MMMM d, yyyy 'at' h:mm a z", tz)
+        def ciShort   = ciDate.format("MM/dd/yyyy", tz)
+
+        String subject = "Your Paradise Access Code — ${ciShort}"
+        String body = """\
+Hi ${firstName},
+
+Your door code for Paradise is ready. You can check in anytime from ${ciFmt}.
+
+Property:   Paradise — 714B S Ocean Blvd, Surfside Beach, SC 29575
+Check-In:   ${ciFmt}
+Check-Out:  ${coFmt}
+
+FRONT DOOR CODE: ${b.activeCode}
+
+Enter this code on the front door keypad. It expires automatically at checkout.
+
+Guest Guide (WiFi, pool, parking, trash, house rules):
+https://paradisesurfsidesc.com/guest/
+
+Questions before arrival? Reply to this email or call/text 404-406-8471.
+
+See you soon!
+David Taylor
+Paradise — Surfside Beach, SC"""
+
+        sendEmail(b.guestEmail as String, subject, body)
+        logInfo "Check-in email sent to ${b.guestEmail} (${b.name})"
+    } catch (e) {
+        logWarn "notifyGuest failed for ${b.name}: ${e}"
     }
 }
 

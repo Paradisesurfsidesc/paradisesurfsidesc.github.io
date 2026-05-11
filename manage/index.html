@@ -63,8 +63,12 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, -apple
 .btn-sm:hover { background: rgba(255,255,255,.12); }
 .btn-sm.del  { color: var(--red); border-color: rgba(248,113,113,.3); }
 .btn-sm.del:hover  { background: rgba(248,113,113,.1); }
-.btn-sm.send { color: var(--accent); border-color: rgba(242,193,75,.3); }
-.btn-sm.send:hover { background: rgba(242,193,75,.1); }
+.btn-sm.send   { color: var(--accent); border-color: rgba(242,193,75,.3); }
+.btn-sm.send:hover   { background: rgba(242,193,75,.1); }
+.btn-sm.push   { color: #4ade80; border-color: rgba(74,222,128,.3); }
+.btn-sm.push:hover   { background: rgba(74,222,128,.1); }
+.btn-sm.remove { color: var(--muted); border-color: rgba(255,255,255,.2); }
+.btn-sm.remove:hover { background: rgba(255,255,255,.08); }
 
 /* ── Table ── */
 .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--cardBorder); }
@@ -392,6 +396,52 @@ Paradise — Surfside Beach, SC`;
   window.location.href = mailto;
 }
 
+async function pushCodeToLock(id) {
+  const b = bookings.find(x => x.id === id);
+  if (!b?.slot || !b?.pin) return;
+  const label = (() => {
+    const first = b.guest.split(' ')[0];
+    const s = `${first} ${b.ci.slice(5).replace('-','/')}-${b.co.slice(5).replace('-','/')}`;
+    return s.length > 20 ? s.slice(0, 20) : s;
+  })();
+  setSaveStatus('Pushing…');
+  try {
+    const r = await fetch(`${WORKER}/api/command`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deviceId: 1, command: 'setCode', params: [b.slot, b.pin, label] }),
+    });
+    const j = await r.json();
+    if (!j.ok) { alert(`Push failed: ${j.error}`); setSaveStatus(''); return; }
+    setSaveStatus('✓ Code pushed');
+    setTimeout(() => { setSaveStatus(''); fetchLockCodes(); }, 3000);
+  } catch (e) {
+    alert(`Push failed: ${e.message}`);
+    setSaveStatus('');
+  }
+}
+
+async function removeCodeFromLock(id) {
+  const b = bookings.find(x => x.id === id);
+  if (!b?.slot) return;
+  if (!confirm(`Remove slot ${b.slot} (${b.guest}) from the lock?`)) return;
+  setSaveStatus('Removing…');
+  try {
+    const r = await fetch(`${WORKER}/api/command`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deviceId: 1, command: 'deleteCode', params: [b.slot] }),
+    });
+    const j = await r.json();
+    if (!j.ok) { alert(`Remove failed: ${j.error}`); setSaveStatus(''); return; }
+    setSaveStatus('✓ Code removed');
+    setTimeout(() => { setSaveStatus(''); fetchLockCodes(); }, 3000);
+  } catch (e) {
+    alert(`Remove failed: ${e.message}`);
+    setSaveStatus('');
+  }
+}
+
 function calcNights(ci, co) {
   const n = (new Date(co) - new Date(ci)) / 86400000;
   return Number.isFinite(n) && n > 0 ? n : 0;
@@ -494,6 +544,11 @@ function render() {
       <td>${lcsHtml}</td>
       <td style="white-space:nowrap">
         <button class="btn-sm" onclick="openModal('${b.id}')">Edit</button>
+        ${b.slot && b.pin && b.status !== 'Cancelled'
+          ? (lcs === 'set'
+              ? `<button class="btn-sm remove" onclick="removeCodeFromLock('${b.id}')">🔓 Remove</button>`
+              : `<button class="btn-sm push" onclick="pushCodeToLock('${b.id}')">🔒 Push</button>`)
+          : ''}
         ${b.email && b.pin ? `<button class="btn-sm send" onclick="sendCodeEmail('${b.id}')">📧 Send</button>` : `<button class="btn-sm" disabled style="opacity:.35;cursor:default" title="${!b.pin?'No PIN assigned':!b.email?'No guest email on file':''}">📧 Send</button>`}
         <button class="btn-sm del" onclick="delBooking('${b.id}')">Delete</button>
       </td>

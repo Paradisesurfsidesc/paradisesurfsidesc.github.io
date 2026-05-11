@@ -282,22 +282,41 @@ async function handleLockCodes(env) {
 
 // ── /api/command ──────────────────────────────────────────────────────────────
 const ALLOWED_COMMANDS = {
-  11: ['on', 'off'],  // heater fireman switch (AquaCal SuperQuiet 120)
+  11: ['on', 'off'],              // heater fireman switch (AquaCal SuperQuiet 120)
+   1: ['setCode', 'deleteCode'],  // front door lock — PM code management
 };
 
 async function handleCommand(body, env) {
-  let deviceId, command;
-  try { ({ deviceId, command } = JSON.parse(body)); }
+  let deviceId, command, params;
+  try { ({ deviceId, command, params } = JSON.parse(body)); }
   catch { return { ok: false, error: 'Invalid JSON body' }; }
 
   if (!ALLOWED_COMMANDS[deviceId]?.includes(command)) {
     return { ok: false, error: 'Command not in allowlist' };
   }
 
+  // Validate setCode params: [slot (31-250), pin (4-8 digits), label (string)]
+  if (command === 'setCode') {
+    const [slot, pin] = params || [];
+    if (!slot || slot < 31 || slot > 250)       return { ok: false, error: 'Slot must be 31–250' };
+    if (!pin  || !/^\d{4,8}$/.test(String(pin))) return { ok: false, error: 'PIN must be 4–8 digits' };
+  }
+  if (command === 'deleteCode') {
+    const [slot] = params || [];
+    if (!slot || slot < 31 || slot > 250) return { ok: false, error: 'Slot must be 31–250' };
+  }
+
   const base = hubBase(env);
   const tok  = env.HUBITAT_TOKEN;
+
+  // Build path — append params as URL segments (Hubitat Maker API convention)
+  let path = `/devices/${deviceId}/${command}`;
+  if (Array.isArray(params) && params.length > 0) {
+    path += '/' + params.map(p => encodeURIComponent(String(p))).join('/');
+  }
+
   try {
-    const r = await fetch(hubUrl(base, `/devices/${deviceId}/${command}`, tok), {
+    const r = await fetch(hubUrl(base, path, tok), {
       cf: { cacheTtl: 0, cacheEverything: false },
     });
     if (!r.ok) return { ok: false, error: `Hubitat error ${r.status}` };
