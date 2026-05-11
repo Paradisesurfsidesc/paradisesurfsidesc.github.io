@@ -35,7 +35,7 @@
  */
 
 import groovy.json.JsonSlurper
-import java.security.SecureRandom
+import groovy.transform.Field
 
 definition(
     name:        "Paradise Door Code Manager",
@@ -804,9 +804,8 @@ private boolean windowsOverlap(Long aStart, Long aEnd, Long bStart, Long bEnd) {
 
 private String resolveCode(Map b) {
     if (b.autoGen) {
-        // BUG FIX 8: SecureRandom instead of Math.random
         Integer len = Math.max(4, Math.min(8, (b.len as Integer) ?: 6))
-        SecureRandom rng = new SecureRandom()
+        Random rng = new Random()
         return (1..len).collect { rng.nextInt(10).toString() }.join()
     } else {
         if (!b.manualCode) throw new IllegalArgumentException("Manual code not provided for booking ${b.name}")
