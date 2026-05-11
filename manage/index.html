@@ -207,7 +207,10 @@ tr:hover td { background: rgba(255,255,255,.03); }
 <!-- MODAL -->
 <div class="modal-overlay hidden" id="modalOverlay">
   <div class="modal">
-    <h2 id="modalTitle">New Booking</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <h2 id="modalTitle" style="margin:0">New Booking</h2>
+      <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:.25rem .5rem;line-height:1;border-radius:6px" title="Close">✕</button>
+    </div>
     <div class="form-2col">
       <div class="form-row span2">
         <label>Guest Name *</label>
@@ -350,8 +353,6 @@ function lockCodeStatus(b) {
   // Compare PIN — Hubitat stores codes as strings
   return String(live.code) === String(b.pin) ? 'set' : 'pending';
 }
-
-function persist() { localStorage.setItem(STORE_KEY, JSON.stringify(bookings)); }
 
 function sendCodeEmail(id) {
   const b = bookings.find(x => x.id === id);
@@ -567,11 +568,9 @@ function closeModal() {
   editingId = null;
 }
 
-document.getElementById('modalOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-});
+// Clicking outside does NOT close — must use Cancel or ✕
 
-function saveBooking() {
+async function saveBooking() {
   const guest = document.getElementById('fGuest').value.trim();
   if (!guest) { alert('Guest name is required.'); return; }
 
@@ -615,7 +614,9 @@ function saveBooking() {
     bookings.unshift(data);
   }
 
-  persist();
+  const saveBtn = document.querySelector('.modal .btn-primary');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
+  await persist();
   closeModal();
   render();
 }
