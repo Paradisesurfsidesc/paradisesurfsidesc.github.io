@@ -326,6 +326,140 @@ async function handleCommand(body, env) {
   }
 }
 
+// ── /api/send-email ───────────────────────────────────────────────────────────
+async function handleSendEmail(body, env) {
+  let data;
+  try { data = JSON.parse(body); } catch { return { ok: false, error: 'Invalid JSON' }; }
+
+  const { to, guest, pin, ci, co, ci_time, co_time } = data;
+  if (!to || !guest || !pin || !ci || !co) return { ok: false, error: 'Missing required fields' };
+
+  const firstName = guest.split(' ')[0];
+  const fmt = d => {
+    const [y, m, day] = d.split('-');
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
+  };
+  const fmt12 = t => {
+    if (!t) return null;
+    const [h, m] = t.split(':').map(Number);
+    return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${h >= 12 ? 'PM' : 'AM'}`;
+  };
+
+  const ciDisplay = `${fmt(ci)} at ${fmt12(ci_time) || '4:00 PM'} EDT`;
+  const coDisplay = `${fmt(co)} at ${fmt12(co_time) || '10:00 AM'} EDT`;
+  const nights    = Math.round((new Date(co) - new Date(ci)) / 86400000);
+  const subject   = `Your Paradise Access Code — ${ci.slice(5).replace('-','/')}/${ci.slice(0,4)}`;
+
+  const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:system-ui,-apple-system,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:32px 16px">
+<tr><td align="center">
+<table width="100%" style="max-width:560px;background:#071525;border-radius:16px;overflow:hidden">
+
+  <!-- Header -->
+  <tr><td style="background:#071525;padding:32px 32px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)">
+    <div style="font-size:28px;font-weight:900;color:#f2c14b;letter-spacing:0.04em">PARADISE</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;letter-spacing:0.12em;text-transform:uppercase">714B S Ocean Blvd · Surfside Beach, SC</div>
+  </td></tr>
+
+  <!-- Greeting -->
+  <tr><td style="padding:32px 32px 0">
+    <p style="margin:0;font-size:18px;color:#ffffff;font-weight:600">Hi ${firstName},</p>
+    <p style="margin:12px 0 0;font-size:15px;color:rgba(255,255,255,0.72);line-height:1.6">
+      Your door code is ready. You're all set to check in on <strong style="color:#ffffff">${fmt(ci)}</strong>.
+    </p>
+  </td></tr>
+
+  <!-- PIN block -->
+  <tr><td style="padding:24px 32px">
+    <div style="background:rgba(242,193,75,0.1);border:1px solid rgba(242,193,75,0.35);border-radius:12px;padding:24px;text-align:center">
+      <div style="font-size:11px;color:#f2c14b;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Front Door Code</div>
+      <div style="font-size:48px;font-weight:900;color:#f2c14b;letter-spacing:0.2em;font-family:monospace">${pin}</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:8px">Enter on the keypad at the front door</div>
+    </div>
+  </td></tr>
+
+  <!-- Stay details -->
+  <tr><td style="padding:0 32px 24px">
+    <table width="100%" style="border-collapse:collapse">
+      <tr>
+        <td style="padding:10px 0;border-top:1px solid rgba(255,255,255,0.08)">
+          <div style="font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em">Check-In</div>
+          <div style="font-size:14px;color:#ffffff;margin-top:3px;font-weight:500">${ciDisplay}</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-top:1px solid rgba(255,255,255,0.08)">
+          <div style="font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em">Check-Out</div>
+          <div style="font-size:14px;color:#ffffff;margin-top:3px;font-weight:500">${coDisplay}</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-top:1px solid rgba(255,255,255,0.08)">
+          <div style="font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em">Stay</div>
+          <div style="font-size:14px;color:#ffffff;margin-top:3px;font-weight:500">${nights} night${nights !== 1 ? 's' : ''}</div>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- Guest guide links -->
+  <tr><td style="padding:0 32px 24px">
+    <div style="font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">Guest Guide</div>
+    <table width="100%" cellspacing="0" cellpadding="0"><tr>
+      <td style="padding:0 6px 8px 0" width="50%">
+        <a href="https://paradisesurfsidesc.com/guest/" style="display:block;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:10px 12px;text-decoration:none;color:#ffffff;font-size:13px;font-weight:600">🏠 House Guide</a>
+      </td>
+      <td style="padding:0 0 8px 6px" width="50%">
+        <a href="https://paradisesurfsidesc.com/guest/wifi.html" style="display:block;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:10px 12px;text-decoration:none;color:#ffffff;font-size:13px;font-weight:600">📶 WiFi</a>
+      </td>
+    </tr><tr>
+      <td style="padding:0 6px 0 0" width="50%">
+        <a href="https://paradisesurfsidesc.com/guest/pool.html" style="display:block;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:10px 12px;text-decoration:none;color:#ffffff;font-size:13px;font-weight:600">🏊 Pool</a>
+      </td>
+      <td style="padding:0 0 0 6px" width="50%">
+        <a href="https://paradisesurfsidesc.com/guest/parking.html" style="display:block;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:10px 12px;text-decoration:none;color:#ffffff;font-size:13px;font-weight:600">🚗 Parking</a>
+      </td>
+    </tr></table>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="padding:20px 32px;border-top:1px solid rgba(255,255,255,0.08);text-align:center">
+    <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.45)">Questions? Reply to this email or call/text <strong style="color:rgba(255,255,255,0.65)">404-406-8471</strong></p>
+    <p style="margin:10px 0 0;font-size:13px;color:rgba(255,255,255,0.45)">David Taylor · Paradise · Surfside Beach, SC</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from:    'Paradise <no-reply@paradisesurfsidesc.com>',
+        to:      [to],
+        subject,
+        html,
+      }),
+    });
+    const j = await r.json();
+    if (!r.ok) return { ok: false, error: j.message || `Resend error ${r.status}` };
+    return { ok: true, id: j.id };
+  } catch (e) {
+    return { ok: false, error: String(e?.message || e) };
+  }
+}
+
 // ── /api/weather ──────────────────────────────────────────────────────────────
 function extractObsArray(j) {
   if (Array.isArray(j?.obs))          return j.obs;
@@ -555,6 +689,12 @@ export default {
         if (request.method !== 'POST') return json({ ok: false, error: 'POST required' }, 405);
         if (!env.HUBITAT_TOKEN) return json({ ok: false, error: 'Missing HUBITAT_TOKEN' }, 500);
         return json(await handleCommand(await request.text(), env));
+      }
+
+      if (pathname === '/api/send-email') {
+        if (request.method !== 'POST') return json({ ok: false, error: 'POST required' }, 405);
+        if (!env.RESEND_KEY) return json({ ok: false, error: 'Missing RESEND_KEY' }, 500);
+        return json(await handleSendEmail(await request.text(), env));
       }
 
       return json({ ok: false, error: 'Not found' }, 404);

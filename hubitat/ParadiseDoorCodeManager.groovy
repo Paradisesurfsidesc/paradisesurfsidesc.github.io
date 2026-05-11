@@ -827,41 +827,34 @@ private String resolveCode(Map b) {
 private void notifyGuest(Map b) {
     if (!b.guestEmail) return
     try {
-        def tz        = hubTimezone()
-        def firstName = (b.name as String)?.tokenize(' ')?.first() ?: b.name
-        def ciDate    = new Date(b.startEpoch as Long)
-        def coDate    = new Date(b.endEpoch   as Long)
-        def ciFmt     = ciDate.format("MMMM d, yyyy 'at' h:mm a z", tz)
-        def coFmt     = coDate.format("MMMM d, yyyy 'at' h:mm a z", tz)
-        def ciShort   = ciDate.format("MM/dd/yyyy", tz)
-
-        String subject = "Your Paradise Access Code — ${ciShort}"
-        String body = """\
-Hi ${firstName},
-
-Your door code for Paradise is ready. You can check in anytime from ${ciFmt}.
-
-Property:   Paradise — 714B S Ocean Blvd, Surfside Beach, SC 29575
-Check-In:   ${ciFmt}
-Check-Out:  ${coFmt}
-
-FRONT DOOR CODE: ${b.activeCode}
-
-Enter this code on the front door keypad. It expires automatically at checkout.
-
-Guest Guide (WiFi, pool, parking, trash, house rules):
-https://paradisesurfsidesc.com/guest/
-
-Questions before arrival? Reply to this email or call/text 404-406-8471.
-
-See you soon!
-David Taylor
-Paradise — Surfside Beach, SC"""
-
-        sendEmail(b.guestEmail as String, subject, body)
-        logInfo "Check-in email sent to ${b.guestEmail} (${b.name})"
+        def tz = hubTimezone()
+        def payload = groovy.json.JsonOutput.toJson([
+            to:      b.guestEmail,
+            guest:   b.name,
+            pin:     b.activeCode,
+            ci:      new Date(b.startEpoch as Long).format("yyyy-MM-dd", tz),
+            co:      new Date(b.endEpoch   as Long).format("yyyy-MM-dd", tz),
+            ci_time: new Date(b.startEpoch as Long).format("HH:mm", tz),
+            co_time: new Date(b.endEpoch   as Long).format("HH:mm", tz),
+        ])
+        def params = [
+            uri:         "https://paradise-weather.paradise-surfsidesc.workers.dev",
+            path:        "/api/send-email",
+            contentType: "application/json",
+            body:        payload,
+        ]
+        asynchttpPost("notifyGuestCallback", params)
+        logInfo "Check-in email queued for ${b.name} → ${b.guestEmail}"
     } catch (e) {
         logWarn "notifyGuest failed for ${b.name}: ${e}"
+    }
+}
+
+def notifyGuestCallback(response, data) {
+    if (response?.hasError()) {
+        logWarn "Email send failed (HTTP ${response.status}): ${response.errorMessage}"
+    } else {
+        logInfo "Email send response: ${response.status}"
     }
 }
 

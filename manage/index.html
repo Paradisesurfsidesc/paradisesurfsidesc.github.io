@@ -358,42 +358,32 @@ function lockCodeStatus(b) {
   return String(live.code) === String(b.pin) ? 'set' : 'pending';
 }
 
-function sendCodeEmail(id) {
+async function sendCodeEmail(id) {
   const b = bookings.find(x => x.id === id);
   if (!b || !b.email || !b.pin) return;
-
-  const ciTime = b.ci_time ? fmt12(b.ci_time) : '4:00 PM';
-  const coTime = b.co_time ? fmt12(b.co_time) : '10:00 AM';
-  const nights = calcNights(b.ci, b.co);
-
-  const subject = `Your Paradise Access Code — ${fmtDate(b.ci)}`;
-
-  const body = `Hi ${b.guest.split(' ')[0]},
-
-Your access code for Paradise is ready. Here are your check-in details:
-
-Property: Paradise — 714B S Ocean Blvd, Surfside Beach, SC 29575
-
-Check-In:  ${fmtDate(b.ci)} at ${ciTime}
-Check-Out: ${fmtDate(b.co)} at ${coTime}
-Nights:    ${nights}
-
-FRONT DOOR CODE: ${b.pin}
-
-Enter this code on the keypad at the front door. The code becomes active at ${ciTime} on your check-in date and expires at ${coTime} on your check-out date.
-
-Guest Guide (WiFi, pool, parking, house rules):
-https://paradisesurfsidesc.com/guest/
-
-If you have any questions before arrival, reply to this email or call/text 404-406-8471.
-
-We look forward to your stay!
-
-David Taylor
-Paradise — Surfside Beach, SC`;
-
-  const mailto = `mailto:${encodeURIComponent(b.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.location.href = mailto;
+  const btn = document.querySelector(`button[onclick="sendCodeEmail('${id}')"]`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  try {
+    const r = await fetch(`${WORKER}/api/send-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to:      b.email,
+        guest:   b.guest,
+        pin:     b.pin,
+        ci:      b.ci,
+        co:      b.co,
+        ci_time: b.ci_time || '16:00',
+        co_time: b.co_time || '10:00',
+      }),
+    });
+    const j = await r.json();
+    if (!j.ok) { alert(`Email failed: ${j.error}`); }
+    else { setSaveStatus('✓ Email sent'); setTimeout(() => setSaveStatus(''), 3000); }
+  } catch (e) {
+    alert(`Email failed: ${e.message}`);
+  }
+  render(); // re-render to restore button state
 }
 
 async function pushCodeToLock(id) {
