@@ -439,22 +439,49 @@ async function handleSendEmail(body, env) {
 </html>`;
 
   try {
-    const r = await fetch('https://api.resend.com/emails', {
+    const r = await fetch('https://a.klaviyo.com/api/events/', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${env.RESEND_KEY}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Klaviyo-API-Key ${env.KLAVIYO_KEY}`,
+        'revision':      '2026-04-15',
+        'Content-Type':  'application/json',
       },
       body: JSON.stringify({
-        from:    'Paradise <no-reply@paradisesurfsidesc.com>',
-        to:      [to],
-        subject,
-        html,
+        data: {
+          type: 'event',
+          attributes: {
+            metric: { data: { type: 'metric', attributes: { name: 'Checkin Code Ready' } } },
+            profile: {
+              data: {
+                type: 'profile',
+                attributes: {
+                  email:      to,
+                  first_name: guest.split(' ')[0],
+                  last_name:  guest.split(' ').slice(1).join(' ') || '',
+                },
+              },
+            },
+            properties: {
+              pin:            pin,
+              check_in_date:  ciDisplay,
+              check_out_date: coDisplay,
+              nights:         nights,
+              ci_date:        ci,
+              co_date:        co,
+              guest_guide_url: 'https://paradisesurfsidesc.com/guest/',
+              wifi_url:        'https://paradisesurfsidesc.com/guest/wifi.html',
+              pool_url:        'https://paradisesurfsidesc.com/guest/pool.html',
+              parking_url:    'https://paradisesurfsidesc.com/guest/parking.html',
+            },
+          },
+        },
       }),
     });
-    const j = await r.json();
-    if (!r.ok) return { ok: false, error: j.message || `Resend error ${r.status}` };
-    return { ok: true, id: j.id };
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      return { ok: false, error: j?.errors?.[0]?.detail || `Klaviyo error ${r.status}` };
+    }
+    return { ok: true };
   } catch (e) {
     return { ok: false, error: String(e?.message || e) };
   }
@@ -693,7 +720,7 @@ export default {
 
       if (pathname === '/api/send-email') {
         if (request.method !== 'POST') return json({ ok: false, error: 'POST required' }, 405);
-        if (!env.RESEND_KEY) return json({ ok: false, error: 'Missing RESEND_KEY' }, 500);
+        if (!env.KLAVIYO_KEY) return json({ ok: false, error: 'Missing KLAVIYO_KEY' }, 500);
         return json(await handleSendEmail(await request.text(), env));
       }
 
