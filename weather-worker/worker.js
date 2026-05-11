@@ -650,6 +650,110 @@ async function handleWeather(env) {
   };
 }
 
+// ── /api/feedback ─────────────────────────────────────────────────────────────
+async function handleFeedback(body, env) {
+  let data;
+  try { data = JSON.parse(body); } catch { return { ok: false, error: 'Invalid JSON' }; }
+
+  // Append to feedback list in KV
+  if (env.PM_BOOKINGS) {
+    const raw = await env.PM_BOOKINGS.get('feedback').catch(() => null);
+    const list = raw ? JSON.parse(raw) : [];
+    list.push({ ...data, id: `fb_${Date.now()}` });
+    await env.PM_BOOKINGS.put('feedback', JSON.stringify(list)).catch(() => {});
+  }
+
+  // Fire Klaviyo event for tracking/flow triggers
+  if (env.KLAVIYO_KEY && data.email) {
+    await fetch('https://a.klaviyo.com/api/events/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Klaviyo-API-Key ${env.KLAVIYO_KEY}`,
+        'revision':      '2026-04-15',
+        'Content-Type':  'application/json',
+      },
+      body: JSON.stringify({
+        data: {
+          type: 'event',
+          attributes: {
+            metric: { data: { type: 'metric', attributes: { name: 'Stay Feedback Submitted' } } },
+            profile: {
+              data: {
+                type: 'profile',
+                attributes: {
+                  email:      data.email,
+                  first_name: (data.name || '').split(' ')[0] || '',
+                  last_name:  (data.name || '').split(' ').slice(1).join(' ') || '',
+                },
+              },
+            },
+            properties: {
+              rating:       data.rating,
+              loved:        data.loved   || '',
+              improve:      data.improve || '',
+              checkout:     data.checkout || '',
+              submitted:    data.submitted || new Date().toISOString(),
+              review_url:   'https://search.google.com/local/writereview?placeid=ChIJEVKysONAAIkRKoSdCEXCYRY',
+            },
+          },
+        },
+      }),
+    }).catch(() => {});
+  }
+
+  return { ok: true };
+}
+
+// ── Post-stay feedback request email ─────────────────────────────────────────
+async function handleSendFeedbackRequest(booking, env) {
+  if (!env.KLAVIYO_KEY || !booking.email) return;
+
+  const firstName  = booking.guest.split(' ')[0];
+  const feedbackUrl = `https://paradisesurfsidesc.com/guest/feedback.html`
+    + `?name=${encodeURIComponent(booking.guest)}`
+    + `&email=${encodeURIComponent(booking.email)}`
+    + `&co=${encodeURIComponent(booking.co)}`;
+
+  const fmt = d => {
+    const [y, m, day] = d.split('-');
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
+  };
+
+  await fetch('https://a.klaviyo.com/api/events/', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Klaviyo-API-Key ${env.KLAVIYO_KEY}`,
+      'revision':      '2026-04-15',
+      'Content-Type':  'application/json',
+    },
+    body: JSON.stringify({
+      data: {
+        type: 'event',
+        attributes: {
+          metric: { data: { type: 'metric', attributes: { name: 'Stay Completed' } } },
+          profile: {
+            data: {
+              type: 'profile',
+              attributes: {
+                email:      booking.email,
+                first_name: firstName,
+                last_name:  booking.guest.split(' ').slice(1).join(' ') || '',
+              },
+            },
+          },
+          properties: {
+            guest:          booking.guest,
+            checkout_date:  fmt(booking.co),
+            feedback_url:   feedbackUrl,
+            review_url:     'https://search.google.com/local/writereview?placeid=ChIJEVKysONAAIkRKoSdCEXCYRY',
+          },
+        },
+      },
+    }),
+  }).catch(() => {});
+}
+
 // ── Daily cron — noon EDT (16:00 UTC) ─────────────────────────────────────────
 async function handleDailyCron(env) {
   if (!env.PM_BOOKINGS) return;
@@ -659,16 +763,18 @@ async function handleDailyCron(env) {
   let bookings;
   try { bookings = JSON.parse(raw); } catch { return; }
 
-  const now      = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-  const tomorrow = new Date(now.getTime() + 86400000);
+  const now         = new Date();
+  const todayStr    = now.toISOString().slice(0, 10);
+  const tomorrow    = new Date(now.getTime() + 86400000);
   const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+  const yesterday   = new Date(now.getTime() - 86400000);
+  const yesterdayStr = yesterday.toISOString().slice(0, 10);
 
   const base = hubBase(env);
   const tok  = env.HUBITAT_TOKEN;
 
   for (const b of bookings) {
-    if (b.status === 'Cancelled' || b.status === 'Completed') continue;
+    if (b.status === 'Cancelled') continue;
 
     const emailBody = b.email && b.pin ? JSON.stringify({
       to: b.email, guest: b.guest, pin: b.pin,
@@ -687,14 +793,19 @@ async function handleDailyCron(env) {
 
     // Push lock code on check-in day
     if (b.ci === todayStr && b.slot && b.pin && tok) {
-      const raw = b.guest.split(' ')[0] + ' ' + b.ci.slice(5).replace('-', '');
-      const label = raw.length > 20 ? raw.slice(0, 20) : raw;
+      const lbl = b.guest.split(' ')[0] + ' ' + b.ci.slice(5).replace('-', '');
+      const label = lbl.length > 20 ? lbl.slice(0, 20) : lbl;
       await hubGet(base, `/devices/1/setCode/${b.slot},${b.pin},${label}`, tok).catch(() => {});
     }
 
     // Remove lock code on checkout day
     if (b.co === todayStr && b.slot && tok) {
       await hubGet(base, `/devices/1/deleteCode/${b.slot}`, tok).catch(() => {});
+    }
+
+    // Send feedback request the day after checkout
+    if (b.co === yesterdayStr && b.email && b.status !== 'Completed') {
+      await handleSendFeedbackRequest(b, env).catch(() => {});
     }
   }
 }
@@ -780,6 +891,11 @@ export default {
         if (request.method !== 'POST') return json({ ok: false, error: 'POST required' }, 405);
         if (!env.KLAVIYO_KEY) return json({ ok: false, error: 'Missing KLAVIYO_KEY' }, 500);
         return json(await handleSendEmail(await request.text(), env));
+      }
+
+      if (pathname === '/api/feedback') {
+        if (request.method !== 'POST') return json({ ok: false, error: 'POST required' }, 405);
+        return json(await handleFeedback(await request.text(), env));
       }
 
       return json({ ok: false, error: 'Not found' }, 404);

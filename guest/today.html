@@ -1,0 +1,382 @@
+<!-- guest/today.html -->
+<!-- Date - 2026-05-11 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - Today in Surfside - day-of-week local specials and events guide for guests -->
+<!-- Author - David Taylor -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Today in Surfside! | Paradise Guest Guide</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/paradise-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/paradise-16.png">
+  <link rel="apple-touch-icon" href="../images/paradise-180.png">
+  <link rel="manifest" href="../images/site.webmanifest">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/site.js" defer></script>
+  <style>
+    .day-nav {
+      display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .25rem;
+      margin-bottom: 1.25rem; scrollbar-width: none;
+    }
+    .day-nav::-webkit-scrollbar { display: none; }
+    .day-btn {
+      flex-shrink: 0; padding: .45rem .9rem; border-radius: 20px;
+      border: 1px solid var(--cardBorder); background: var(--card);
+      color: var(--muted); font-size: .8rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all .15s; white-space: nowrap;
+    }
+    .day-btn:hover { border-color: rgba(242,193,75,.4); color: var(--text); }
+    .day-btn.active { background: rgba(242,193,75,.15); border-color: rgba(242,193,75,.5); color: var(--accent); }
+
+    .disclaimer {
+      background: rgba(251,191,36,.07); border: 1px solid rgba(251,191,36,.22);
+      border-radius: 10px; padding: .75rem 1rem; margin-bottom: 1.25rem;
+      font-size: .8rem; color: var(--muted); line-height: 1.5;
+    }
+    .disclaimer strong { color: var(--accent); }
+
+    .day-heading { margin-bottom: 1.1rem; }
+    .day-label { font-size: 1.35rem; font-weight: 800; }
+    .day-vibe { font-size: .85rem; color: var(--muted); margin-top: .25rem; }
+
+    .venue-tag {
+      display: inline-block; font-size: .68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: .15rem .5rem; border-radius: 20px; margin-right: .3rem; margin-bottom: .5rem;
+    }
+    .tag-bar   { background: rgba(74,222,128,.12);  color: #4ade80; }
+    .tag-food  { background: rgba(251,191,36,.12);  color: #fbbf24; }
+    .tag-event { background: rgba(147,197,253,.12); color: #93c5fd; }
+    .tag-music { background: rgba(216,180,254,.12); color: #d8b4fe; }
+
+    .venue-name { font-size: 1.05rem; font-weight: 800; margin-bottom: .35rem; }
+    .venue-note { font-size: .82rem; color: var(--muted); margin-bottom: .6rem; }
+
+    .special-list { list-style: none; padding: 0; margin: 0 0 .75rem; }
+    .special-list li {
+      padding: .35rem 0; font-size: .875rem; color: var(--muted);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap;
+    }
+    .special-list li:last-child { border-bottom: none; }
+    .time-chip {
+      flex-shrink: 0; font-size: .7rem; font-weight: 700;
+      color: var(--accent); background: rgba(242,193,75,.1);
+      border-radius: 4px; padding: .1rem .4rem; white-space: nowrap;
+    }
+
+    .venue-address { font-size: .75rem; color: var(--muted); margin-bottom: .75rem; }
+
+    .verify-link {
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .78rem; color: var(--accent); text-decoration: none;
+      font-weight: 600; padding: .35rem .75rem; border-radius: 7px;
+      border: 1px solid rgba(242,193,75,.3); background: rgba(242,193,75,.07);
+      transition: background .15s;
+    }
+    .verify-link:hover { background: rgba(242,193,75,.14); }
+
+    .quiet-card {
+      grid-column: 1 / -1; background: var(--card); border: 1px solid var(--cardBorder);
+      border-radius: 14px; padding: 1.5rem; text-align: center;
+    }
+    .quiet-icon { font-size: 2.2rem; margin-bottom: .6rem; }
+    .quiet-text { color: var(--muted); font-size: .9rem; line-height: 1.5; }
+
+    .tomorrow-wrap { margin-top: 2rem; }
+    .section-eyebrow {
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--muted); margin-bottom: .85rem;
+    }
+  </style>
+</head>
+<body>
+  <header id="siteHeader"></header>
+  <main>
+    <section class="page" aria-label="Today in Surfside Beach">
+
+      <div class="page-header">
+        <h1>🌊 Today in Surfside!</h1>
+        <p>Local specials, live music, and things happening near Paradise — updated by day of week.</p>
+      </div>
+
+      <nav class="day-nav" id="dayNav" aria-label="Browse by day"></nav>
+
+      <div class="disclaimer">
+        <strong>Heads up:</strong> Specials and events shown are based on <em>typical</em> weekly schedules —
+        not a live feed. Always verify with the venue before heading out. Times, performers, and specials
+        can change without notice. Tap <strong>Verify on Facebook</strong> on any card for the latest.
+      </div>
+
+      <div class="day-heading">
+        <div class="day-label" id="dayLabel"></div>
+        <div class="day-vibe" id="dayVibe"></div>
+      </div>
+
+      <div class="grid" id="eventsGrid"></div>
+
+      <div class="tomorrow-wrap" id="tomorrowWrap">
+        <div class="section-eyebrow" id="tomorrowLabel">Tomorrow →</div>
+        <div class="grid" id="tomorrowGrid"></div>
+      </div>
+
+      <div class="page-footer">
+        <a class="btn secondary" href="/guest/">← Back to Guest Guide</a>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+  const DAYS  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  // Weekly guide — days[0]=Sun ... days[6]=Sat
+  // Add/edit venues here as you learn more about local schedules.
+  const WEEKLY = {
+    0: {
+      vibe: 'Laid-back Sunday — great for a relaxed meal, a few spots still going strong',
+      venues: [
+        {
+          name: 'Sundown Restaurant & Sports Pub',
+          tags: ['music','bar'],
+          note: 'Live music most nights — check their monthly calendar for tonight\'s act',
+          specials: [
+            { text: 'Live music — verify tonight\'s performer', time: null },
+            { text: '$2.50 domestic cans all day', time: null }
+          ],
+          address: '803 S Ocean Blvd, Surfside Beach',
+          facebook: 'https://www.facebook.com/SundownSportsPub'
+        }
+      ]
+    },
+    1: {
+      vibe: 'Monday is a low-key night — great for avoiding weekend crowds at local favorites',
+      venues: [
+        {
+          name: 'Sundown Restaurant & Sports Pub',
+          tags: ['music','bar'],
+          note: 'Check their monthly calendar — live music runs through the week',
+          specials: [
+            { text: 'Live music — verify tonight\'s performer', time: null },
+            { text: '$2.50 domestic cans all day', time: null }
+          ],
+          address: '803 S Ocean Blvd, Surfside Beach',
+          facebook: 'https://www.facebook.com/SundownSportsPub'
+        }
+      ]
+    },
+    2: {
+      vibe: 'Tuesday is deal night — locals know this is one of the best nights to go out',
+      venues: [
+        {
+          name: 'Surfside Charlies',
+          tags: ['food','bar','music'],
+          note: '$10 Tuesdays is one of the best deals on the beach — full menu, all day',
+          specials: [
+            { text: '$10 menu — full selection all day every Tuesday', time: null },
+            { text: '$4 house margaritas (on the rocks)', time: null },
+            { text: '$2.50 domestic cans all day', time: null },
+            { text: 'Live music: Dustin Brown', time: '4:30–7:30 PM' }
+          ],
+          address: 'Surfside Beach, SC',
+          facebook: 'https://www.facebook.com/surfsidecharlies'
+        },
+        {
+          name: 'Sundown Restaurant & Sports Pub',
+          tags: ['music','bar'],
+          note: 'Check their monthly calendar for tonight\'s act',
+          specials: [
+            { text: 'Live music — verify tonight\'s performer', time: null },
+            { text: '$2.50 domestic cans all day', time: null }
+          ],
+          address: '803 S Ocean Blvd, Surfside Beach',
+          facebook: 'https://www.facebook.com/SundownSportsPub'
+        }
+      ]
+    },
+    3: {
+      vibe: 'Mid-week energy picks up — live music at several spots along the beach',
+      venues: [
+        {
+          name: 'Sundown Restaurant & Sports Pub',
+          tags: ['music','bar'],
+          note: 'Live music schedule runs all week — check their monthly calendar',
+          specials: [
+            { text: 'Live music — verify tonight\'s performer', time: null },
+            { text: '$2.50 domestic cans all day', time: null }
+          ],
+          address: '803 S Ocean Blvd, Surfside Beach',
+          facebook: 'https://www.facebook.com/SundownSportsPub'
+        }
+      ]
+    },
+    4: {
+      vibe: 'Thursday is a local favorite — gyros, trivia, and live music all in one night',
+      venues: [
+        {
+          name: 'Surfside Charlies',
+          tags: ['food','bar','music'],
+          note: 'Gyro Thursday + Trivia night — arrive early for a table',
+          specials: [
+            { text: 'Mega Stacked Gyro between two pitas', time: null },
+            { text: 'Gyro Salad special', time: null },
+            { text: '$2.50 domestic cans all day', time: null },
+            { text: 'Live music: Dustin Brown', time: '4–7 PM' },
+            { text: 'Trivia night', time: '7 PM' }
+          ],
+          address: 'Surfside Beach, SC',
+          facebook: 'https://www.facebook.com/surfsidecharlies'
+        },
+        {
+          name: 'Sundown Restaurant & Sports Pub',
+          tags: ['music','bar'],
+          note: 'Check their monthly calendar for tonight\'s act',
+          specials: [
+            { text: 'Live music — verify tonight\'s performer', time: null },
+            { text: '$2.50 domestic cans all day', time: null }
+          ],
+          address: '803 S Ocean Blvd, Surfside Beach',
+          facebook: 'https://www.facebook.com/SundownSportsPub'
+        }
+      ]
+    },
+    5: {
+      vibe: 'Friday night — live music kicks off everywhere and the beach comes alive',
+      venues: [
+        {
+          name: 'Surfside Charlies',
+          tags: ['bar','music'],
+          note: 'Weekend starts here — check their Facebook for tonight\'s performer',
+          specials: [
+            { text: '$2.50 domestic cans all day', time: null },
+            { text: 'Live music — check Facebook for tonight\'s act', time: 'Evening' }
+          ],
+          address: 'Surfside Beach, SC',
+          facebook: 'https://www.facebook.com/surfsidecharlies'
+        },
+        {
+          name: 'Sundown Restaurant & Sports Pub',
+          tags: ['music','bar'],
+          note: 'Fridays are a big night — live bands run late',
+          specials: [
+            { text: 'Live music — verify tonight\'s performer', time: '6–10 PM typically' },
+            { text: '$2.50 domestic cans all day', time: null }
+          ],
+          address: '803 S Ocean Blvd, Surfside Beach',
+          facebook: 'https://www.facebook.com/SundownSportsPub'
+        }
+      ]
+    },
+    6: {
+      vibe: 'Peak weekend night — something happening everywhere, arrive early for a table',
+      venues: [
+        {
+          name: 'Surfside Charlies',
+          tags: ['bar','music'],
+          note: 'Saturdays are packed — one of their biggest nights',
+          specials: [
+            { text: '$2.50 domestic cans all day', time: null },
+            { text: 'Live music — check Facebook for tonight\'s act', time: 'Evening' }
+          ],
+          address: 'Surfside Beach, SC',
+          facebook: 'https://www.facebook.com/surfsidecharlies'
+        },
+        {
+          name: 'Sundown Restaurant & Sports Pub',
+          tags: ['music','bar'],
+          note: 'Full band Saturday — one of their biggest nights of the week',
+          specials: [
+            { text: 'Live music — verify tonight\'s performer', time: '6–10 PM typically' },
+            { text: '$2.50 domestic cans all day', time: null }
+          ],
+          address: '803 S Ocean Blvd, Surfside Beach',
+          facebook: 'https://www.facebook.com/SundownSportsPub'
+        }
+      ]
+    }
+  };
+
+  const TAG_META = {
+    bar:   { cls: 'tag-bar',   label: 'Bar' },
+    food:  { cls: 'tag-food',  label: 'Food Specials' },
+    event: { cls: 'tag-event', label: 'Event' },
+    music: { cls: 'tag-music', label: 'Live Music' }
+  };
+
+  function renderVenueCard(v) {
+    const tags = (v.tags||[]).map(t => {
+      const m = TAG_META[t] || { cls:'tag-event', label:t };
+      return `<span class="venue-tag ${m.cls}">${m.label}</span>`;
+    }).join('');
+    const items = (v.specials||[]).map(s => {
+      const chip = s.time ? `<span class="time-chip">${s.time}</span>` : '';
+      return `<li>${chip}<span>${s.text}</span></li>`;
+    }).join('');
+    return `
+      <div class="card">
+        <div>${tags}</div>
+        <div class="venue-name">${v.name}</div>
+        ${v.note ? `<div class="venue-note">${v.note}</div>` : ''}
+        <ul class="special-list">${items}</ul>
+        ${v.address ? `<div class="venue-address">📍 ${v.address}</div>` : ''}
+        <a class="verify-link" href="${v.facebook}" target="_blank" rel="noopener">Verify on Facebook →</a>
+      </div>`;
+  }
+
+  function renderGrid(dayIdx, gridEl) {
+    const data = WEEKLY[dayIdx];
+    if (!data || !data.venues || !data.venues.length) {
+      gridEl.innerHTML = `
+        <div class="quiet-card">
+          <div class="quiet-icon">🌅</div>
+          <div class="quiet-text">Typically a quieter evening around here.<br>
+          Check local Facebook pages for any pop-up specials or events.</div>
+        </div>`;
+      return;
+    }
+    gridEl.innerHTML = data.venues.map(renderVenueCard).join('');
+  }
+
+  const today = new Date();
+  const todayIdx = today.getDay();
+  let selectedIdx = todayIdx;
+
+  function updateDisplay(idx) {
+    selectedIdx = idx;
+    const data = WEEKLY[idx] || {};
+    const isToday = idx === todayIdx;
+    document.getElementById('dayLabel').textContent = DAYS[idx] + (isToday ? ' — Today' : '');
+    document.getElementById('dayVibe').textContent = data.vibe || '';
+    renderGrid(idx, document.getElementById('eventsGrid'));
+    const tmrIdx = (idx + 1) % 7;
+    document.getElementById('tomorrowLabel').textContent = DAYS[tmrIdx] + ' →';
+    renderGrid(tmrIdx, document.getElementById('tomorrowGrid'));
+    document.querySelectorAll('.day-btn').forEach(b => {
+      b.classList.toggle('active', +b.dataset.day === idx);
+    });
+  }
+
+  const nav = document.getElementById('dayNav');
+  DAYS.forEach((name, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'day-btn';
+    btn.textContent = SHORT[i] + (i === todayIdx ? ' (Today)' : '');
+    btn.dataset.day = i;
+    btn.addEventListener('click', () => updateDisplay(i));
+    nav.appendChild(btn);
+  });
+
+  updateDisplay(todayIdx);
+
+  setTimeout(() => {
+    const active = nav.querySelector('.day-btn.active');
+    if (active) active.scrollIntoView({ inline: 'center', behavior: 'smooth' });
+  }, 100);
+  </script>
+</body>
+</html>
