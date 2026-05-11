@@ -31,12 +31,14 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, -apple
   display: flex; align-items: center; justify-content: space-between;
   padding: .875rem 1.25rem;
   background: var(--surface); border-bottom: 1px solid var(--cardBorder);
-  position: sticky; top: 0; z-index: 100; gap: 1rem; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 100; gap: 1rem;
 }
-.brand { display: flex; align-items: center; gap: .6rem; }
-.brand img { height: 26px; width: auto; }
-.brand span { font-weight: 800; font-size: 1rem; color: var(--accent); }
-.brand-sub { font-size: .78rem; color: var(--muted); }
+.nav-brand { display: flex; align-items: center; gap: .75rem; min-width: 0; }
+.nav-logo { height: 34px; width: auto; flex-shrink: 0; }
+.nav-titles { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.nav-title { font-family: var(--fSans, system-ui, sans-serif); font-size: 17px; font-weight: 900; color: var(--accent); letter-spacing: .04em; white-space: nowrap; line-height: 1.1; }
+.nav-sub { font-size: 11px; color: var(--muted); letter-spacing: .02em; white-space: nowrap; }
+.nav-right { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
 
 /* ── Content ── */
 .content { max-width: 960px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
@@ -168,12 +170,16 @@ tr:hover td { background: rgba(255,255,255,.03); }
 <body>
 
 <div class="topbar">
-  <div class="brand">
-    <img src="/images/Paradise-white.png" alt="Paradise">
-    <span>PM</span>
+  <div class="nav-brand">
+    <img src="/images/Paradise-white.png" alt="Paradise" class="nav-logo">
+    <div class="nav-titles">
+      <span class="nav-title">PARADISE</span>
+      <span class="nav-sub">Southern Coast Vacations · Guest Lock Codes</span>
+    </div>
   </div>
-  <div class="brand-sub">Southern Coast Vacations · Guest Lock Codes</div>
-  <div id="saveStatus" style="font-size:.78rem;color:var(--accent);margin-left:auto;min-width:80px;text-align:right"></div>
+  <div class="nav-right">
+    <div id="saveStatus" style="font-size:.78rem;color:var(--accent);min-width:80px;text-align:right"></div>
+  </div>
 </div>
 
 <div class="content">
