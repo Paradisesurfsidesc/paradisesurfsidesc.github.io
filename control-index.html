@@ -1,0 +1,1378 @@
+<!-- paradise-dashboard.html -->
+<!-- Date - 2026-05-11 -->
+<!-- Version - 2.0.0 -->
+<!-- Notes - Full redesign matching Paradise brand: navy/gold/glass, phone-first, Worker-only data -->
+<!-- Author - David Taylor -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Paradise · Control</title>
+<style>
+/* ── Brand tokens (matches paradisesurfsidesc.com styles.css) ── */
+:root {
+  --bg:          #071525;
+  --surface:     rgba(20, 65, 110, 0.92);
+  --surfaceSoft: rgba(10, 30, 55, 0.85);
+  --card:        rgba(255,255,255,0.07);
+  --cardBorder:  rgba(255,255,255,0.16);
+  --cardHover:   rgba(255,255,255,0.12);
+  --text:        #ffffff;
+  --muted:       rgba(255,255,255,0.72);
+  --muted2:      rgba(255,255,255,0.45);
+  --accent:      #f2c14b;
+  --accentDark:  #c9920a;
+  --accentBg:    rgba(242,193,75,0.12);
+  --blue:        rgba(31,105,160,0.85);
+  --shadow:      0 8px 24px rgba(0,0,0,0.35);
+  --shadowLg:    0 20px 60px rgba(0,0,0,0.5);
+  --r:           18px;
+  --rSm:         12px;
+  --nav-h:       70px;
+  --tab-h:       68px;
+  /* Status colors */
+  --green:       #2ecc8a;
+  --greenBg:     rgba(46,204,138,0.12);
+  --greenBorder: rgba(46,204,138,0.3);
+  --yellow:      #f2c14b;
+  --yellowBg:    rgba(242,193,75,0.12);
+  --yellowBorder:rgba(242,193,75,0.35);
+  --red:         #ff4d5a;
+  --redBg:       rgba(255,77,90,0.12);
+  --redBorder:   rgba(255,77,90,0.35);
+  --orange:      #ff8c42;
+  --orangeBg:    rgba(255,140,66,0.12);
+  --fSerif: Georgia, "Times New Roman", serif;
+  --fSans:  system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  --fMono:  "DM Mono", "Courier New", monospace;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--fSans);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* ── Top nav ── */
+.topnav {
+  height: var(--nav-h);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--cardBorder);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.nav-logo {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(31,105,160,0.9), rgba(242,193,75,0.9));
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.nav-title {
+  font-family: var(--fSerif);
+  font-size: 20px; font-weight: 700;
+  background: linear-gradient(90deg, #fff 60%, var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+.nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.clock { font-size: 13px; color: var(--muted); font-family: var(--fMono); }
+.live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* ── Screens ── */
+.screens { flex: 1; overflow: hidden; position: relative; }
+.screen {
+  position: absolute; inset: 0;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 16px 14px calc(var(--tab-h) + 24px);
+  display: none;
+}
+.screen.active { display: block; }
+.screen::-webkit-scrollbar { display: none; }
+
+/* ── Bottom tab bar ── */
+.tabbar {
+  height: var(--tab-h);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--cardBorder);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: stretch;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  cursor: pointer; color: var(--muted2);
+  font-family: var(--fSans); font-size: 10px; font-weight: 600;
+  border: none; background: none;
+  transition: color 0.15s, background 0.15s;
+  padding: 8px 0;
+}
+.tab:active { background: rgba(255,255,255,0.05); }
+.tab.active { color: var(--accent); }
+.tab-icon { font-size: 20px; line-height: 1; }
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--cardBorder);
+  border-radius: var(--r);
+  padding: 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+}
+.card-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--muted2); margin-bottom: 10px;
+}
+.card-value {
+  font-family: var(--fSerif);
+  font-size: 48px; font-weight: 700;
+  color: var(--text); line-height: 1;
+}
+.card-value-xl { font-size: 56px; }
+.card-sub { font-size: 15px; color: var(--muted); margin-top: 6px; }
+
+/* ── Peak banner ── */
+.peak-banner {
+  border-radius: var(--r); padding: 14px 16px;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 12px;
+  border: 1px solid; backdrop-filter: blur(8px);
+}
+.peak-banner.summer { background: rgba(31,105,160,0.25); border-color: rgba(31,105,160,0.5); }
+.peak-banner.winter { background: rgba(31,105,160,0.25); border-color: rgba(31,105,160,0.5); }
+.peak-banner.peak   { background: var(--redBg); border-color: var(--redBorder); }
+.pb-icon { font-size: 26px; flex-shrink: 0; }
+.pb-body { flex: 1; min-width: 0; }
+.pb-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.pb-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.pb-right { text-align: right; flex-shrink: 0; }
+.pb-next-label { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.8px; }
+.pb-next-val   { font-size: 14px; font-weight: 700; color: var(--accent); margin-top: 2px; }
+
+/* ── Pills ── */
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 999px;
+  font-size: 13px; font-weight: 700; border: 1px solid;
+}
+.pill-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.p-green  { background: var(--greenBg);  color: var(--green);  border-color: var(--greenBorder); }
+.p-green .pill-dot  { background: var(--green); }
+.p-yellow { background: var(--yellowBg); color: var(--yellow); border-color: var(--yellowBorder); }
+.p-yellow .pill-dot { background: var(--yellow); }
+.p-red    { background: var(--redBg);    color: var(--red);    border-color: var(--redBorder); }
+.p-red .pill-dot    { background: var(--red); animation: pulse 0.8s infinite; }
+.p-blue   { background: rgba(31,105,160,0.2); color: #7fd0ff; border-color: rgba(31,105,160,0.5); }
+.p-blue .pill-dot   { background: #7fd0ff; }
+.p-muted  { background: rgba(255,255,255,0.06); color: var(--muted); border-color: var(--cardBorder); }
+.p-muted .pill-dot  { background: var(--muted2); }
+.p-gold   { background: var(--accentBg); color: var(--accent); border-color: var(--yellowBorder); }
+.p-gold .pill-dot   { background: var(--accent); }
+
+/* ── Section heading ── */
+.sec-head {
+  font-family: var(--fSerif); font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--muted); margin: 20px 0 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-head::after { content:''; flex:1; height:1px; background:var(--cardBorder); }
+
+/* ── Metric cards (overview) ── */
+.metric-card {
+  background: var(--card); border: 1px solid var(--cardBorder);
+  border-radius: var(--r); padding: 18px;
+  margin-bottom: 12px; box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: background 0.15s, transform 0.15s;
+  backdrop-filter: blur(8px);
+}
+.metric-card:active { background: var(--cardHover); transform: scale(0.99); }
+.metric-card-bar { position: absolute; left:0; top:0; bottom:0; width:3px; border-radius: var(--r) 0 0 var(--r); }
+.metric-card-body { flex: 1; min-width: 0; }
+.metric-card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted2); margin-bottom: 6px; }
+.metric-card-value { font-family: var(--fSerif); font-size: 30px; font-weight: 700; color: var(--text); line-height: 1.1; }
+.metric-card-sub   { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.metric-card-pill  { margin-top: 8px; }
+.metric-card-right { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+.metric-card-icon  { font-size: 32px; }
+.metric-card-arrow { font-size: 22px; color: var(--muted2); }
+
+/* ── Weather strip ── */
+.wx-strip {
+  background: var(--card); border: 1px solid var(--cardBorder);
+  border-radius: var(--r); padding: 14px 16px;
+  margin-bottom: 12px; backdrop-filter: blur(8px);
+}
+.wx-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.wx-item { display: flex; align-items: center; gap: 5px; font-size: 15px; font-weight: 600; }
+.wx-val  { color: var(--text); }
+.wx-lbl  { color: var(--muted); }
+
+/* ── Stat rows ── */
+.stat-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 0; border-bottom: 1px solid var(--cardBorder);
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-key { font-size: 15px; color: var(--muted); font-weight: 500; }
+.stat-val { font-size: 16px; font-weight: 700; color: var(--text); text-align: right; }
+
+/* ── Buttons ── */
+.btn {
+  width: 100%; height: 52px; border-radius: 999px;
+  font-family: var(--fSans); font-size: 16px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; transition: opacity 0.15s, transform 0.1s;
+}
+.btn:active { opacity: 0.85; transform: scale(0.98); }
+.btn-gold    { background: var(--accent); color: #1a1200; }
+.btn-danger  { background: var(--red); color: #fff; }
+.btn-glass   {
+  background: rgba(255,255,255,0.08); color: var(--text);
+  border: 1px solid var(--cardBorder);
+}
+.btn-glass:hover { background: rgba(255,255,255,0.13); }
+
+/* ── Relay pair ── */
+.relay-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.relay-card {
+  background: var(--card); border: 1.5px solid var(--cardBorder);
+  border-radius: var(--rSm); padding: 14px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.relay-card.relay-active { border-color: var(--yellowBorder); background: var(--accentBg); }
+.relay-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted2); margin-bottom: 6px; }
+.relay-rpm  { font-family: var(--fSerif); font-size: 26px; font-weight: 700; color: var(--text); }
+.relay-unit { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+/* ── Bar ── */
+.bar-track { height: 5px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+.bar-fill  { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+.bar-gold  { background: linear-gradient(90deg, var(--accentDark), var(--accent)); }
+.bar-blue  { background: linear-gradient(90deg, rgba(31,105,160,0.8), #7fd0ff); }
+.bar-green { background: var(--green); }
+.bar-red   { background: var(--red); }
+
+/* ── Timeline ── */
+.timeline-track { height: 44px; background: rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; position: relative; }
+.tl-seg { position: absolute; top: 0; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: rgba(0,0,0,0.7); }
+.tl-now { position: absolute; top: 0; width: 3px; height: 100%; background: white; z-index: 10; border-radius: 2px; box-shadow: 0 0 10px rgba(255,255,255,0.9); }
+.tl-labels { position: relative; height: 20px; margin-top: 5px; }
+.tl-label  { position: absolute; font-size: 10px; color: var(--muted2); transform: translateX(-50%); font-family: var(--fMono); }
+
+/* ── Log entries ── */
+.log-wrap { max-height: 320px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.log-wrap::-webkit-scrollbar { width: 3px; }
+.log-wrap::-webkit-scrollbar-thumb { background: var(--cardBorder); border-radius: 99px; }
+.log-entry { display: grid; grid-template-columns: 8px 1fr auto; gap: 10px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--cardBorder); }
+.log-entry:last-child { border-bottom: none; }
+.log-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+.log-dot.s3   { background: #7fd0ff; }
+.log-dot.s2   { background: var(--accent); }
+.log-dot.off  { background: var(--muted2); }
+.log-dot.heat { background: var(--orange); }
+.log-dot.info { background: var(--green); }
+.log-dot.warn { background: var(--red); }
+.log-msg  { font-size: 14px; color: var(--text); font-weight: 500; line-height: 1.4; }
+.log-dev  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.log-time { font-size: 12px; color: var(--muted2); font-family: var(--fMono); white-space: nowrap; padding-top: 2px; }
+
+/* ── Chart ── */
+.chart-wrap { position: relative; height: 180px; margin: 8px 0; }
+canvas { width: 100%!important; }
+
+/* ── Chem placeholders ── */
+.chem-ph {
+  background: var(--accentBg); border: 1px solid var(--yellowBorder);
+  border-radius: var(--r); padding: 20px; text-align: center; margin-bottom: 12px;
+}
+.chem-ph-icon  { font-size: 30px; margin-bottom: 8px; }
+.chem-ph-title { font-family: var(--fSerif); font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.chem-ph-sub   { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── Treatment log ── */
+.treat-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.treat-sel, .treat-inp {
+  flex: 1; min-width: 120px; background: rgba(255,255,255,0.07);
+  border: 1px solid var(--cardBorder); border-radius: 10px;
+  padding: 12px; color: var(--text); font-family: var(--fSans); font-size: 15px;
+}
+.treat-sel:focus, .treat-inp:focus { outline: none; border-color: var(--accent); }
+.treat-sel option { background: #071525; }
+.treat-btn {
+  height: 48px; padding: 0 18px; border-radius: 999px;
+  background: var(--accent); color: #1a1200; border: none;
+  font-family: var(--fSans); font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.treat-entry { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--cardBorder); }
+.treat-entry:last-child { border-bottom: none; }
+.treat-badge { background: var(--accentBg); border: 1px solid var(--yellowBorder); padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.treat-note  { font-size: 14px; color: var(--muted); flex: 1; }
+.treat-date  { font-size: 12px; color: var(--muted2); white-space: nowrap; font-family: var(--fMono); }
+
+/* ── HVAC cards ── */
+.hvac-card { background: var(--card); border: 1px solid var(--cardBorder); border-radius: var(--r); padding: 18px; margin-bottom: 12px; backdrop-filter: blur(8px); }
+.hvac-floor { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted2); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+.hvac-temp  { font-family: var(--fSerif); font-size: 60px; font-weight: 700; color: var(--text); line-height: 1; }
+.hvac-set   { font-size: 16px; color: var(--muted); margin-top: 4px; }
+.hvac-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.hvac-stat  { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px; border: 1px solid var(--cardBorder); }
+.hvac-stat-key { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted2); margin-bottom: 4px; }
+.hvac-stat-val { font-size: 18px; font-weight: 700; color: var(--text); }
+
+/* ── Leak sensor cards ── */
+.leak-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.leak-card { border-radius: var(--rSm); padding: 16px; border: 1.5px solid; position: relative; overflow: hidden; }
+.leak-card.dry     { background: var(--greenBg);  border-color: var(--greenBorder); }
+.leak-card.warn    { background: var(--yellowBg);  border-color: var(--yellowBorder); }
+.leak-card.wet     { background: var(--redBg);     border-color: var(--redBorder); }
+.leak-card.offline { background: rgba(255,255,255,0.04); border-color: var(--cardBorder); }
+.leak-icon { font-size: 22px; margin-bottom: 8px; }
+.leak-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.leak-loc  { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.leak-row  { display: flex; justify-content: space-between; font-size: 12px; margin-top: 5px; }
+.leak-key  { color: var(--muted2); font-weight: 500; }
+.leak-val  { font-weight: 700; }
+.leak-alert { position: absolute; inset: 0; background: rgba(255,77,90,0.2); display: flex; align-items: center; justify-content: center; font-size: 44px; animation: blink 0.7s infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+/* ── Service visit cards ── */
+.visit-card { background: rgba(255,255,255,0.05); border-radius: var(--rSm); padding: 16px; margin-bottom: 10px; border-left: 4px solid var(--cardBorder); border: 1px solid var(--cardBorder); border-left: 4px solid var(--cardBorder); }
+.visit-card.completed { border-left-color: var(--green); }
+.visit-card.missed    { border-left-color: var(--red); }
+.visit-card.expected  { border-left-color: var(--accent); }
+.visit-date   { font-size: 12px; color: var(--muted2); font-family: var(--fMono); margin-bottom: 4px; }
+.visit-status { font-size: 16px; font-weight: 700; color: var(--text); }
+.chem-before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.chem-box { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; border: 1px solid var(--cardBorder); }
+.chem-box-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted2); margin-bottom: 4px; }
+.chem-box-val { font-size: 22px; font-weight: 700; color: var(--text); }
+.chem-box-range { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.chem-ok   { color: var(--green)!important; }
+.chem-warn { color: var(--red)!important; }
+
+/* ── Number input ── */
+.num-inp {
+  background: rgba(255,255,255,0.07); border: 1px solid var(--cardBorder);
+  border-radius: 10px; padding: 12px; color: var(--text);
+  font-family: var(--fSans); font-size: 16px; font-weight: 600; width: 100%;
+}
+.num-inp:focus { outline: none; border-color: var(--accent); }
+
+/* ── Savings ── */
+.savings-val { font-family: var(--fSerif); font-size: 52px; font-weight: 700; color: var(--accent); }
+
+/* ── Empty state ── */
+.empty { padding: 24px; text-align: center; color: var(--muted); font-size: 15px; }
+
+/* ── Divider ── */
+hr { border: none; border-top: 1px solid var(--cardBorder); margin: 4px 0 14px; }
+
+/* ── Responsive ── */
+@media(min-width:600px){
+  .leak-grid { grid-template-columns: repeat(3,1fr); }
+  .screen { padding: 20px 20px calc(var(--tab-h)+24px); }
+}
+@media(min-width:900px){
+  .leak-grid { grid-template-columns: repeat(4,1fr); }
+  .screen { max-width: 760px; margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top nav ── -->
+<nav class="topnav">
+  <div class="nav-brand">
+    <div class="nav-logo">🏖️</div>
+    <span class="nav-title">Paradise</span>
+  </div>
+  <div class="nav-right">
+    <span class="clock" id="clock">--:--</span>
+    <div class="live-dot" id="live-dot" title="Live data"></div>
+  </div>
+</nav>
+
+<div class="screens">
+
+<!-- ════════════════════════════════════════
+     SCREEN 1 · OVERVIEW
+════════════════════════════════════════ -->
+<div class="screen active" id="screen-overview">
+
+  <div class="peak-banner summer" id="pb-ov">
+    <div class="pb-icon" id="pb-ov-icon">☀️</div>
+    <div class="pb-body">
+      <div class="pb-title" id="pb-ov-title">Loading…</div>
+      <div class="pb-sub"   id="pb-ov-sub"></div>
+    </div>
+    <div class="pb-right">
+      <div class="pb-next-label">Next</div>
+      <div class="pb-next-val" id="pb-ov-next">—</div>
+    </div>
+  </div>
+
+  <div class="wx-strip">
+    <div class="wx-row">
+      <div class="wx-item">🌡️ <span class="wx-val" id="wx-temp">—°F</span></div>
+      <div class="wx-item">💧 <span class="wx-val" id="wx-hum">—%</span></div>
+      <div class="wx-item">🌬️ <span class="wx-val" id="wx-wind">—</span></div>
+      <div class="wx-item">🌧️ <span class="wx-val" id="wx-rain">—"</span></div>
+      <div class="wx-item" id="wx-cond" style="margin-left:auto;font-size:16px;"></div>
+    </div>
+  </div>
+
+  <div class="metric-card" onclick="goTo('pump')">
+    <div class="metric-card-bar" id="mc-pump-bar"></div>
+    <div class="metric-card-body">
+      <div class="metric-card-label">Pump</div>
+      <div class="metric-card-value" id="mc-pump-val">—</div>
+      <div class="metric-card-sub"   id="mc-pump-sub">—</div>
+      <div class="metric-card-pill"  id="mc-pump-pill"></div>
+    </div>
+    <div class="metric-card-right">
+      <div class="metric-card-icon">💧</div>
+      <div class="metric-card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="metric-card" onclick="goTo('temp')">
+    <div class="metric-card-bar" id="mc-temp-bar"></div>
+    <div class="metric-card-body">
+      <div class="metric-card-label">Temp &amp; Heater</div>
+      <div class="metric-card-value" id="mc-temp-val">—</div>
+      <div class="metric-card-sub"   id="mc-temp-sub">—</div>
+      <div class="metric-card-pill"  id="mc-temp-pill"></div>
+    </div>
+    <div class="metric-card-right">
+      <div class="metric-card-icon">🌡️</div>
+      <div class="metric-card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="metric-card" onclick="goTo('hvac')">
+    <div class="metric-card-bar" id="mc-hvac-bar"></div>
+    <div class="metric-card-body">
+      <div class="metric-card-label">HVAC &amp; Energy</div>
+      <div class="metric-card-value" id="mc-hvac-val">—</div>
+      <div class="metric-card-sub"   id="mc-hvac-sub">—</div>
+      <div class="metric-card-pill"  id="mc-hvac-pill"></div>
+    </div>
+    <div class="metric-card-right">
+      <div class="metric-card-icon">❄️</div>
+      <div class="metric-card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="metric-card" onclick="goTo('chem')">
+    <div class="metric-card-bar" style="background:rgba(242,193,75,0.4);"></div>
+    <div class="metric-card-body">
+      <div class="metric-card-label">Chemicals</div>
+      <div class="metric-card-value" style="font-size:20px;margin-top:4px;">ORP · pH · Flow</div>
+      <div class="metric-card-sub">Sensors pending — log treatments below</div>
+      <div class="metric-card-pill" style="margin-top:8px;"><span class="pill p-muted"><span class="pill-dot"></span>Awaiting sensors</span></div>
+    </div>
+    <div class="metric-card-right">
+      <div class="metric-card-icon">🧪</div>
+      <div class="metric-card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="metric-card" onclick="goTo('leak')">
+    <div class="metric-card-bar" id="mc-leak-bar"></div>
+    <div class="metric-card-body">
+      <div class="metric-card-label">Leak Sensors</div>
+      <div class="metric-card-value" id="mc-leak-val">—</div>
+      <div class="metric-card-sub"   id="mc-leak-sub">—</div>
+      <div class="metric-card-pill"  id="mc-leak-pill"></div>
+    </div>
+    <div class="metric-card-right">
+      <div class="metric-card-icon">🚨</div>
+      <div class="metric-card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="metric-card" onclick="goTo('service')">
+    <div class="metric-card-bar" id="mc-svc-bar"></div>
+    <div class="metric-card-body">
+      <div class="metric-card-label">Pool Service · Southstrand PM</div>
+      <div class="metric-card-value" id="mc-svc-val">—</div>
+      <div class="metric-card-sub"   id="mc-svc-sub">—</div>
+      <div class="metric-card-pill"  id="mc-svc-pill"></div>
+    </div>
+    <div class="metric-card-right">
+      <div class="metric-card-icon">🔧</div>
+      <div class="metric-card-arrow">›</div>
+    </div>
+  </div>
+
+</div><!-- /overview -->
+
+<!-- ════════════════════════════════════════
+     SCREEN 2 · PUMP
+════════════════════════════════════════ -->
+<div class="screen" id="screen-pump">
+
+  <div class="peak-banner summer" id="pb-pump">
+    <div class="pb-icon" id="pb-pump-icon">☀️</div>
+    <div class="pb-body"><div class="pb-title" id="pb-pump-title">—</div><div class="pb-sub" id="pb-pump-sub"></div></div>
+    <div class="pb-right"><div class="pb-next-label">Next</div><div class="pb-next-val" id="pb-pump-next">—</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Current Speed</div>
+    <div class="card-value card-value-xl" id="p-speed">—</div>
+    <div class="card-sub" id="p-rpm">—</div>
+    <div style="margin-top:12px;" id="p-pill"></div>
+  </div>
+
+  <div class="relay-pair">
+    <div class="relay-card" id="r1-card">
+      <div class="relay-name">Relay 1 · Speed 2</div>
+      <div class="relay-rpm">2,000</div>
+      <div class="relay-unit">RPM</div>
+      <div class="bar-track"><div class="bar-fill bar-gold" id="r1-bar" style="width:0%"></div></div>
+      <div style="margin-top:8px;" id="r1-pill"></div>
+    </div>
+    <div class="relay-card" id="r2-card">
+      <div class="relay-name">Relay 2 · Speed 3</div>
+      <div class="relay-rpm">3,000</div>
+      <div class="relay-unit">RPM</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" id="r2-bar" style="width:0%"></div></div>
+      <div style="margin-top:8px;" id="r2-pill"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Pool Temp</div>
+    <div class="card-value" id="p-temp">—°</div>
+    <div class="card-sub"   id="p-runtime">Target runtime: —</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Peak Savings · This Month</div>
+    <div class="savings-val" id="p-savings">$—</div>
+    <div class="card-sub" id="p-savings-sub">Estimated demand charge avoided</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:8px;">Today's Schedule · <span id="p-season">—</span></div>
+    <div class="timeline-track" id="p-timeline"><div class="tl-now" id="p-tl-now"></div></div>
+    <div class="tl-labels" id="p-tl-labels"></div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;">
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;"><div style="width:12px;height:12px;border-radius:3px;background:#7fd0ff;"></div>Speed 3</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;"><div style="width:12px;height:12px;border-radius:3px;background:var(--accent);"></div>Speed 2</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;"><div style="width:12px;height:12px;border-radius:3px;background:var(--redBg);border:1px solid var(--red);"></div>Peak</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:10px;">Event Log</div>
+    <div class="log-wrap" id="p-log"><div class="empty">Loading…</div></div>
+  </div>
+
+</div><!-- /pump -->
+
+<!-- ════════════════════════════════════════
+     SCREEN 3 · TEMP & HEAT
+════════════════════════════════════════ -->
+<div class="screen" id="screen-temp">
+
+  <div class="card">
+    <div class="card-label">Pool Temp · In</div>
+    <div class="card-value card-value-xl" id="t-temp">—°</div>
+    <div class="card-sub">Live · Pool Temp In sensor</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Heater · Qubino Fireman Switch</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+      <div style="font-size:48px;" id="t-heater-icon">💤</div>
+      <div>
+        <div style="font-family:var(--fSerif);font-size:36px;font-weight:700;" id="t-heater-state">—</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:4px;" id="t-heater-note">AquaCal SuperQuiet 120</div>
+      </div>
+    </div>
+    <button class="btn btn-glass" id="t-heater-btn" onclick="toggleHeater()">Toggle Heater</button>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Air Temp · Tempest Station 204460</div>
+    <div class="card-value" id="t-air">—°F</div>
+    <div class="card-sub"   id="t-cop">COP: — · Current efficiency</div>
+    <div style="font-size:15px;color:var(--muted);margin-top:8px;font-weight:600;" id="t-cop-note"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:14px;">Time to Target Temp</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div>
+        <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px;">Target °F</div>
+        <input type="number" class="num-inp" id="t-target" value="82" min="70" max="95" oninput="calcTTT()">
+      </div>
+      <div>
+        <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px;">Pool gallons</div>
+        <input type="number" class="num-inp" id="t-vol" value="10000" oninput="calcTTT()">
+      </div>
+    </div>
+    <div class="stat-row"><span class="stat-key">Estimated time</span><span class="stat-val" id="t-ttt">—</span></div>
+    <div class="stat-row"><span class="stat-key">Heater output</span><span class="stat-val">113,000 BTU/hr</span></div>
+    <div class="stat-row"><span class="stat-key">Effective COP</span><span class="stat-val" id="t-cop2">—</span></div>
+    <div class="stat-row"><span class="stat-key">Adjusted output</span><span class="stat-val" id="t-adjbtu">—</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:8px;">Energy Cost · Santee Cooper RG-25</div>
+    <div class="stat-row"><span class="stat-key">Input draw</span><span class="stat-val">5.4 kW</span></div>
+    <div class="stat-row"><span class="stat-key">Energy rate</span><span class="stat-val">$0.0792 / kWh</span></div>
+    <div class="stat-row"><span class="stat-key">Cost per hour</span><span class="stat-val">$0.43</span></div>
+    <div class="stat-row"><span class="stat-key">Cost to reach target</span><span class="stat-val" id="t-cost">—</span></div>
+    <div class="stat-row"><span class="stat-key">Demand charge risk</span><span class="stat-val" id="t-demand">—</span></div>
+    <div class="stat-row"><span class="stat-key">⚡ Peak window</span><span class="stat-val" id="t-peakwin" style="color:var(--accent);">—</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:8px;">Air Temp · 7 Day History</div>
+    <div class="chart-wrap"><canvas id="chart-temp"></canvas></div>
+  </div>
+
+</div><!-- /temp -->
+
+<!-- ════════════════════════════════════════
+     SCREEN 4 · CHEMICALS
+════════════════════════════════════════ -->
+<div class="screen" id="screen-chem">
+
+  <div class="chem-ph">
+    <div class="chem-ph-icon">⚡</div>
+    <div class="chem-ph-title">ORP — Sensor Pending</div>
+    <div class="chem-ph-sub">Target: 650–750 mV<br>SC DHEC chlorine: 1–8 ppm</div>
+  </div>
+  <div class="chem-ph">
+    <div class="chem-ph-icon">🧪</div>
+    <div class="chem-ph-title">pH — Sensor Pending</div>
+    <div class="chem-ph-sub">Target: 7.0–7.8<br>SC DHEC standard</div>
+  </div>
+  <div class="chem-ph">
+    <div class="chem-ph-icon">🌊</div>
+    <div class="chem-ph-title">Flow Rate — Meter Pending</div>
+    <div class="chem-ph-sub">Target: 1 turnover / 8 hrs · 10,000 gal</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:10px;">Rain Events · Last 30 Days · Tempest 204460</div>
+    <div class="chart-wrap" style="height:150px;"><canvas id="chart-rain"></canvas></div>
+    <div style="margin-top:12px;" id="rain-msg"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:14px;">Chemical Treatment Log</div>
+    <select class="treat-sel" id="treat-type" style="width:100%;margin-bottom:8px;">
+      <option>Chlorine shock</option><option>Liquid chlorine</option>
+      <option>pH Up</option><option>pH Down</option>
+      <option>Algaecide</option><option>Clarifier</option>
+      <option>Stabilizer</option><option>Alkalinity Up</option><option>Other</option>
+    </select>
+    <div class="treat-row">
+      <input type="text"   class="treat-inp" id="treat-note" placeholder="Notes (optional)">
+      <input type="number" class="treat-inp" id="treat-amt"  placeholder="Amount" style="max-width:90px;">
+      <button class="treat-btn" onclick="addTreatment()">+ Log</button>
+    </div>
+    <hr>
+    <div id="treat-log"><div class="empty">No treatments logged yet.</div></div>
+  </div>
+
+</div><!-- /chem -->
+
+<!-- ════════════════════════════════════════
+     SCREEN 5 · HVAC & ENERGY
+════════════════════════════════════════ -->
+<div class="screen" id="screen-hvac">
+
+  <div class="peak-banner summer" id="pb-hvac">
+    <div class="pb-icon" id="pb-hvac-icon">☀️</div>
+    <div class="pb-body"><div class="pb-title" id="pb-hvac-title">—</div><div class="pb-sub" id="pb-hvac-sub"></div></div>
+    <div class="pb-right">
+      <div class="pb-next-label">Demand risk</div>
+      <div class="pb-next-val" id="pb-hvac-demand" style="color:var(--red);">—</div>
+    </div>
+  </div>
+
+  <div class="hvac-card">
+    <div class="hvac-floor">Paradise Upstairs <span id="h-up-pill"></span></div>
+    <div class="hvac-temp" id="h-up-temp">—°</div>
+    <div class="hvac-set">Set: <span id="h-up-set">—°</span></div>
+    <div class="hvac-grid">
+      <div class="hvac-stat"><div class="hvac-stat-key">State</div><div class="hvac-stat-val" id="h-up-state">—</div></div>
+      <div class="hvac-stat"><div class="hvac-stat-key">Humidity</div><div class="hvac-stat-val" id="h-up-hum">—%</div></div>
+      <div class="hvac-stat"><div class="hvac-stat-key">Mode</div><div class="hvac-stat-val" id="h-up-mode">—</div></div>
+      <div class="hvac-stat"><div class="hvac-stat-key">Fan</div><div class="hvac-stat-val" id="h-up-fan">—</div></div>
+    </div>
+  </div>
+
+  <div class="hvac-card">
+    <div class="hvac-floor">Main Floor <span id="h-dn-pill"></span></div>
+    <div class="hvac-temp" id="h-dn-temp">—°</div>
+    <div class="hvac-set">Set: <span id="h-dn-set">—°</span></div>
+    <div class="hvac-grid">
+      <div class="hvac-stat"><div class="hvac-stat-key">State</div><div class="hvac-stat-val" id="h-dn-state">—</div></div>
+      <div class="hvac-stat"><div class="hvac-stat-key">Humidity</div><div class="hvac-stat-val" id="h-dn-hum">—%</div></div>
+      <div class="hvac-stat"><div class="hvac-stat-key">Mode</div><div class="hvac-stat-val" id="h-dn-mode">—</div></div>
+      <div class="hvac-stat"><div class="hvac-stat-key">Fan</div><div class="hvac-stat-val" id="h-dn-fan">—</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:8px;">Peak Exposure · Santee Cooper RG-25</div>
+    <div class="stat-row"><span class="stat-key">Heater during peak</span><span class="stat-val" style="color:var(--red);">+$43.20 / mo</span></div>
+    <div class="stat-row"><span class="stat-key">Speed 3 during peak</span><span class="stat-val" style="color:var(--orange);">+$24.00 / mo</span></div>
+    <div class="stat-row"><span class="stat-key">Both ACs at peak</span><span class="stat-val" style="color:var(--red);">~$40–60 / mo</span></div>
+    <div class="stat-row"><span class="stat-key">Scheduler protection</span><span class="stat-val" style="color:var(--green);">Pump + Heater ✓</span></div>
+    <div class="stat-row"><span class="stat-key">AC (guest controlled)</span><span class="stat-val" style="color:var(--accent);">⚠ Monitor</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:10px;">Thermostat Event Log · Guest Behavior</div>
+    <div class="log-wrap" id="h-log"><div class="empty">Loading…</div></div>
+  </div>
+
+</div><!-- /hvac -->
+
+<!-- ════════════════════════════════════════
+     SCREEN 6 · LEAK SENSORS
+════════════════════════════════════════ -->
+<div class="screen" id="screen-leak">
+  <div style="margin-bottom:16px;">
+    <div style="font-family:var(--fSerif);font-size:28px;font-weight:700;color:var(--text);" id="leak-headline">Checking…</div>
+    <div style="font-size:15px;color:var(--muted);margin-top:4px;" id="leak-subline"></div>
+  </div>
+  <div class="leak-grid" id="leak-grid"><div class="empty">Loading…</div></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN 7 · POOL SERVICE
+════════════════════════════════════════ -->
+<div class="screen" id="screen-service">
+
+  <div class="card">
+    <div class="card-label">Pump Room · Southstrand PM</div>
+    <div style="display:flex;align-items:center;gap:14px;margin:8px 0 14px;">
+      <div style="font-size:40px;" id="svc-door-icon">🚪</div>
+      <div>
+        <div style="font-family:var(--fSerif);font-size:28px;font-weight:700;" id="svc-door-state">—</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:3px;">Pump room door contact sensor</div>
+      </div>
+      <div style="margin-left:auto;" id="svc-door-pill"></div>
+    </div>
+    <div class="stat-row"><span class="stat-key">Door battery</span><span class="stat-val" id="svc-door-bat">—</span></div>
+    <div class="stat-row"><span class="stat-key">Motion sensor</span><span class="stat-val" id="svc-motion">—</span></div>
+    <div class="stat-row"><span class="stat-key">Today is service day</span><span class="stat-val" id="svc-today">—</span></div>
+    <div class="stat-row"><span class="stat-key">Service days</span><span class="stat-val" id="svc-days">—</span></div>
+  </div>
+
+  <div class="sec-head">Chemistry · SC DHEC Targets</div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="chem-box">
+        <div class="chem-box-lbl">Free Chlorine</div>
+        <div class="chem-box-val" id="svc-cl">—</div>
+        <div class="chem-box-range">Target: 1–8 ppm</div>
+      </div>
+      <div class="chem-box">
+        <div class="chem-box-lbl">pH</div>
+        <div class="chem-box-val" id="svc-ph">—</div>
+        <div class="chem-box-range">Target: 7.0–7.8</div>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-top:12px;" id="svc-chem-note">ORP and pH sensors pending</div>
+  </div>
+
+  <div class="sec-head">Log Chemistry Reading</div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <div>
+        <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px;">Free Cl (ppm)</div>
+        <input type="number" class="num-inp" id="log-cl" placeholder="1–8" min="0" max="20" step="0.1">
+      </div>
+      <div>
+        <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px;">pH</div>
+        <input type="number" class="num-inp" id="log-ph" placeholder="7.0–7.8" min="6" max="9" step="0.1">
+      </div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px;">Notes</div>
+      <input type="text" class="num-inp" id="log-notes" placeholder="Treatments added, observations…">
+    </div>
+    <button class="btn btn-gold" onclick="logChemReading()">📋 Save Reading</button>
+  </div>
+
+  <div class="sec-head">Visit History</div>
+  <div id="svc-visits"><div class="empty">No visits recorded yet.</div></div>
+
+</div><!-- /service -->
+
+</div><!-- /screens -->
+
+<!-- Bottom tab bar -->
+<div class="tabbar">
+  <button class="tab active" id="tab-overview" onclick="goTo('overview')"><span class="tab-icon">⌂</span><span>Overview</span></button>
+  <button class="tab" id="tab-pump"     onclick="goTo('pump')"    ><span class="tab-icon">💧</span><span>Pump</span></button>
+  <button class="tab" id="tab-temp"     onclick="goTo('temp')"    ><span class="tab-icon">🌡️</span><span>Heat</span></button>
+  <button class="tab" id="tab-chem"     onclick="goTo('chem')"    ><span class="tab-icon">🧪</span><span>Chem</span></button>
+  <button class="tab" id="tab-hvac"     onclick="goTo('hvac')"    ><span class="tab-icon">❄️</span><span>HVAC</span></button>
+  <button class="tab" id="tab-leak"     onclick="goTo('leak')"    ><span class="tab-icon">🚨</span><span>Leak</span></button>
+  <button class="tab" id="tab-service"  onclick="goTo('service')"><span class="tab-icon">🔧</span><span>Service</span></button>
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────
+const WORKER = 'https://paradise-weather.paradise-surfsidesc.workers.dev';
+const HEATER_BTU=113000, HEATER_KW=5.4, ENERGY_RATE=0.0792, DEMAND_RATE=8.0, BTU_PER_GAL=8.34;
+
+// State
+let poolState={}, wxState={}, rainData=[], leakState={}, ecobeeData={};
+let heaterOn=false;
+let treatments = JSON.parse(localStorage.getItem('paradise_treats')||'[]');
+let chemLog     = JSON.parse(localStorage.getItem('paradise_chem')||'[]');
+let svcVisits   = JSON.parse(localStorage.getItem('paradise_svc')||'[]');
+
+// ── Helpers ───────────────────────────────────────────────────────
+const pad = n => String(n).padStart(2,'0');
+const isSummer = () => { const m=new Date().getMonth()+1; return m>=4&&m<=10; };
+const isPeak   = () => {
+  const hhmm=new Date().getHours()*60+new Date().getMinutes();
+  return isSummer()?(hhmm>=900&&hhmm<1095):(hhmm>=360&&hhmm<555);
+};
+const fmtTime = d => `${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const w = path => fetch(`${WORKER}${path}`).then(r=>r.json()).catch(()=>null);
+const setText = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+const setHTML = (id,v) => { const e=document.getElementById(id); if(e) e.innerHTML=v; };
+const setStyle= (id,v) => { const e=document.getElementById(id); if(e) e.style.cssText=v; };
+const pill = (cls,lbl) => `<span class="pill ${cls}"><span class="pill-dot"></span>${lbl}</span>`;
+
+// ── Schedule ──────────────────────────────────────────────────────
+function schedWins() {
+  if(isSummer()) return [
+    {label:'Speed 3',start:0,   end:900, color:'rgba(127,208,255,0.85)'},
+    {label:'Peak',   start:900, end:1095,color:'rgba(255,77,90,0.55)',  peak:true},
+    {label:'Speed 3',start:1095,end:1380,color:'rgba(127,208,255,0.85)'},
+    {label:'Speed 2',start:1380,end:1440,color:'rgba(242,193,75,0.85)'},
+  ];
+  return [
+    {label:'Speed 2',start:0,  end:360, color:'rgba(242,193,75,0.85)'},
+    {label:'Peak Off',start:360,end:555,color:'rgba(255,77,90,0.55)',  peak:true},
+    {label:'Speed 2',start:555,end:1440,color:'rgba(242,193,75,0.85)'},
+  ];
+}
+function currentWin() {
+  const hhmm=new Date().getHours()*60+new Date().getMinutes();
+  return schedWins().find(w=>hhmm>=w.start&&hhmm<w.end)||schedWins()[0];
+}
+function nextWin() {
+  const wins=schedWins(), hhmm=new Date().getHours()*60+new Date().getMinutes();
+  for(let i=0;i<wins.length;i++) if(hhmm>=wins[i].start&&hhmm<wins[i].end) return wins[(i+1)%wins.length];
+  return wins[0];
+}
+function minsLeft() {
+  const hhmm=new Date().getHours()*60+new Date().getMinutes();
+  for(const w of schedWins()) if(hhmm>=w.start&&hhmm<w.end) return w.end-hhmm;
+  return 0;
+}
+const fmtMins = m => m>=60?`${Math.floor(m/60)}h ${m%60}m`:`${m}m`;
+const estCOP  = airF => { if(!airF) return 6.1; if(airF>=80) return 6.1; if(airF>=70) return 5.5; if(airF>=60) return 4.5; if(airF>=50) return 3.5; return 2.5; };
+
+// ── Clock + second-level updates ──────────────────────────────────
+setInterval(()=>{
+  const d=new Date();
+  setText('clock',`${pad(d.getHours())}:${pad(d.getMinutes())}`);
+  updatePeakBanners();
+  updateTimeline();
+},1000);
+
+// ── Peak banners ──────────────────────────────────────────────────
+function updatePeakBanners() {
+  const summer=isSummer(), peak=isPeak();
+  const win=currentWin(), nxt=nextWin(), mins=minsLeft();
+  const cls  = peak?'peak':summer?'summer':'winter';
+  const icon = peak?'⚡':summer?'☀️':'❄️';
+  const title= peak?`Peak Hours — ${summer?'3–6 PM':'6–9 AM'} Santee Cooper`:`${summer?'Summer':'Winter'} · ${win.label}`;
+  const sub  = peak?'Pump Speed 3 and heater suppressed':'Santee Cooper '+(summer?'April–Oct peak: 3–6 PM':'Nov–Mar peak: 6–9 AM');
+  const next = `→ ${nxt.label} ${fmtMins(mins)}`;
+
+  [['pb-ov','pb-ov-icon','pb-ov-title','pb-ov-sub','pb-ov-next'],
+   ['pb-pump','pb-pump-icon','pb-pump-title','pb-pump-sub','pb-pump-next'],
+   ['pb-hvac','pb-hvac-icon','pb-hvac-title','pb-hvac-sub',null]].forEach(([bid,iid,tid,sid,nid])=>{
+    const el=document.getElementById(bid); if(el) el.className=`peak-banner ${cls}`;
+    if(iid) setText(iid,icon); if(tid) setText(tid,title);
+    if(sid) setText(sid,sub);  if(nid) setText(nid,next);
+  });
+  const risk=peak?`$${((HEATER_KW+3.0)*DEMAND_RATE).toFixed(2)} risk`:'$0 (off-peak)';
+  const rEl=document.getElementById('pb-hvac-demand');
+  if(rEl){rEl.textContent=risk; rEl.style.color=peak?'var(--red)':'var(--green)';}
+}
+
+// ── Navigation ────────────────────────────────────────────────────
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('screen-'+id)?.classList.add('active');
+  document.getElementById('tab-'+id)?.classList.add('active');
+  if(id==='chem'&&rainData.length) { setTimeout(drawRainChart,50); }
+  if(id==='temp'&&rainData.length) { setTimeout(drawTempChart,50); }
+}
+
+// ── Fetch + update ────────────────────────────────────────────────
+async function refresh() {
+  const [pool,wx,rain,ecobee,svc] = await Promise.all([
+    w('/api/pool'), w('/api/weather'), w('/api/rain-history'),
+    w('/api/ecobee'), w('/api/service-visits'),
+  ]);
+  if(pool?.ok)   poolState  = pool;
+  if(wx?.ok)     wxState    = wx;
+  if(rain?.ok)   rainData   = rain.data||[];
+  if(ecobee?.ok) ecobeeData = ecobee;
+  if(svc?.ok)    leakState  = svc;
+  updateAll();
+  // Flash live dot
+  const dot=document.getElementById('live-dot');
+  if(dot){dot.style.boxShadow='0 0 12px var(--accent)';dot.style.background='var(--accent)';setTimeout(()=>{dot.style.boxShadow='0 0 8px var(--green)';dot.style.background='var(--green)';},600);}
+}
+
+function updateAll() {
+  updatePeakBanners();
+  updateOverview();
+  updatePump();
+  updateTemp();
+  updateHVAC();
+  updateLeak();
+  updateService();
+  renderTreatments();
+  const active=document.querySelector('.screen.active')?.id;
+  if(active==='screen-chem') setTimeout(drawRainChart,50);
+  if(active==='screen-temp') setTimeout(drawTempChart,50);
+}
+
+// ── Overview ──────────────────────────────────────────────────────
+function updateOverview() {
+  const p=poolState, wx=wxState;
+  // Weather
+  if(wx.temp_f!==undefined) {
+    setText('wx-temp',`${wx.temp_f}°F`);
+    setText('wx-hum', `${wx.humidity}%`);
+    setText('wx-wind',`${wx.wind_mph} mph ${wx.wind_dir||''}`);
+    setText('wx-rain',`${wx.rain_today_in||0}"`);
+    setText('wx-cond',`${wx.icon||''} ${wx.condition||''}`);
+  }
+  // Pump
+  if(p.pump) {
+    const s=p.pump.speed;
+    const bar=s===3?'background:#7fd0ff;':s===2?'background:var(--accent);':'background:var(--muted2);';
+    setStyle('mc-pump-bar',bar);
+    setText('mc-pump-val', s===3?'Speed 3':s===2?'Speed 2':'Off');
+    setText('mc-pump-sub', `${p.pump.rpm?.toLocaleString()||0} RPM`);
+    setHTML('mc-pump-pill', pill(s===3?'p-blue':s===2?'p-gold':'p-muted', s===3?'Running · Performance':s===2?'Running · Baseline':'Pump Off'));
+  }
+  // Temp/heater
+  if(p.water) {
+    const ht=p.heater?.on;
+    setStyle('mc-temp-bar',`background:${ht?'var(--orange)':'var(--green)'};`);
+    setText('mc-temp-val', `${p.water.temp_f||'—'}°F`);
+    setText('mc-temp-sub', `Heater: ${ht?'Running':'Off'}`);
+    setHTML('mc-temp-pill', pill(ht?'p-yellow':'p-muted', ht?'Heater on':'Heater off'));
+    heaterOn=ht||false;
+  }
+  // HVAC
+  if(ecobeeData.upstairs) {
+    const upC=ecobeeData.upstairs.operatingState==='cooling';
+    const dnC=ecobeeData.main_floor?.operatingState==='cooling';
+    setStyle('mc-hvac-bar',`background:${upC||dnC?'#7fd0ff':'var(--muted2)'};`);
+    setText('mc-hvac-val',`${ecobeeData.upstairs.temperature||'—'}° / ${ecobeeData.main_floor?.temperature||'—'}°`);
+    setText('mc-hvac-sub','Upstairs / Main Floor');
+    setHTML('mc-hvac-pill', pill(upC||dnC?'p-blue':'p-muted', upC&&dnC?'Both cooling':upC||dnC?'Cooling':'Idle'));
+  }
+  // Leak
+  if(leakState.summary) {
+    const s=leakState.summary;
+    const wet=s.wet>0, warn=s.warn>0;
+    setStyle('mc-leak-bar',`background:${wet?'var(--red)':warn?'var(--accent)':'var(--green)'};`);
+    setText('mc-leak-val', wet?`${s.wet} LEAK!`:warn?`${s.warn} Warning`:'All Clear');
+    setText('mc-leak-sub', `${leakState.leak_sensors?.length||8} sensors · ${s.ok} OK`);
+    setHTML('mc-leak-pill', pill(wet?'p-red':warn?'p-yellow':'p-green', wet?'Leak detected':warn?'Attention':'All dry'));
+  }
+  // Service
+  if(leakState.is_service_day!==undefined) {
+    const isSD=leakState.is_service_day, open=leakState.pump_room?.door_contact==='open';
+    setStyle('mc-svc-bar',`background:${isSD?(open?'var(--green)':'var(--accent)'):'var(--muted2)'};`);
+    setText('mc-svc-val', isSD?(open?'In Progress':'Expected Today'):'Not Today');
+    setText('mc-svc-sub', `${leakState.service_days?.join(', ')||'—'}`);
+    setHTML('mc-svc-pill', pill(isSD?(open?'p-green':'p-gold'):'p-muted', isSD?'Service day':'Off day'));
+  }
+}
+
+// ── Pump ──────────────────────────────────────────────────────────
+function updatePump() {
+  const p=poolState; if(!p.pump) return;
+  const s=p.pump.speed, r1=p.pump.relay1_on, r2=p.pump.relay2_on;
+  setText('p-speed', s===3?'Speed 3':s===2?'Speed 2':'Off');
+  setText('p-rpm',   `${p.pump.rpm?.toLocaleString()||0} RPM`);
+  setHTML('p-pill',  pill(s===3?'p-blue':s===2?'p-gold':'p-muted', s===3?'Performance · Running':s===2?'Baseline · Running':'Pump Off'));
+  setHTML('r1-pill', pill(r1?'p-gold':'p-muted', r1?'On':'Off'));
+  setHTML('r2-pill', pill(r2?'p-blue':'p-muted', r2?'On':'Off'));
+  document.getElementById('r1-bar').style.width = r1?'66%':'0%';
+  document.getElementById('r2-bar').style.width = r2?'100%':'0%';
+  document.getElementById('r1-card').className = r1?'relay-card relay-active':'relay-card';
+  document.getElementById('r2-card').className = r2?'relay-card relay-active':'relay-card';
+  if(p.water?.temp_f) {
+    setText('p-temp',    `${p.water.temp_f}°`);
+    setText('p-runtime', `Target runtime: ~${p.water.runtime_target_hrs} hrs/day`);
+  }
+  setText('p-season', isSummer()?'Summer (Apr–Oct)':'Winter (Nov–Mar)');
+  const dayOfMonth=new Date().getDate(), peakHrs=dayOfMonth*3;
+  setText('p-savings',     `$${(peakHrs*3.0*ENERGY_RATE).toFixed(2)}`);
+  setText('p-savings-sub', `~${peakHrs} peak hours avoided this month`);
+  fetchPumpLog();
+}
+
+async function fetchPumpLog() {
+  const [e1,e2,eh] = await Promise.all([
+    w('/api/pool').then(()=>null).catch(()=>null), // placeholder
+    null, null
+  ]);
+  // Pull events directly via Worker — for now show pool state changes
+  const el=document.getElementById('p-log');
+  if(!el) return;
+  const p=poolState;
+  if(!p.pump) { el.innerHTML='<div class="empty">No data</div>'; return; }
+  el.innerHTML=`<div class="log-entry">
+    <div class="log-dot ${p.pump.speed===3?'s3':p.pump.speed===2?'s2':'off'}"></div>
+    <div><div class="log-msg">${p.pump.speed===3?'Speed 3 running (3,000 RPM)':p.pump.speed===2?'Speed 2 running (2,000 RPM)':'Pump off'}</div><div class="log-dev">ZEN16 · Pump Controller · Live</div></div>
+    <div class="log-time">Now</div>
+  </div>
+  <div class="log-entry">
+    <div class="log-dot ${p.heater?.on?'heat':'off'}"></div>
+    <div><div class="log-msg">Heater ${p.heater?.on?'running':'off'}</div><div class="log-dev">Qubino · AquaCal SuperQuiet 120</div></div>
+    <div class="log-time">Now</div>
+  </div>`;
+}
+
+// ── Timeline ──────────────────────────────────────────────────────
+function updateTimeline() {
+  const tl=document.getElementById('p-timeline'), lbls=document.getElementById('p-tl-labels');
+  if(!tl||!lbls) return;
+  tl.querySelectorAll('.tl-seg').forEach(e=>e.remove()); lbls.innerHTML='';
+  const wins=schedWins(), now=new Date().getHours()*60+new Date().getMinutes();
+  wins.forEach(w=>{
+    const pct=((w.end-w.start)/1440*100).toFixed(2), left=(w.start/1440*100).toFixed(2);
+    const seg=document.createElement('div'); seg.className='tl-seg';
+    seg.style.cssText=`left:${left}%;width:${pct}%;background:${w.color};`;
+    seg.textContent=pct>8?w.label:''; tl.appendChild(seg);
+    if(w.start>0) {
+      const lbl=document.createElement('div'); lbl.className='tl-label';
+      lbl.style.left=`${left}%`; lbl.textContent=`${String(Math.floor(w.start/60)).padStart(2,'0')}:00`;
+      lbls.appendChild(lbl);
+    }
+  });
+  const nowEl=document.getElementById('p-tl-now');
+  if(nowEl) nowEl.style.left=`${(now/1440*100).toFixed(2)}%`;
+}
+
+// ── Temp & heater ─────────────────────────────────────────────────
+function updateTemp() {
+  const p=poolState, wx=wxState;
+  if(p.water?.temp_f) setText('t-temp',`${p.water.temp_f}°`);
+  const airF=wx.temp_f||null;
+  if(airF) {
+    setText('t-air',`${airF}°F`);
+    const cop=estCOP(airF);
+    setText('t-cop',`COP: ${cop.toFixed(1)} · Current efficiency`);
+    setText('t-cop-note', cop>=5?'✓ Good heating conditions':cop>=3.5?'⚠ Reduced efficiency — moderate conditions':'⚠ Poor efficiency — consider delaying heating');
+    document.getElementById('t-cop-note').style.color = cop>=5?'var(--green)':cop>=3.5?'var(--accent)':'var(--red)';
+  }
+  heaterOn=p.heater?.on||false;
+  setText('t-heater-state', heaterOn?'Running':'Off');
+  setText('t-heater-icon',  heaterOn?'🔥':'💤');
+  setText('t-heater-note',  isPeak()?'Suppressed — peak hour':'AquaCal SuperQuiet 120');
+  const btn=document.getElementById('t-heater-btn');
+  if(btn) { btn.textContent=heaterOn?'⏹ Turn Heater Off':'▶ Turn Heater On'; btn.className=heaterOn?'btn btn-danger':'btn btn-glass'; }
+  setText('t-peakwin', isSummer()?'3:00–6:00 PM':'6:00–9:00 AM');
+  const demEl=document.getElementById('t-demand');
+  if(isPeak()) { if(demEl){demEl.textContent='+$43.20/mo if heater runs during peak';demEl.style.color='var(--red)';} }
+  else         { if(demEl){demEl.textContent='Off-peak — safe to run heater';demEl.style.color='var(--green)';} }
+  calcTTT();
+}
+
+function calcTTT() {
+  const poolT=poolState.water?.temp_f||73, airF=wxState.temp_f||75;
+  const target=parseFloat(document.getElementById('t-target')?.value||82);
+  const vol   =parseFloat(document.getElementById('t-vol')?.value||10000);
+  const cop=estCOP(airF), adjBTU=HEATER_BTU*(cop/6.1), delta=target-poolT;
+  if(delta<=0){ setText('t-ttt','Already at target'); setText('t-cost','$0.00'); setText('t-cop2',cop.toFixed(1)); setText('t-adjbtu',`${Math.round(adjBTU).toLocaleString()} BTU/hr`); return; }
+  const hrs=vol*BTU_PER_GAL*delta/adjBTU, cost=hrs*HEATER_KW*ENERGY_RATE;
+  setText('t-ttt',    `~${hrs.toFixed(1)} hours`);
+  setText('t-cost',   `$${cost.toFixed(2)}`);
+  setText('t-cop2',   cop.toFixed(1));
+  setText('t-adjbtu', `${Math.round(adjBTU).toLocaleString()} BTU/hr (adj.)`);
+}
+
+async function toggleHeater() {
+  const cmd=heaterOn?'off':'on';
+  try {
+    const res=await fetch(`${WORKER}/api/command`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({deviceId:11,command:cmd})
+    });
+    setTimeout(refresh,1500);
+  } catch(e) { console.error('Heater toggle failed:',e); }
+}
+
+// ── HVAC ──────────────────────────────────────────────────────────
+function updateHVAC() {
+  const e=ecobeeData; if(!e.upstairs) return;
+  const up=e.upstairs, dn=e.main_floor||{};
+  const upC=up.operatingState==='cooling', dnC=dn.operatingState==='cooling';
+  setText('h-up-temp',  up.temperature?`${up.temperature}°`:'—°');
+  setText('h-up-set',   up.coolingSetpoint?`${up.coolingSetpoint}°`:'—°');
+  setText('h-up-state', up.operatingState||'—');
+  setText('h-up-hum',   up.humidity?`${up.humidity}%`:'—%');
+  setText('h-up-mode',  up.mode||'—');
+  setText('h-up-fan',   up.fanMode||'—');
+  setHTML('h-up-pill',  pill(upC?'p-blue':'p-muted', upC?'Cooling':'Idle'));
+  setText('h-dn-temp',  dn.temperature?`${dn.temperature}°`:'—°');
+  setText('h-dn-set',   dn.coolingSetpoint?`${dn.coolingSetpoint}°`:'—°');
+  setText('h-dn-state', dn.operatingState||'—');
+  setText('h-dn-hum',   dn.humidity?`${dn.humidity}%`:'—%');
+  setText('h-dn-mode',  dn.mode||'—');
+  setText('h-dn-fan',   dn.fanMode||'—');
+  setHTML('h-dn-pill',  pill(dnC?'p-blue':'p-muted', dnC?'Cooling':'Idle'));
+  const logEl=document.getElementById('h-log');
+  if(logEl&&e.events?.length) {
+    logEl.innerHTML=e.events.slice(0,15).map(ev=>{
+      const d=new Date(ev.date), isSet=ev.name==='coolingSetpoint';
+      const cls=ev.duringPeak?(isSet?'warn':'s2'):(isSet?'info':'off');
+      const msg=isSet?`Cooling setpoint → ${ev.value}°F${ev.duringPeak?' ⚡ during peak':''}`:`State: ${ev.value}`;
+      return `<div class="log-entry"><div class="log-dot ${cls}"></div><div><div class="log-msg">${msg}</div><div class="log-dev">${ev.unit}</div></div><div class="log-time">${fmtTime(d)}</div></div>`;
+    }).join('');
+  } else if(logEl) { logEl.innerHTML='<div class="empty">No thermostat events yet</div>'; }
+}
+
+// ── Leak sensors ──────────────────────────────────────────────────
+const LEAK_DEFS=[
+  {id:76,name:'Bathroom Sink',    floor:'Downstairs'},
+  {id:45,name:'Dishwasher',       floor:'Downstairs'},
+  {id:41,name:'Kitchen Sink',     floor:'Downstairs'},
+  {id:73,name:'Toilet',           floor:'Downstairs'},
+  {id:75,name:'Master Bath',      floor:'Upstairs'},
+  {id:46,name:'Laundry / HVAC',   floor:'Upstairs'},
+  {id:74,name:'Toilet',           floor:'Upstairs'},
+  {id:42,name:'Pump Room',        floor:'Outside'},
+];
+
+function updateLeak() {
+  if(!leakState.leak_sensors) return;
+  const sensors=leakState.leak_sensors;
+  let wet=0, warn=0;
+  const grid=document.getElementById('leak-grid'); if(!grid) return;
+  grid.innerHTML=LEAK_DEFS.map((def,i)=>{
+    const s=sensors.find(x=>x.id===def.id)||{status:'offline',battery:null,daysSince:999,water:'unknown'};
+    if(s.status==='wet')  wet++;
+    if(s.status==='warn'||s.status==='offline') warn++;
+    const icon=s.status==='wet'?'💧':s.status==='offline'?'📡':s.status==='warn'?'⚠️':'✅';
+    const batColor=s.battery===null?'var(--muted2)':s.battery>50?'var(--green)':s.battery>20?'var(--accent)':'var(--red)';
+    const timeStr=s.daysSince<1?`${Math.round(s.daysSince*24)}h ago`:s.daysSince<999?`${Math.round(s.daysSince)}d ago`:'Never';
+    const statusLabel=s.status==='wet'?'WET 🚨':s.status==='offline'?'Offline':s.status==='warn'?'Warning':'Dry';
+    const statusColor=s.status==='wet'?'var(--red)':s.status==='offline'?'var(--muted2)':s.status==='warn'?'var(--accent)':'var(--green)';
+    return `<div class="leak-card ${s.status}">
+      ${s.status==='wet'?'<div class="leak-alert">💧</div>':''}
+      <div class="leak-icon">${icon}</div>
+      <div class="leak-name">${def.name}</div>
+      <div class="leak-loc">${def.floor}</div>
+      <div class="leak-row"><span class="leak-key">Status</span><span class="leak-val" style="color:${statusColor}">${statusLabel}</span></div>
+      <div class="leak-row"><span class="leak-key">Battery</span><span class="leak-val" style="color:${batColor}">${s.battery!==null?s.battery+'%':'—'}</span></div>
+      <div class="leak-row"><span class="leak-key">Last seen</span><span class="leak-val" style="color:${s.daysSince>7?'var(--accent)':s.daysSince>30?'var(--red)':'var(--muted)'}">${timeStr}</span></div>
+    </div>`;
+  }).join('');
+  const hEl=document.getElementById('leak-headline'), sEl=document.getElementById('leak-subline');
+  if(hEl) hEl.textContent=wet?`${wet} Leak Detected!`:warn?`${warn} Sensor${warn>1?'s':''} Need Attention`:'All Sensors Clear';
+  if(hEl) hEl.style.color=wet?'var(--red)':warn?'var(--accent)':'var(--green)';
+  if(sEl) sEl.textContent=`${LEAK_DEFS.length} sensors · ${wet} wet · ${warn} warning · ${LEAK_DEFS.length-wet-warn} OK`;
+}
+
+// ── Service ───────────────────────────────────────────────────────
+function updateService() {
+  const s=leakState;
+  if(s.pump_room) {
+    const open=s.pump_room.door_contact==='open';
+    setText('svc-door-state', open?'Open':'Closed');
+    setText('svc-door-icon',  open?'🔓':'🔒');
+    setText('svc-door-sub',   'Pump room door');
+    setHTML('svc-door-pill',  pill(open?'p-yellow':'p-green', open?'Open':'Closed'));
+    setText('svc-door-bat',   s.pump_room.door_battery!==null?`${s.pump_room.door_battery}%`:'—');
+    setText('svc-motion',     s.pump_room.motion||'—');
+  }
+  setText('svc-today', s.is_service_day?'Yes — watch for visit':'No');
+  setText('svc-days',  s.service_days?.join(', ')||'—');
+  // Latest chemistry from local log
+  const latest=chemLog[0];
+  if(latest) {
+    const clOk=latest.cl>=1&&latest.cl<=8, phOk=latest.ph>=7.0&&latest.ph<=7.8;
+    const clEl=document.getElementById('svc-cl'), phEl=document.getElementById('svc-ph');
+    if(clEl){clEl.textContent=latest.cl?`${latest.cl} ppm`:'—'; clEl.className=`chem-box-val ${latest.cl?(clOk?'chem-ok':'chem-warn'):''}` ;}
+    if(phEl){phEl.textContent=latest.ph||'—'; phEl.className=`chem-box-val ${latest.ph?(phOk?'chem-ok':'chem-warn'):''}` ;}
+    setText('svc-chem-note',`Last reading: ${new Date(latest.date).toLocaleDateString()}`);
+  }
+  // Visit history
+  const visEl=document.getElementById('svc-visits');
+  if(visEl) {
+    if(!svcVisits.length) { visEl.innerHTML='<div class="empty">No visits recorded yet.</div>'; return; }
+    visEl.innerHTML=svcVisits.slice(0,10).map(v=>{
+      return `<div class="visit-card ${v.status||'expected'}">
+        <div class="visit-date">${new Date(v.date).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div>
+        <div class="visit-status">${v.status==='completed'?'✅ Completed':v.status==='missed'?'⚫ Missed':'🟡 Expected'}</div>
+        ${v.cl||v.ph?`<div class="chem-before-after">
+          <div class="chem-box"><div class="chem-box-lbl">Chlorine</div><div class="chem-box-val ${v.cl>=1&&v.cl<=8?'chem-ok':'chem-warn'}">${v.cl||'—'} ppm</div></div>
+          <div class="chem-box"><div class="chem-box-lbl">pH</div><div class="chem-box-val ${v.ph>=7&&v.ph<=7.8?'chem-ok':'chem-warn'}">${v.ph||'—'}</div></div>
+        </div>`:''}
+        ${v.notes?`<div style="font-size:13px;color:var(--muted);margin-top:8px;">${v.notes}</div>`:''}
+      </div>`;
+    }).join('');
+  }
+}
+
+function logChemReading() {
+  const cl=parseFloat(document.getElementById('log-cl')?.value);
+  const ph=parseFloat(document.getElementById('log-ph')?.value);
+  const notes=document.getElementById('log-notes')?.value||'';
+  if(!cl&&!ph) return;
+  const entry={date:new Date().toISOString(),cl:cl||null,ph:ph||null,notes};
+  chemLog.unshift(entry); if(chemLog.length>100) chemLog.pop();
+  localStorage.setItem('paradise_chem',JSON.stringify(chemLog));
+  // Add to visit log
+  svcVisits.unshift({date:new Date().toISOString(),status:'completed',cl,ph,notes});
+  if(svcVisits.length>50) svcVisits.pop();
+  localStorage.setItem('paradise_svc',JSON.stringify(svcVisits));
+  document.getElementById('log-cl').value='';
+  document.getElementById('log-ph').value='';
+  document.getElementById('log-notes').value='';
+  updateService();
+}
+
+// ── Treatments ────────────────────────────────────────────────────
+function addTreatment() {
+  const type=document.getElementById('treat-type')?.value;
+  const note=document.getElementById('treat-note')?.value||'';
+  const amt =document.getElementById('treat-amt')?.value||'';
+  if(!type) return;
+  treatments.unshift({type,note,amt,date:new Date().toISOString()});
+  if(treatments.length>50) treatments.pop();
+  localStorage.setItem('paradise_treats',JSON.stringify(treatments));
+  document.getElementById('treat-note').value='';
+  document.getElementById('treat-amt').value='';
+  renderTreatments();
+}
+
+function renderTreatments() {
+  const el=document.getElementById('treat-log'); if(!el) return;
+  if(!treatments.length){el.innerHTML='<div class="empty">No treatments logged yet.</div>';return;}
+  el.innerHTML=treatments.slice(0,15).map(t=>`<div class="treat-entry">
+    <span class="treat-badge">${t.type}</span>
+    <span class="treat-note">${t.amt?t.amt+' · ':''}${t.note||''}</span>
+    <span class="treat-date">${new Date(t.date).toLocaleDateString()}</span>
+  </div>`).join('');
+}
+
+// ── Charts ────────────────────────────────────────────────────────
+function drawTempChart() {
+  const canvas=document.getElementById('chart-temp'); if(!canvas||!rainData.length) return;
+  const ctx=canvas.getContext('2d');
+  const last7=rainData.slice(-7);
+  const W=canvas.offsetWidth, H=180;
+  canvas.width=W; canvas.height=H; ctx.clearRect(0,0,W,H);
+  const maxs=last7.map(d=>d.max_temp_f||0), mins=last7.map(d=>d.min_temp_f||0);
+  const allV=[...maxs,...mins].filter(v=>v>0);
+  if(!allV.length) return;
+  const minV=Math.min(...allV)-5, maxV=Math.max(...allV)+5;
+  const toY=v=>H-((v-minV)/(maxV-minV))*(H-24)-12;
+  const toX=i=>(i/(last7.length-1))*(W-24)+12;
+  // Shaded band
+  ctx.beginPath(); ctx.moveTo(toX(0),toY(maxs[0]));
+  maxs.forEach((v,i)=>ctx.lineTo(toX(i),toY(v)));
+  for(let i=mins.length-1;i>=0;i--) ctx.lineTo(toX(i),toY(mins[i]));
+  ctx.closePath(); ctx.fillStyle='rgba(242,193,75,0.1)'; ctx.fill();
+  // Max line (gold)
+  ctx.beginPath(); ctx.strokeStyle='rgba(242,193,75,0.9)'; ctx.lineWidth=2.5;
+  maxs.forEach((v,i)=>i===0?ctx.moveTo(toX(i),toY(v)):ctx.lineTo(toX(i),toY(v))); ctx.stroke();
+  // Min line (blue)
+  ctx.beginPath(); ctx.strokeStyle='rgba(127,208,255,0.6)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+  mins.forEach((v,i)=>i===0?ctx.moveTo(toX(i),toY(v)):ctx.lineTo(toX(i),toY(v))); ctx.stroke(); ctx.setLineDash([]);
+  // Labels
+  ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='10px system-ui'; ctx.textAlign='center';
+  last7.forEach((d,i)=>{
+    ctx.fillText(d.date?.slice(5)||'',toX(i),H-2);
+    if(maxs[i]>0){ctx.fillStyle='rgba(242,193,75,0.9)';ctx.fillText(`${maxs[i]}°`,toX(i),toY(maxs[i])-5);}
+    ctx.fillStyle='rgba(255,255,255,0.5)';
+  });
+}
+
+function drawRainChart() {
+  const canvas=document.getElementById('chart-rain'); if(!canvas||!rainData.length) return;
+  const ctx=canvas.getContext('2d');
+  const last30=rainData.slice(-30);
+  const W=canvas.offsetWidth, H=150;
+  canvas.width=W; canvas.height=H; ctx.clearRect(0,0,W,H);
+  const maxR=Math.max(...last30.map(d=>d.rain_in||0),0.1);
+  const bw=Math.max(2,(W-20)/last30.length-2);
+  last30.forEach((d,i)=>{
+    const rain=d.rain_in||0, x=10+i*((W-20)/last30.length);
+    const bh=(rain/maxR)*(H-28), y=H-bh-18;
+    ctx.fillStyle=d.is_rain_day?'rgba(242,193,75,0.75)':'rgba(255,255,255,0.08)';
+    ctx.fillRect(x,y,bw,bh);
+    if(d.is_rain_day&&rain>0.1){ctx.fillStyle='rgba(242,193,75,0.9)';ctx.font='9px system-ui';ctx.textAlign='center';ctx.fillText(`${rain}"`,x+bw/2,y-3);}
+  });
+  ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font='9px system-ui'; ctx.textAlign='center';
+  [0,Math.floor(last30.length/2),last30.length-1].forEach(i=>{ if(last30[i]) ctx.fillText(last30[i].date?.slice(5)||'',10+i*((W-20)/last30.length)+bw/2,H-2); });
+  const recent=last30.slice(-3).filter(d=>d.is_rain_day);
+  const msgEl=document.getElementById('rain-msg');
+  if(msgEl) {
+    if(recent.length) {
+      const total=recent.reduce((s,d)=>s+(d.rain_in||0),0);
+      msgEl.innerHTML=`<div style="background:var(--accentBg);border:1px solid var(--yellowBorder);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--accent);">🌧️ ${total.toFixed(2)}" rain in last 3 days — expect pH drop and ORP dilution. Check chemistry and consider chlorine shock.</div>`;
+    } else { msgEl.innerHTML=`<div style="font-size:14px;color:var(--muted);">No significant rain in the last 3 days.</div>`; }
+  }
+}
+
+// ── Boot ──────────────────────────────────────────────────────────
+updatePeakBanners();
+updateTimeline();
+renderTreatments();
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

@@ -1,237 +1,487 @@
 /**
  * weather-worker/worker.js
- * Date - 2026-04-19
- * Version - 1.1.0
- * Notes - Added wind, humidity, pressure, rain, dew point; improved condition detection
+ * Date - 2026-05-11
+ * Version - 2.0.0
+ * Notes - Added /api/pool, /api/ecobee, /api/service-visits, /api/rain-history, /api/command
  * Author - David Taylor
  */
 
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
+// ── Hubitat helpers ───────────────────────────────────────────────────────────
 
-    if (url.pathname !== '/api/weather') {
-      return new Response('Not found', { status: 404 });
+function hubBase(env) {
+  const cloudId = '788ef13a-15cc-41ae-808a-2826dbabe598';
+  const appId   = env.HUBITAT_APP_ID || '93';
+  return `https://cloud.hubitat.com/api/${cloudId}/apps/${appId}`;
+}
+
+function hubUrl(base, path, token) {
+  return `${base}${path}?access_token=${encodeURIComponent(token)}`;
+}
+
+async function hubGet(base, path, token) {
+  try {
+    const r = await fetch(hubUrl(base, path, token), { cf: { cacheTtl: 0, cacheEverything: false } });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
+
+function attr(device, name) {
+  if (!device) return null;
+  if (Array.isArray(device.attributes)) {
+    const a = device.attributes.find(a => a.name === name);
+    if (a) return a.currentValue ?? null;
+  }
+  return device[name] ?? null;
+}
+
+function num(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+// ── /api/pool ─────────────────────────────────────────────────────────────────
+// 85=relay1/speed2  86=relay2/speed3  11=heater fireman  10=water temp
+async function handlePool(env) {
+  const base = hubBase(env);
+  const tok  = env.HUBITAT_TOKEN;
+  const [d85, d86, d11, d10] = await Promise.all([
+    hubGet(base, '/devices/85', tok),
+    hubGet(base, '/devices/86', tok),
+    hubGet(base, '/devices/11', tok),
+    hubGet(base, '/devices/10', tok),
+  ]);
+
+  const r1 = attr(d85, 'switch') === 'on';
+  const r2 = attr(d86, 'switch') === 'on';
+
+  const rawTemp = attr(d10, 'temperature');
+  const temp_f  = rawTemp !== null ? Math.round(num(rawTemp) * 10) / 10 : null;
+
+  const month = new Date().getMonth() + 1;
+  const runtime_target_hrs = (month >= 4 && month <= 10) ? 8 : 6;
+
+  return {
+    ok:     true,
+    pump:   { speed: r2 ? 3 : r1 ? 2 : 0, rpm: r2 ? 3000 : r1 ? 2000 : 0, relay1_on: r1, relay2_on: r2 },
+    water:  { temp_f, runtime_target_hrs },
+    heater: { on: attr(d11, 'switch') === 'on' },
+  };
+}
+
+// ── /api/ecobee ───────────────────────────────────────────────────────────────
+// 2=Paradise Upstairs  3=Main Floor
+async function handleEcobee(env) {
+  const base = hubBase(env);
+  const tok  = env.HUBITAT_TOKEN;
+  const [d2, d3, ev2, ev3] = await Promise.all([
+    hubGet(base, '/devices/2',        tok),
+    hubGet(base, '/devices/3',        tok),
+    hubGet(base, '/devices/2/events', tok),
+    hubGet(base, '/devices/3/events', tok),
+  ]);
+
+  const parseDevice = d => d ? {
+    temperature:     num(attr(d, 'temperature')),
+    coolingSetpoint: num(attr(d, 'coolingSetpoint')),
+    heatingSetpoint: num(attr(d, 'heatingSetpoint')),
+    operatingState:  attr(d, 'thermostatOperatingState') || attr(d, 'operatingState') || 'idle',
+    humidity:        num(attr(d, 'humidity')),
+    mode:            attr(d, 'thermostatMode')    || attr(d, 'mode')    || null,
+    fanMode:         attr(d, 'thermostatFanMode') || attr(d, 'fanMode') || null,
+  } : null;
+
+  const month    = new Date().getMonth() + 1;
+  const isSummer = month >= 4 && month <= 10;
+
+  function parseEvents(evts, unitName) {
+    if (!Array.isArray(evts)) return [];
+    return evts
+      .filter(e => ['coolingSetpoint', 'heatingSetpoint', 'thermostatOperatingState'].includes(e.name))
+      .slice(0, 20)
+      .map(e => {
+        const d    = e.epoch ? new Date(e.epoch) : new Date(e.date || e.isoDate || 0);
+        const hour = d.getHours();
+        const duringPeak = isSummer ? (hour >= 15 && hour < 18) : (hour >= 6 && hour < 9);
+        return {
+          date:       d.toISOString(),
+          name:       e.name === 'thermostatOperatingState' ? 'operatingState' : e.name,
+          value:      e.value,
+          unit:       unitName,
+          duringPeak,
+        };
+      });
+  }
+
+  const events = [
+    ...parseEvents(ev2, 'Paradise Upstairs'),
+    ...parseEvents(ev3, 'Main Floor'),
+  ].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 30);
+
+  return { ok: true, upstairs: parseDevice(d2), main_floor: parseDevice(d3), events };
+}
+
+// ── /api/service-visits ───────────────────────────────────────────────────────
+// 42=pump room door  43=pump room motion  76/45/41/73/75/46/74=leak sensors
+const LEAK_IDS = [76, 45, 41, 73, 75, 46, 74];
+
+async function handleServiceVisits(env) {
+  const base = hubBase(env);
+  const tok  = env.HUBITAT_TOKEN;
+  const devs = await Promise.all([
+    hubGet(base, '/devices/42', tok),
+    hubGet(base, '/devices/43', tok),
+    ...LEAK_IDS.map(id => hubGet(base, `/devices/${id}`, tok)),
+  ]);
+
+  const [d42, d43, ...leakDevs] = devs;
+
+  const leak_sensors = LEAK_IDS.map((id, i) => {
+    const d = leakDevs[i];
+    if (!d) return { id, status: 'offline', battery: null, daysSince: 999, water: 'unknown' };
+
+    const water   = attr(d, 'water') || (attr(d, 'contact') === 'wet' ? 'wet' : 'dry');
+    const battery = num(attr(d, 'battery'));
+    const lastAct = attr(d, 'lastActivity') || attr(d, 'lastCheckin') || attr(d, 'lastUpdateTime');
+    const daysSince = lastAct ? (Date.now() - new Date(lastAct).getTime()) / 86400000 : 999;
+
+    const status = water === 'wet' ? 'wet' : daysSince > 7 ? 'warn' : 'dry';
+    return { id, status, battery: battery !== null ? Math.round(battery) : null, daysSince, water };
+  });
+
+  const wet  = leak_sensors.filter(s => s.status === 'wet').length;
+  const warn = leak_sensors.filter(s => s.status === 'warn' || s.status === 'offline').length;
+  const ok   = leak_sensors.filter(s => s.status === 'dry').length;
+
+  // Service schedule matches ParadisePoolService.groovy
+  const month = new Date().getMonth() + 1;
+  const dow   = new Date().getDay();
+  const service_days = (month >= 6 && month <= 8) ? ['Monday', 'Wednesday', 'Friday'] : ['Thursday'];
+  const DAY_NAMES    = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  return {
+    ok: true,
+    is_service_day: service_days.includes(DAY_NAMES[dow]),
+    service_days,
+    pump_room: {
+      door_contact: attr(d42, 'contact') || 'unknown',
+      door_battery: d42 ? (num(attr(d42, 'battery')) !== null ? Math.round(num(attr(d42, 'battery'))) : null) : null,
+      motion:       attr(d43, 'motion') || 'unknown',
+    },
+    leak_sensors,
+    summary: { wet, warn, ok },
+  };
+}
+
+// ── /api/rain-history ─────────────────────────────────────────────────────────
+async function handleRainHistory(stationId, token) {
+  // Resolve Tempest device ID from station
+  let deviceId = null;
+  try {
+    const r = await fetch(`https://swd.weatherflow.com/swd/rest/stations/${stationId}?token=${encodeURIComponent(token)}`);
+    if (r.ok) {
+      const j   = await r.json();
+      const sta = (j?.stations || [])[0] || j;
+      const dev = (sta.devices || []).find(d => d.device_type === 'ST') || (sta.devices || [])[0];
+      deviceId  = dev?.device_id ?? null;
+    }
+  } catch {}
+
+  if (!deviceId) return { ok: false, error: 'Could not resolve Tempest device ID from station' };
+
+  // Fetch 30 days in parallel (offset 0=today … 29=29 days ago)
+  const offsets  = Array.from({ length: 30 }, (_, i) => i);
+  const dayResps = await Promise.all(
+    offsets.map(async offset => {
+      try {
+        const url = `https://swd.weatherflow.com/swd/rest/observations/device/${deviceId}?token=${encodeURIComponent(token)}&day_offset=${offset}`;
+        const r = await fetch(url, { cf: { cacheTtl: 3600, cacheEverything: true } });
+        return r.ok ? await r.json() : null;
+      } catch { return null; }
+    })
+  );
+
+  // Aggregate each day → rain total + temp range
+  const data = offsets.map((offset, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - offset);
+    const date   = d.toISOString().slice(0, 10);
+    const j      = dayResps[i];
+    const obsArr = Array.isArray(j?.obs) ? j.obs : Array.isArray(j?.obs?.obs) ? j.obs.obs : null;
+
+    if (!obsArr?.length) return { date, rain_in: 0, is_rain_day: false, max_temp_f: null, min_temp_f: null };
+
+    let totalMm = 0, maxC = -Infinity, minC = Infinity;
+    for (const obs of obsArr) {
+      if (Array.isArray(obs)) {
+        // v1 array: [7]=temp_c  [12]=precip_mm  [18]=precip_daily_mm
+        const r = Number(obs[12]); if (Number.isFinite(r)) totalMm += r;
+        const t = Number(obs[7]);  if (Number.isFinite(t)) { if (t > maxC) maxC = t; if (t < minC) minC = t; }
+      } else if (obs && typeof obs === 'object') {
+        const r = Number(obs.precip ?? obs.rain_mm); if (Number.isFinite(r)) totalMm += r;
+        const t = Number(obs.air_temperature);       if (Number.isFinite(t)) { if (t > maxC) maxC = t; if (t < minC) minC = t; }
+      }
     }
 
-    const allowedOrigins = new Set([
+    const rain_in    = Math.round(totalMm * 0.03937 * 100) / 100;
+    const max_temp_f = maxC > -Infinity ? Math.round(maxC * 9 / 5 + 32) : null;
+    const min_temp_f = minC <  Infinity ? Math.round(minC * 9 / 5 + 32) : null;
+    return { date, rain_in, is_rain_day: rain_in > 0.01, max_temp_f, min_temp_f };
+  }).reverse(); // oldest first
+
+  return { ok: true, data };
+}
+
+// ── /api/command ──────────────────────────────────────────────────────────────
+const ALLOWED_COMMANDS = {
+  11: ['on', 'off'],  // heater fireman switch (AquaCal SuperQuiet 120)
+};
+
+async function handleCommand(body, env) {
+  let deviceId, command;
+  try { ({ deviceId, command } = JSON.parse(body)); }
+  catch { return { ok: false, error: 'Invalid JSON body' }; }
+
+  if (!ALLOWED_COMMANDS[deviceId]?.includes(command)) {
+    return { ok: false, error: 'Command not in allowlist' };
+  }
+
+  const base = hubBase(env);
+  const tok  = env.HUBITAT_TOKEN;
+  try {
+    const r = await fetch(hubUrl(base, `/devices/${deviceId}/${command}`, tok), {
+      cf: { cacheTtl: 0, cacheEverything: false },
+    });
+    if (!r.ok) return { ok: false, error: `Hubitat error ${r.status}` };
+    return { ok: true, deviceId, command };
+  } catch (e) {
+    return { ok: false, error: String(e?.message || e) };
+  }
+}
+
+// ── /api/weather ──────────────────────────────────────────────────────────────
+function extractObsArray(j) {
+  if (Array.isArray(j?.obs))          return j.obs;
+  if (Array.isArray(j?.obs?.obs))     return j.obs.obs;
+  if (Array.isArray(j?.observations)) return j.observations;
+  if (Array.isArray(j?.data?.obs))    return j.data.obs;
+  return null;
+}
+
+function getTempF(obs) {
+  if (obs && !Array.isArray(obs) && typeof obs === 'object') {
+    const tF = num(obs.temp_f) ?? num(obs.tempF) ?? num(obs.air_temp_f);
+    if (tF !== null) return tF;
+    const tC = num(obs.air_temperature) ?? num(obs.temp_c);
+    if (tC !== null) return tC * 9 / 5 + 32;
+  }
+  if (Array.isArray(obs)) {
+    const candidates = [7, 6, 8, 9, 5].map(i => num(obs[i])).filter(v => v !== null && v >= -40 && v <= 60);
+    if (candidates.length) return candidates[0] * 9 / 5 + 32;
+  }
+  return null;
+}
+
+function getObsEpoch(obs, j) {
+  if (Array.isArray(obs)) { const t = num(obs[0]); if (t !== null) return t; }
+  if (obs && !Array.isArray(obs)) {
+    const t = num(obs.time_epoch) ?? num(obs.epoch) ?? num(obs.timestamp) ?? num(obs.time);
+    if (t !== null) return t;
+  }
+  return num(j?.time_epoch) ?? num(j?.timestamp) ?? null;
+}
+
+function getExtended(obs) {
+  const msToMph = ms => ms !== null ? Math.round(ms * 2.23694 * 10) / 10 : null;
+  const mbToInHg = mb => mb !== null ? Math.round(mb * 0.02953 * 1000) / 1000 : null;
+  const mmToIn  = mm => mm !== null ? Math.round(mm * 0.03937 * 100) / 100 : null;
+  const compass = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+
+  if (Array.isArray(obs)) {
+    const windAvgMs   = num(obs[2]),  windGustMs = num(obs[3]), windDeg    = num(obs[4]);
+    const pressureMb  = num(obs[6]),  humidity   = num(obs[8]), uv         = num(obs[10]);
+    const solar       = num(obs[11]), rainMm     = num(obs[12]), rainDailyMm = num(obs[18]);
+    const tempC       = num(obs[7]);
+    let dew_f = null;
+    if (tempC !== null && humidity !== null) {
+      const lnRH = Math.log(Math.max(humidity, 1) / 100);
+      const dewC = (243.04 * (lnRH + 17.625 * tempC / (243.04 + tempC))) /
+                   (17.625 - (lnRH + 17.625 * tempC / (243.04 + tempC)));
+      dew_f = Math.round(dewC * 9 / 5 + 32);
+    }
+    return {
+      wind_mph:      msToMph(windAvgMs),
+      wind_gust_mph: msToMph(windGustMs),
+      wind_dir_deg:  windDeg,
+      wind_dir:      windDeg !== null ? compass[Math.round(windDeg / 22.5) % 16] : null,
+      humidity:      humidity !== null ? Math.round(humidity) : null,
+      pressure_inhg: mbToInHg(pressureMb),
+      rain_today_in: mmToIn(rainDailyMm ?? rainMm),
+      dew_point_f:   dew_f,
+      uv, solar,
+    };
+  }
+  if (obs && typeof obs === 'object') {
+    const windAvgMs   = num(obs.wind_avg)    ?? num(obs.wind_speed);
+    const windGustMs  = num(obs.wind_gust);
+    const windDeg     = num(obs.wind_direction);
+    const pressureMb  = num(obs.station_pressure) ?? num(obs.pressure);
+    const humidity    = num(obs.relative_humidity) ?? num(obs.humidity);
+    const uv          = num(obs.uv);
+    const solar       = num(obs.solar_radiation) ?? num(obs.solar);
+    const rainDailyMm = num(obs.local_daily_rain_accumulated) ?? num(obs.rain_accumulated);
+    const tempC       = num(obs.air_temperature) ?? num(obs.temp_c);
+    let dew_f = null;
+    if (tempC !== null && humidity !== null) {
+      const lnRH = Math.log(Math.max(humidity, 1) / 100);
+      const dewC = (243.04 * (lnRH + 17.625 * tempC / (243.04 + tempC))) /
+                   (17.625 - (lnRH + 17.625 * tempC / (243.04 + tempC)));
+      dew_f = Math.round(dewC * 9 / 5 + 32);
+    }
+    return {
+      wind_mph:      msToMph(windAvgMs),
+      wind_gust_mph: msToMph(windGustMs),
+      wind_dir_deg:  windDeg,
+      wind_dir:      windDeg !== null ? compass[Math.round(windDeg / 22.5) % 16] : null,
+      humidity:      humidity !== null ? Math.round(humidity) : null,
+      pressure_inhg: mbToInHg(pressureMb),
+      rain_today_in: mmToIn(rainDailyMm),
+      dew_point_f:   dew_f,
+      uv, solar,
+    };
+  }
+  return {};
+}
+
+function getCondition(uv, solar, rainIn, isNight) {
+  if (rainIn > 0.01) return ['🌧️', 'Rain'];
+  if (isNight)       return ['🌙', 'Clear (Night)'];
+  if (uv >= 8)       return ['☀️',  'Very Sunny'];
+  if (uv >= 3)       return ['☀️',  'Sunny'];
+  if (solar < 50)    return ['☁️',  'Overcast'];
+  if (solar < 250)   return ['⛅',  'Partly Cloudy'];
+  return             ['☀️',  'Clear'];
+}
+
+async function fetchPoolTempFallback(env) {
+  // Fallback using original app ID 90 path if the pool endpoint isn't used
+  try {
+    const tok = env.HUBITAT_TOKEN;
+    if (!tok) return null;
+    const base = hubBase(env);
+    const d = await hubGet(base, '/devices/10', tok);
+    const val = num(attr(d, 'temperature'));
+    return val !== null ? Math.round(val * 10) / 10 : null;
+  } catch { return null; }
+}
+
+async function handleWeather(env) {
+  const token     = env.TEMPEST_TOKEN;
+  const stationId = env.TEMPEST_STATION_ID || '204460';
+
+  if (!token) return { ok: false, error: 'Missing TEMPEST_TOKEN secret' };
+
+  const apiUrl = `https://swd.weatherflow.com/swd/rest/observations/station/${stationId}?token=${encodeURIComponent(token)}`;
+  const [r, poolTempF] = await Promise.all([
+    fetch(apiUrl, { cf: { cacheTtl: 0, cacheEverything: false } }),
+    env.HUBITAT_TOKEN ? fetchPoolTempFallback(env) : Promise.resolve(null),
+  ]);
+  const j = await r.json();
+
+  if (!r.ok) return { ok: false, error: 'Tempest API error', status: r.status };
+
+  const obsArr = extractObsArray(j);
+  if (!Array.isArray(obsArr) || obsArr.length === 0) return { ok: false, error: 'No observations found' };
+
+  const obs    = obsArr[0];
+  const tempF  = getTempF(obs);
+  if (tempF === null) throw new Error('Could not determine temperature');
+
+  const ext      = getExtended(obs);
+  const isNight  = (ext.solar ?? 0) <= 5 && (ext.uv ?? 0) <= 0.2;
+  const [icon, condition] = getCondition(ext.uv ?? 0, ext.solar ?? 0, ext.rain_today_in ?? 0, isNight);
+  const obsEpoch    = getObsEpoch(obs, j);
+  const updated_iso = obsEpoch !== null ? new Date(obsEpoch * 1000).toISOString() : new Date().toISOString();
+
+  return {
+    ok:          true,
+    station_id:  Number(stationId),
+    temp_f:      Math.round(tempF),
+    pool_temp_f: poolTempF,
+    condition, icon,
+    night:       isNight,
+    updated_iso,
+    label:       'Live at Paradise · 714B S Ocean Blvd',
+    source:      'tempest_station',
+    ...ext,
+  };
+}
+
+// ── Main handler ──────────────────────────────────────────────────────────────
+export default {
+  async fetch(request, env) {
+    const { pathname } = new URL(request.url);
+
+    const ALLOWED_ORIGINS = new Set([
       'https://paradisesurfsidesc.github.io',
       'https://paradisesurfsidesc.com',
       'https://www.paradisesurfsidesc.com',
     ]);
-    const origin = request.headers.get('Origin') || '';
-    const corsOrigin = allowedOrigins.has(origin) ? origin : '';
+    const origin     = request.headers.get('Origin') || '';
+    const corsOrigin = ALLOWED_ORIGINS.has(origin) ? origin : 'https://paradisesurfsidesc.com';
 
-    const headers = {
-      'Access-Control-Allow-Origin': corsOrigin,
-      'Access-Control-Allow-Methods': 'GET,OPTIONS',
+    const cors = {
+      'Access-Control-Allow-Origin':  corsOrigin,
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Max-Age': '86400',
-      'Cache-Control': 'no-store',
-      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Max-Age':       '86400',
     };
 
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers });
+      return new Response(null, { status: 204, headers: cors });
     }
 
-    const stationId = env.TEMPEST_STATION_ID || '204460';
-    const token = env.TEMPEST_TOKEN;
-
-    if (!token) {
-      return new Response(JSON.stringify({ ok: false, error: 'Missing TEMPEST_TOKEN secret' }), { status: 500, headers });
-    }
-
-    const num = (v) => { const n = Number(v); return Number.isFinite(n) ? n : null; };
-
-    function extractObsArray(j) {
-      if (Array.isArray(j?.obs))            return j.obs;
-      if (Array.isArray(j?.obs?.obs))       return j.obs.obs;
-      if (Array.isArray(j?.observations))   return j.observations;
-      if (Array.isArray(j?.data?.obs))      return j.data.obs;
-      return null;
-    }
-
-    function getTempF(obs) {
-      if (obs && !Array.isArray(obs) && typeof obs === 'object') {
-        const tF = num(obs.temp_f) ?? num(obs.tempF) ?? num(obs.air_temp_f);
-        if (tF !== null) return tF;
-        const tC = num(obs.air_temperature) ?? num(obs.temp_c) ?? num(obs.air_temp_c);
-        if (tC !== null) return tC * 9 / 5 + 32;
-      }
-      if (Array.isArray(obs)) {
-        const candidates = [7, 6, 8, 9, 5].map(i => num(obs[i])).filter(v => v !== null && v >= -40 && v <= 60);
-        if (candidates.length) return candidates[0] * 9 / 5 + 32;
-      }
-      return null;
-    }
-
-    function getObsEpoch(obs, j) {
-      if (Array.isArray(obs)) { const t = num(obs[0]); if (t !== null) return t; }
-      if (obs && !Array.isArray(obs)) {
-        const t = num(obs.time_epoch) ?? num(obs.epoch) ?? num(obs.timestamp) ?? num(obs.time);
-        if (t !== null) return t;
-      }
-      return num(j?.time_epoch) ?? num(j?.timestamp) ?? null;
-    }
-
-    // WeatherFlow Tempest obs array indices (v1 format):
-    // [0]=epoch [1]=wind_lull [2]=wind_avg [3]=wind_gust [4]=wind_dir
-    // [5]=wind_interval [6]=pressure_mb [7]=temp_c [8]=humidity
-    // [9]=lux [10]=uv [11]=solar [12]=rain_mm [13]=precip_type
-    // [18]=rain_daily_mm
-    function getExtended(obs) {
-      const msToMph = ms => ms !== null ? Math.round(ms * 2.23694 * 10) / 10 : null;
-      const mbToInHg = mb => mb !== null ? Math.round(mb * 0.02953 * 1000) / 1000 : null;
-      const mmToIn  = mm => mm !== null ? Math.round(mm * 0.03937 * 100) / 100 : null;
-      const compass = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-
-      if (Array.isArray(obs)) {
-        const windAvgMs  = num(obs[2]);
-        const windGustMs = num(obs[3]);
-        const windDeg    = num(obs[4]);
-        const pressureMb = num(obs[6]);
-        const humidity   = num(obs[8]);
-        const uv         = num(obs[10]);
-        const solar      = num(obs[11]);
-        const rainMm     = num(obs[12]);
-        const rainDailyMm = num(obs[18]);
-        const tempC      = num(obs[7]);
-
-        // Dew point (Magnus formula)
-        let dew_f = null;
-        if (tempC !== null && humidity !== null) {
-          const lnRH = Math.log(Math.max(humidity, 1) / 100);
-          const dewC = (243.04 * (lnRH + 17.625 * tempC / (243.04 + tempC))) /
-                       (17.625 - (lnRH + 17.625 * tempC / (243.04 + tempC)));
-          dew_f = Math.round(dewC * 9 / 5 + 32);
-        }
-
-        return {
-          wind_mph:       msToMph(windAvgMs),
-          wind_gust_mph:  msToMph(windGustMs),
-          wind_dir_deg:   windDeg,
-          wind_dir:       windDeg !== null ? compass[Math.round(windDeg / 22.5) % 16] : null,
-          humidity:       humidity !== null ? Math.round(humidity) : null,
-          pressure_inhg:  mbToInHg(pressureMb),
-          rain_today_in:  mmToIn(rainDailyMm ?? rainMm),
-          dew_point_f:    dew_f,
-          uv:             uv,
-          solar:          solar,
-        };
-      }
-
-      if (obs && !Array.isArray(obs) && typeof obs === 'object') {
-        const windAvgMs  = num(obs.wind_avg) ?? num(obs.wind_speed);
-        const windGustMs = num(obs.wind_gust);
-        const windDeg    = num(obs.wind_direction);
-        const pressureMb = num(obs.station_pressure) ?? num(obs.pressure);
-        const humidity   = num(obs.relative_humidity) ?? num(obs.humidity);
-        const uv         = num(obs.uv);
-        const solar      = num(obs.solar_radiation) ?? num(obs.solar);
-        const rainDailyMm = num(obs.local_daily_rain_accumulated) ?? num(obs.rain_accumulated);
-        const tempC      = num(obs.air_temperature) ?? num(obs.temp_c);
-
-        let dew_f = null;
-        if (tempC !== null && humidity !== null) {
-          const lnRH = Math.log(Math.max(humidity, 1) / 100);
-          const dewC = (243.04 * (lnRH + 17.625 * tempC / (243.04 + tempC))) /
-                       (17.625 - (lnRH + 17.625 * tempC / (243.04 + tempC)));
-          dew_f = Math.round(dewC * 9 / 5 + 32);
-        }
-
-        const msToMph2  = ms => ms !== null ? Math.round(ms * 2.23694 * 10) / 10 : null;
-        const mbToInHg2 = mb => mb !== null ? Math.round(mb * 0.02953 * 1000) / 1000 : null;
-        const mmToIn2   = mm => mm !== null ? Math.round(mm * 0.03937 * 100) / 100 : null;
-        const compass2  = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-
-        return {
-          wind_mph:       msToMph2(windAvgMs),
-          wind_gust_mph:  msToMph2(windGustMs),
-          wind_dir_deg:   windDeg,
-          wind_dir:       windDeg !== null ? compass2[Math.round(windDeg / 22.5) % 16] : null,
-          humidity:       humidity !== null ? Math.round(humidity) : null,
-          pressure_inhg:  mbToInHg2(pressureMb),
-          rain_today_in:  mmToIn2(rainDailyMm),
-          dew_point_f:    dew_f,
-          uv:             uv,
-          solar:          solar,
-        };
-      }
-
-      return {};
-    }
-
-    function getCondition(uv, solar, rainIn, isNight) {
-      if (rainIn > 0.01)   return ['🌧️', 'Rain'];
-      if (isNight)         return ['🌙', 'Clear (Night)'];
-      if (uv >= 8)         return ['☀️',  'Very Sunny'];
-      if (uv >= 3)         return ['☀️',  'Sunny'];
-      if (solar < 50)      return ['☁️',  'Overcast'];
-      if (solar < 250)     return ['⛅',  'Partly Cloudy'];
-      return               ['☀️',  'Clear'];
-    }
-
-    async function fetchPoolTemp(hubitatToken) {
-      try {
-        const url = `https://cloud.hubitat.com/api/788ef13a-15cc-41ae-808a-2826dbabe598/apps/90/devices/10?access_token=${encodeURIComponent(hubitatToken)}`;
-        const r = await fetch(url, { cf: { cacheTtl: 0, cacheEverything: false } });
-        if (!r.ok) return null;
-        const d = await r.json();
-        const attr = Array.isArray(d.attributes)
-          ? d.attributes.find(a => a.name === 'temperature')
-          : null;
-        const val = attr ? Number(attr.currentValue) : null;
-        return Number.isFinite(val) ? Math.round(val * 10) / 10 : null;
-      } catch {
-        return null;
-      }
-    }
+    const json = (data, status = 200) =>
+      new Response(JSON.stringify(data), {
+        status,
+        headers: { ...cors, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+      });
 
     try {
-      const apiUrl = `https://swd.weatherflow.com/swd/rest/observations/station/${stationId}?token=${encodeURIComponent(token)}`;
-      const [r, poolTempF] = await Promise.all([
-        fetch(apiUrl, { cf: { cacheTtl: 0, cacheEverything: false } }),
-        env.HUBITAT_TOKEN ? fetchPoolTemp(env.HUBITAT_TOKEN) : Promise.resolve(null),
-      ]);
-      const j = await r.json();
-
-      if (!r.ok) {
-        return new Response(JSON.stringify({ ok: false, error: 'Tempest API error', status: r.status }), { status: 502, headers });
+      if (pathname === '/api/weather') {
+        return json(await handleWeather(env));
       }
 
-      const obsArr = extractObsArray(j);
-      if (!Array.isArray(obsArr) || obsArr.length === 0) {
-        return new Response(JSON.stringify({ ok: false, error: 'No observations found' }), { status: 500, headers });
+      if (pathname === '/api/pool') {
+        if (!env.HUBITAT_TOKEN) return json({ ok: false, error: 'Missing HUBITAT_TOKEN' }, 500);
+        return json(await handlePool(env));
       }
 
-      const obs    = obsArr[0];
-      const tempF  = getTempF(obs);
-      if (tempF === null) throw new Error('Could not determine temperature');
+      if (pathname === '/api/ecobee') {
+        if (!env.HUBITAT_TOKEN) return json({ ok: false, error: 'Missing HUBITAT_TOKEN' }, 500);
+        return json(await handleEcobee(env));
+      }
 
-      const ext    = getExtended(obs);
-      const isNight = (ext.solar ?? 0) <= 5 && (ext.uv ?? 0) <= 0.2;
-      const [icon, condition] = getCondition(ext.uv ?? 0, ext.solar ?? 0, ext.rain_today_in ?? 0, isNight);
+      if (pathname === '/api/service-visits') {
+        if (!env.HUBITAT_TOKEN) return json({ ok: false, error: 'Missing HUBITAT_TOKEN' }, 500);
+        return json(await handleServiceVisits(env));
+      }
 
-      const obsEpoch  = getObsEpoch(obs, j);
-      const updatedISO = obsEpoch !== null ? new Date(obsEpoch * 1000).toISOString() : new Date().toISOString();
+      if (pathname === '/api/rain-history') {
+        if (!env.TEMPEST_TOKEN) return json({ ok: false, error: 'Missing TEMPEST_TOKEN' }, 500);
+        return json(await handleRainHistory(env.TEMPEST_STATION_ID || '204460', env.TEMPEST_TOKEN));
+      }
 
-      return new Response(JSON.stringify({
-        ok:           true,
-        station_id:   Number(stationId),
-        temp_f:       Math.round(tempF),
-        pool_temp_f:  poolTempF,
-        condition,
-        icon,
-        night:        isNight,
-        updated_iso:  updatedISO,
-        label:        'Live at Paradise · 714B S Ocean Blvd',
-        source:       'tempest_station',
-        ...ext,
-      }), { status: 200, headers });
+      if (pathname === '/api/command') {
+        if (request.method !== 'POST') return json({ ok: false, error: 'POST required' }, 405);
+        if (!env.HUBITAT_TOKEN) return json({ ok: false, error: 'Missing HUBITAT_TOKEN' }, 500);
+        return json(await handleCommand(await request.text(), env));
+      }
+
+      return json({ ok: false, error: 'Not found' }, 404);
 
     } catch (err) {
-      return new Response(JSON.stringify({ ok: false, error: 'Weather fetch failed', message: String(err?.message || err) }), { status: 500, headers });
+      return json({ ok: false, error: String(err?.message || err) }, 500);
     }
   },
 };

@@ -2,6 +2,8 @@ name = "paradise-weather"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
-# Secrets (set via wrangler secret put):
-#   TEMPEST_TOKEN       — your WeatherFlow personal access token
-#   TEMPEST_STATION_ID  — station ID (default: 204460)
+# Secrets (set via `wrangler secret put <NAME>` from weather-worker/ directory):
+#   TEMPEST_TOKEN        — WeatherFlow personal access token
+#   TEMPEST_STATION_ID   — station ID (default: 204460 if omitted)
+#   HUBITAT_TOKEN        — Maker API token: c6a25a8e-2590-4a49-b5be-7376b3a6d0c5
+#   HUBITAT_APP_ID       — Maker API app ID (default: 93 if omitted)

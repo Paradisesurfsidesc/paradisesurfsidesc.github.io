@@ -1,5 +1,12 @@
 User-agent: *
+
+# Public pages - allow all
 Allow: /
+
+# Protected sections - no indexing
+Disallow: /control/
+Disallow: /manage/
 Disallow: /admin/
+Disallow: /guest/
 
 Sitemap: https://paradisesurfsidesc.com/sitemap.xml
