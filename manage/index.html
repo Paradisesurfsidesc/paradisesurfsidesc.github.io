@@ -222,7 +222,7 @@ tr:hover td { background: rgba(255,255,255,.03); }
       </div>
       <div class="form-row">
         <label>Phone</label>
-        <input type="tel" id="fPhone" placeholder="(843) 555-0100">
+        <input type="tel" id="fPhone" placeholder="(843) 555-0100" oninput="updatePinFromPhone()">
       </div>
       <div class="form-row">
         <label>Email</label>
@@ -555,6 +555,16 @@ function fmt12(time24) {
   return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
 }
 
+function updatePinFromPhone() {
+  if (editingId) return; // only for new bookings
+  const digits = document.getElementById('fPhone').value.replace(/\D/g, '');
+  const slotInput = document.getElementById('fSlot');
+  const pin = digits.length >= 4 ? digits.slice(-4) : slotInput._randPin;
+  slotInput._autoPin = pin;
+  const el = document.getElementById('previewPin');
+  if (el) el.textContent = pin;
+}
+
 function toggleTimeFields() {
   const on = document.getElementById('fTimeOverride').checked;
   document.getElementById('timeFields').style.display = on ? '' : 'none';
@@ -600,6 +610,7 @@ function openModal(id) {
     document.getElementById('fSlot').placeholder = slot ? `Auto: Slot ${slot}` : 'None available';
     document.getElementById('fSlot')._autoSlot   = slot;
     document.getElementById('fSlot')._autoPin    = pin;
+    document.getElementById('fSlot')._randPin    = pin; // fallback if no phone
   } else {
     document.getElementById('codePreview').style.display = 'none';
   }
