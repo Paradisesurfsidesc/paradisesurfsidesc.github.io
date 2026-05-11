@@ -74,8 +74,9 @@
       gap: 1rem;
       flex-wrap: wrap;
     }
-    .admin-brand { font-weight: 800; font-size: 1rem; white-space: nowrap; }
-    .admin-brand span { color: var(--accent); }
+    .admin-brand { display: flex; align-items: center; gap: .6rem; white-space: nowrap; }
+    .admin-brand img { height: 26px; width: auto; display: block; }
+    .admin-brand span { font-weight: 800; font-size: 1rem; color: var(--accent); }
 
     .admin-tabs { display: flex; gap: .25rem; }
     .admin-tab {
@@ -391,7 +392,10 @@
   <!-- LOGIN -->
   <div class="login-screen" id="loginScreen">
     <div class="login-card">
-      <h1>🏠 Paradise Admin</h1>
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <img src="/images/Paradise-white.png" alt="Paradise" style="height:44px;width:auto;margin-bottom:.75rem;display:block;margin-left:auto;margin-right:auto">
+        <h1 style="font-size:1.4rem;margin:0;color:var(--accent)">Admin</h1>
+      </div>
       <p>Sign in to manage bookings and market data.</p>
       <div class="login-field">
         <label for="lUser">Username</label>
@@ -409,7 +413,7 @@
   <!-- ADMIN -->
   <div class="admin-screen" id="adminScreen">
     <div class="admin-topbar">
-      <div class="admin-brand">🏠 Paradise <span>Admin</span></div>
+      <div class="admin-brand"><img src="/images/Paradise-white.png" alt="Paradise"><span>Admin</span></div>
       <div class="admin-tabs">
         <button class="admin-tab active" id="tabBtnBookings" onclick="showTab('bookings')">📋 Bookings</button>
         <button class="admin-tab" id="tabBtnMarket"   onclick="showTab('market')">📊 Market Trends</button>
