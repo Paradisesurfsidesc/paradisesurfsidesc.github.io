@@ -11,3 +11,4 @@ id = "d73cadcf701c49258dc0d196e1a2dd9a"
 #   TEMPEST_STATION_ID   — station ID (default: 204460 if omitted)
 #   HUBITAT_TOKEN        — Maker API token: c6a25a8e-2590-4a49-b5be-7376b3a6d0c5
 #   HUBITAT_APP_ID       — Maker API app ID (default: 93 if omitted)
+#   RESEND_KEY           — Resend API key for door code emails

@@ -327,12 +327,14 @@ async function handleCommand(body, env) {
 }
 
 // ── /api/send-email ───────────────────────────────────────────────────────────
+// Sends door code email via Resend. Requires RESEND_KEY secret.
 async function handleSendEmail(body, env) {
   let data;
   try { data = JSON.parse(body); } catch { return { ok: false, error: 'Invalid JSON' }; }
 
   const { to, guest, pin, ci, co, ci_time, co_time } = data;
   if (!to || !guest || !pin || !ci || !co) return { ok: false, error: 'Missing required fields' };
+  if (!env.RESEND_KEY) return { ok: false, error: 'Missing RESEND_KEY' };
 
   const firstName = guest.split(' ')[0];
   const fmt = d => {
@@ -439,47 +441,22 @@ async function handleSendEmail(body, env) {
 </html>`;
 
   try {
-    const r = await fetch('https://a.klaviyo.com/api/events/', {
+    const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Authorization': `Klaviyo-API-Key ${env.KLAVIYO_KEY}`,
-        'revision':      '2026-04-15',
+        'Authorization': `Bearer ${env.RESEND_KEY}`,
         'Content-Type':  'application/json',
       },
       body: JSON.stringify({
-        data: {
-          type: 'event',
-          attributes: {
-            metric: { data: { type: 'metric', attributes: { name: 'Checkin Code Ready' } } },
-            profile: {
-              data: {
-                type: 'profile',
-                attributes: {
-                  email:      to,
-                  first_name: guest.split(' ')[0],
-                  last_name:  guest.split(' ').slice(1).join(' ') || '',
-                },
-              },
-            },
-            properties: {
-              pin:            pin,
-              check_in_date:  ciDisplay,
-              check_out_date: coDisplay,
-              nights:         nights,
-              ci_date:        ci,
-              co_date:        co,
-              guest_guide_url: 'https://paradisesurfsidesc.com/guest/',
-              wifi_url:        'https://paradisesurfsidesc.com/guest/wifi.html',
-              pool_url:        'https://paradisesurfsidesc.com/guest/pool.html',
-              parking_url:    'https://paradisesurfsidesc.com/guest/parking.html',
-            },
-          },
-        },
+        from:    'Paradise Surfside Beach <no-reply@paradisesurfsidesc.com>',
+        to:      [to],
+        subject: subject,
+        html:    html,
       }),
     });
     if (!r.ok) {
       const j = await r.json().catch(() => ({}));
-      return { ok: false, error: j?.errors?.[0]?.detail || `Klaviyo error ${r.status}` };
+      return { ok: false, error: j?.message || `Resend error ${r.status}` };
     }
     return { ok: true };
   } catch (e) {
@@ -720,7 +697,7 @@ export default {
 
       if (pathname === '/api/send-email') {
         if (request.method !== 'POST') return json({ ok: false, error: 'POST required' }, 405);
-        if (!env.KLAVIYO_KEY) return json({ ok: false, error: 'Missing KLAVIYO_KEY' }, 500);
+        if (!env.RESEND_KEY) return json({ ok: false, error: 'Missing RESEND_KEY' }, 500);
         return json(await handleSendEmail(await request.text(), env));
       }
 
