@@ -135,8 +135,18 @@ body {
 }
 .tab:active { background: rgba(255,255,255,0.05); }
 .tab.active { color: var(--accent); }
-.tab-icon { font-size: 20px; line-height: 1; filter: grayscale(0.4) brightness(0.6); transition: filter 0.15s; }
-.tab.active .tab-icon { filter: none; }
+.tab-icon {
+  font-size: 20px; line-height: 1;
+  filter: grayscale(1) brightness(0.35);
+  transition: filter 0.15s, background 0.15s, border-color 0.15s;
+  padding: 3px 9px; border-radius: 10px;
+  border: 1px solid transparent;
+}
+.tab.active .tab-icon {
+  filter: none;
+  background: rgba(242,193,75,0.15);
+  border-color: rgba(242,193,75,0.35);
+}
 
 /* ── Cards ── */
 .card {
