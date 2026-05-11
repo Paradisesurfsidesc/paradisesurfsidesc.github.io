@@ -615,9 +615,6 @@ function openModal(id) {
     document.getElementById('codePreview').style.display = 'none';
   }
 
-  const saveBtn = document.querySelector('.modal .btn-primary');
-  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Booking'; }
-
   document.getElementById('modalOverlay').classList.remove('hidden');
   document.getElementById('fGuest').focus();
 }
@@ -673,15 +670,10 @@ async function saveBooking() {
     bookings.unshift(data);
   }
 
-  const saveBtn = document.querySelector('.modal .btn-primary');
-  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
-  try {
-    await persist();
-    closeModal();
-    render();
-  } finally {
-    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Booking'; }
-  }
+  closeModal();
+  render();
+
+  persist().catch(() => setSaveStatus('⚠ Sync failed — changes saved locally'));
 }
 
 function delBooking(id) {
