@@ -135,7 +135,8 @@ body {
 }
 .tab:active { background: rgba(255,255,255,0.05); }
 .tab.active { color: var(--accent); }
-.tab-icon { font-size: 20px; line-height: 1; }
+.tab-icon { font-size: 20px; line-height: 1; filter: grayscale(0.4) brightness(0.6); transition: filter 0.15s; }
+.tab.active .tab-icon { filter: none; }
 
 /* ── Cards ── */
 .card {
@@ -397,6 +398,38 @@ canvas { width: 100%!important; }
 /* ── Divider ── */
 hr { border: none; border-top: 1px solid var(--cardBorder); margin: 4px 0 14px; }
 
+/* ── Light theme ── */
+[data-theme="light"] {
+  --bg:          #edf2f7;
+  --surface:     rgba(7,21,37,0.94);
+  --surfaceSoft: rgba(255,255,255,0.92);
+  --card:        rgba(255,255,255,0.82);
+  --cardBorder:  rgba(7,21,37,0.10);
+  --cardHover:   rgba(255,255,255,0.96);
+  --text:        #071525;
+  --muted:       rgba(7,21,37,0.62);
+  --muted2:      rgba(7,21,37,0.38);
+  --shadow:      0 4px 16px rgba(7,21,37,0.08);
+  --shadowLg:    0 12px 40px rgba(7,21,37,0.14);
+  --blue:        rgba(31,105,160,0.12);
+}
+[data-theme="light"] .screen { background: var(--bg); }
+[data-theme="light"] .wx-strip,
+[data-theme="light"] .metric-card,
+[data-theme="light"] .card,
+[data-theme="light"] .hvac-card,
+[data-theme="light"] .peak-banner.summer,
+[data-theme="light"] .peak-banner.winter { backdrop-filter: none; }
+
+/* ── Theme toggle button ── */
+.theme-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.10); border: 1px solid var(--cardBorder);
+  cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.theme-btn:hover { background: rgba(255,255,255,0.18); }
+
 /* ── Responsive ── */
 @media(min-width:600px){
   .leak-grid { grid-template-columns: repeat(3,1fr); }
@@ -420,6 +453,7 @@ hr { border: none; border-top: 1px solid var(--cardBorder); margin: 4px 0 14px; 
     </div>
   </div>
   <div class="nav-right">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark"></button>
     <span class="clock" id="clock">--:--</span>
     <div class="live-dot" id="live-dot" title="Live data"></div>
   </div>
@@ -1372,7 +1406,20 @@ function drawRainChart() {
   }
 }
 
+// ── Theme ─────────────────────────────────────────────────────────
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = t === 'light' ? '🌙' : '☀️';
+}
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  localStorage.setItem('paradise-theme', next);
+  applyTheme(next);
+}
+
 // ── Boot ──────────────────────────────────────────────────────────
+applyTheme(localStorage.getItem('paradise-theme') || 'dark');
 updatePeakBanners();
 updateTimeline();
 renderTreatments();
