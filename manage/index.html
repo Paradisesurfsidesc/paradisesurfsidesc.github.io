@@ -1,0 +1,431 @@
+<!-- manage/index.html -->
+<!-- Date - 2026-05-11 -->
+<!-- Version - 1.0.0 -->
+<!-- Notes - PM dashboard for Southern Coast Vacations - lock code management slots 31-250 -->
+<!-- Author - David Taylor -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Paradise · PM Dashboard</title>
+<style>
+:root {
+  --bg:         #071525;
+  --surface:    rgba(20,65,110,0.96);
+  --card:       rgba(255,255,255,0.07);
+  --cardBorder: rgba(255,255,255,0.16);
+  --text:       #ffffff;
+  --muted:      rgba(255,255,255,0.65);
+  --accent:     #f2c14b;
+  --green:      #4ade80;
+  --red:        #f87171;
+  --yellow:     #fbbf24;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; }
+
+/* ── Topbar ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .875rem 1.25rem;
+  background: var(--surface); border-bottom: 1px solid var(--cardBorder);
+  position: sticky; top: 0; z-index: 100; gap: 1rem; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: .6rem; }
+.brand img { height: 26px; width: auto; }
+.brand span { font-weight: 800; font-size: 1rem; color: var(--accent); }
+.brand-sub { font-size: .78rem; color: var(--muted); }
+
+/* ── Content ── */
+.content { max-width: 960px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+
+/* ── KPI row ── */
+.kpi-row { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.kpi-card {
+  flex: 1; min-width: 130px;
+  background: var(--card); border: 1px solid var(--cardBorder); border-radius: 12px;
+  padding: .875rem 1rem;
+}
+.kpi-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .25rem; }
+.kpi-value { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+
+/* ── Section header ── */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .875rem; gap: .75rem; flex-wrap: wrap; }
+.section-header h2 { font-size: 1.05rem; margin: 0; }
+
+/* ── Buttons ── */
+.btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem 1.1rem; border-radius: 9px; border: none; cursor: pointer; font-size: .875rem; font-weight: 600; font-family: inherit; transition: opacity .15s; }
+.btn:hover { opacity: .85; }
+.btn-primary { background: var(--accent); color: #071525; }
+.btn-sm { padding: .3rem .7rem; font-size: .78rem; border-radius: 7px; border: 1px solid var(--cardBorder); background: var(--card); color: var(--text); cursor: pointer; font-family: inherit; }
+.btn-sm:hover { background: rgba(255,255,255,.12); }
+.btn-sm.del { color: var(--red); border-color: rgba(248,113,113,.3); }
+.btn-sm.del:hover { background: rgba(248,113,113,.1); }
+
+/* ── Table ── */
+.table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--cardBorder); }
+table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+th { padding: .65rem 1rem; text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: rgba(255,255,255,.04); border-bottom: 1px solid var(--cardBorder); white-space: nowrap; }
+td { padding: .7rem 1rem; border-bottom: 1px solid rgba(255,255,255,.06); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.03); }
+.empty-note { text-align: center; color: var(--muted); padding: 2rem !important; font-size: .875rem; }
+
+/* ── Status badges ── */
+.badge { display: inline-block; padding: .2rem .55rem; border-radius: 20px; font-size: .72rem; font-weight: 700; }
+.s-confirmed { background: rgba(74,222,128,.15); color: #4ade80; }
+.s-tentative { background: rgba(251,191,36,.15); color: #fbbf24; }
+.s-completed { background: rgba(255,255,255,.1);  color: var(--muted); }
+.s-cancelled  { background: rgba(248,113,113,.12); color: #f87171; }
+
+/* ── Code chip ── */
+.code-chip {
+  font-family: "DM Mono", "Courier New", monospace;
+  background: rgba(242,193,75,.12); border: 1px solid rgba(242,193,75,.3);
+  color: var(--accent); border-radius: 6px; padding: .2rem .5rem; font-size: .85rem; font-weight: 700;
+  letter-spacing: .08em;
+}
+
+/* ── Next booking banner ── */
+#nextBanner { margin-bottom: 1.25rem; }
+.next-card {
+  background: rgba(255,200,50,.07); border: 1px solid rgba(255,200,50,.28);
+  border-radius: 10px; padding: .875rem 1.25rem;
+  display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+}
+.next-label { font-size: .7rem; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+.next-guest { font-weight: 700; }
+.next-dates { color: var(--muted); font-size: .875rem; }
+.next-when  { font-size: .875rem; color: var(--accent); font-weight: 600; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 200;
+}
+.modal-overlay.hidden { display: none; }
+.modal {
+  background: #0d2035; border: 1px solid var(--cardBorder); border-radius: 16px;
+  padding: 1.75rem; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto;
+}
+.modal h2 { font-size: 1.1rem; margin-bottom: 1.25rem; }
+.form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+@media (max-width: 480px) { .form-2col { grid-template-columns: 1fr; } }
+.form-row { display: grid; gap: .35rem; }
+.form-row.span2 { grid-column: 1/-1; }
+.form-row label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.form-row input, .form-row select, .form-row textarea {
+  padding: .65rem .9rem; border-radius: 8px; border: 1px solid var(--cardBorder);
+  background: rgba(255,255,255,.06); color: var(--text); font-size: .875rem; font-family: inherit; outline: none;
+}
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--accent); }
+.form-row textarea { resize: vertical; min-height: 70px; }
+.modal-actions { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1.25rem; }
+.code-preview {
+  margin-top: .75rem; padding: .75rem 1rem; background: rgba(242,193,75,.07);
+  border: 1px solid rgba(242,193,75,.2); border-radius: 8px; font-size: .875rem;
+}
+.code-preview .pin { font-family: monospace; font-size: 1.3rem; font-weight: 800; color: var(--accent); letter-spacing: .15em; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/images/Paradise-white.png" alt="Paradise">
+    <span>PM</span>
+  </div>
+  <div class="brand-sub">Southern Coast Vacations · Guest Lock Codes</div>
+</div>
+
+<div class="content">
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <div id="nextBanner"></div>
+
+  <div class="section-header">
+    <h2>Guest Bookings &amp; Lock Codes</h2>
+    <button class="btn btn-primary" onclick="openModal()">+ New Booking</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Guest</th>
+          <th>Check-In</th>
+          <th>Check-Out</th>
+          <th>Nights</th>
+          <th>Lock Slot</th>
+          <th>PIN</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="bookingsTbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">New Booking</h2>
+    <div class="form-2col">
+      <div class="form-row span2">
+        <label>Guest Name *</label>
+        <input type="text" id="fGuest" placeholder="Full name">
+      </div>
+      <div class="form-row">
+        <label>Phone</label>
+        <input type="tel" id="fPhone" placeholder="(843) 555-0100">
+      </div>
+      <div class="form-row">
+        <label>Email</label>
+        <input type="email" id="fEmail" placeholder="guest@email.com">
+      </div>
+      <div class="form-row">
+        <label>Check-In *</label>
+        <input type="date" id="fCheckin">
+      </div>
+      <div class="form-row">
+        <label>Check-Out *</label>
+        <input type="date" id="fCheckout">
+      </div>
+      <div class="form-row">
+        <label>Lock Slot (31–250)</label>
+        <input type="number" id="fSlot" min="31" max="250" placeholder="Auto-assign">
+      </div>
+      <div class="form-row">
+        <label>Status</label>
+        <select id="fStatus">
+          <option>Confirmed</option>
+          <option>Tentative</option>
+          <option>Completed</option>
+          <option>Cancelled</option>
+        </select>
+      </div>
+      <div class="form-row span2">
+        <label>Notes</label>
+        <textarea id="fNotes" placeholder="Special requests, early check-in, etc."></textarea>
+      </div>
+    </div>
+    <div class="code-preview" id="codePreview" style="display:none">
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.35rem">Generated PIN</div>
+      <div class="pin" id="previewPin">—</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:.35rem">Slot <span id="previewSlot">—</span> · Active 4:00 PM check-in → 10:00 AM checkout</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBooking()">Save Booking</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORE_KEY = 'pm_bookings_v1';
+
+let bookings = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+let editingId = null;
+
+function persist() { localStorage.setItem(STORE_KEY, JSON.stringify(bookings)); }
+
+function calcNights(ci, co) {
+  const n = (new Date(co) - new Date(ci)) / 86400000;
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const [y, m, day] = d.split('-');
+  return `${m}/${day}/${y}`;
+}
+
+function genPin() {
+  const digits = () => Math.floor(Math.random() * 10);
+  // 6-digit PIN, no leading zero, no simple sequences
+  let pin;
+  do { pin = `${digits()+1}${digits()}${digits()}${digits()}${digits()}${digits()}`; }
+  while (/(.)\1{2,}/.test(pin) || pin === '123456' || pin === '654321');
+  return pin;
+}
+
+function nextSlot() {
+  const used = new Set(bookings.filter(b => b.slot && b.status !== 'Cancelled').map(b => b.slot));
+  for (let s = 31; s <= 250; s++) { if (!used.has(s)) return s; }
+  return null;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render() {
+  // KPIs
+  const active    = bookings.filter(b => b.status !== 'Cancelled');
+  const today     = new Date().toISOString().slice(0, 10);
+  const upcoming  = active.filter(b => b.ci >= today);
+  const slotsUsed = active.filter(b => b.slot).length;
+
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">Active Bookings</div><div class="kpi-value">${active.length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Upcoming</div><div class="kpi-value">${upcoming.length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Slots in Use</div><div class="kpi-value">${slotsUsed} / 220</div></div>
+  `;
+
+  // Next booking banner
+  const next = [...bookings]
+    .filter(b => b.ci >= today && b.status !== 'Cancelled')
+    .sort((a, b) => a.ci.localeCompare(b.ci))[0];
+  const nb = document.getElementById('nextBanner');
+  if (next) {
+    const nights   = calcNights(next.ci, next.co);
+    const daysAway = Math.round((new Date(next.ci) - new Date(today)) / 86400000);
+    const when     = daysAway === 0 ? 'Checks in TODAY' : daysAway === 1 ? 'Tomorrow' : `${daysAway} days away`;
+    nb.innerHTML = `<div class="next-card">
+      <div class="next-label">Next Check-In</div>
+      <div class="next-guest">${next.guest}</div>
+      <div class="next-dates">${fmtDate(next.ci)} → ${fmtDate(next.co)} · ${nights} night${nights !== 1 ? 's' : ''}</div>
+      <div class="next-when">${when}</div>
+      ${next.pin ? `<div class="code-chip" style="margin-left:auto">PIN: ${next.pin}</div>` : ''}
+    </div>`;
+  } else {
+    nb.innerHTML = '';
+  }
+
+  // Table — upcoming first, then by check-in desc
+  const sorted = [...bookings].sort((a, b) => {
+    const aUp = a.ci >= today && a.status !== 'Cancelled';
+    const bUp = b.ci >= today && b.status !== 'Cancelled';
+    if (aUp && !bUp) return -1;
+    if (!aUp && bUp) return 1;
+    return aUp ? a.ci.localeCompare(b.ci) : b.ci.localeCompare(a.ci);
+  });
+
+  const tbody = document.getElementById('bookingsTbody');
+  if (!sorted.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-note">No bookings yet — click + New Booking to add one.</td></tr>`;
+    return;
+  }
+
+  const SC = { Confirmed:'s-confirmed', Tentative:'s-tentative', Completed:'s-completed', Cancelled:'s-cancelled' };
+  tbody.innerHTML = sorted.map(b => {
+    const n = calcNights(b.ci, b.co);
+    return `<tr>
+      <td>
+        <div style="font-weight:600">${b.guest}</div>
+        <div style="font-size:.75rem;color:var(--muted)">${b.phone || b.email || ''}</div>
+      </td>
+      <td>${fmtDate(b.ci)}</td>
+      <td>${fmtDate(b.co)}</td>
+      <td>${n || '—'}</td>
+      <td style="font-weight:600;color:var(--muted)">${b.slot ? `Slot ${b.slot}` : '—'}</td>
+      <td>${b.pin ? `<span class="code-chip">${b.pin}</span>` : '<span style="color:var(--muted);font-size:.8rem">—</span>'}</td>
+      <td><span class="badge ${SC[b.status] || 's-tentative'}">${b.status}</span></td>
+      <td>
+        <button class="btn-sm" onclick="openModal('${b.id}')">Edit</button>
+        <button class="btn-sm del" onclick="delBooking('${b.id}')">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function openModal(id) {
+  editingId = id || null;
+  const b = id ? bookings.find(x => x.id === id) : null;
+  document.getElementById('modalTitle').textContent = b ? 'Edit Booking' : 'New Booking';
+  document.getElementById('fGuest').value   = b?.guest   || '';
+  document.getElementById('fPhone').value   = b?.phone   || '';
+  document.getElementById('fEmail').value   = b?.email   || '';
+  document.getElementById('fCheckin').value = b?.ci      || '';
+  document.getElementById('fCheckout').value= b?.co      || '';
+  document.getElementById('fSlot').value    = b?.slot    || '';
+  document.getElementById('fStatus').value  = b?.status  || 'Confirmed';
+  document.getElementById('fNotes').value   = b?.notes   || '';
+
+  // Show PIN preview for new bookings
+  if (!b) {
+    const slot = nextSlot();
+    const pin  = genPin();
+    document.getElementById('previewPin').textContent  = pin;
+    document.getElementById('previewSlot').textContent = slot || 'None available';
+    document.getElementById('codePreview').style.display = '';
+    document.getElementById('fSlot').placeholder = slot ? `Auto: Slot ${slot}` : 'None available';
+    document.getElementById('fSlot')._autoSlot   = slot;
+    document.getElementById('fSlot')._autoPin    = pin;
+  } else {
+    document.getElementById('codePreview').style.display = 'none';
+  }
+
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  document.getElementById('fGuest').focus();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+  editingId = null;
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+function saveBooking() {
+  const guest = document.getElementById('fGuest').value.trim();
+  if (!guest) { alert('Guest name is required.'); return; }
+
+  const ci = document.getElementById('fCheckin').value;
+  const co = document.getElementById('fCheckout').value;
+  if (!ci || !co) { alert('Check-in and check-out dates are required.'); return; }
+
+  const slotInput = document.getElementById('fSlot');
+  const slot = parseInt(slotInput.value) || slotInput._autoSlot || null;
+  if (slot && (slot < 31 || slot > 250)) { alert('Lock slot must be between 31 and 250.'); return; }
+
+  // Check slot collision
+  if (slot) {
+    const collision = bookings.find(b => b.slot === slot && b.id !== editingId && b.status !== 'Cancelled');
+    if (collision) { alert(`Slot ${slot} is already assigned to ${collision.guest}. Choose a different slot.`); return; }
+  }
+
+  const pin = editingId
+    ? (bookings.find(b => b.id === editingId)?.pin || null)
+    : (slotInput._autoPin || genPin());
+
+  const data = {
+    id:     editingId || Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+    guest,
+    phone:  document.getElementById('fPhone').value.trim(),
+    email:  document.getElementById('fEmail').value.trim(),
+    ci, co,
+    slot:   slot || null,
+    pin:    slot ? pin : null,
+    status: document.getElementById('fStatus').value,
+    notes:  document.getElementById('fNotes').value.trim(),
+  };
+
+  if (editingId) {
+    const i = bookings.findIndex(b => b.id === editingId);
+    bookings[i] = data;
+  } else {
+    bookings.unshift(data);
+  }
+
+  persist();
+  closeModal();
+  render();
+}
+
+function delBooking(id) {
+  if (!confirm('Delete this booking? This cannot be undone.')) return;
+  bookings = bookings.filter(b => b.id !== id);
+  persist();
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
