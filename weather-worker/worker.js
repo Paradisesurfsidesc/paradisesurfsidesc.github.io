@@ -309,10 +309,10 @@ async function handleCommand(body, env) {
   const base = hubBase(env);
   const tok  = env.HUBITAT_TOKEN;
 
-  // Build path — append params as URL segments (Hubitat Maker API convention)
+  // Build path — Hubitat Maker API: multi-param commands use comma-separated secondary
   let path = `/devices/${deviceId}/${command}`;
   if (Array.isArray(params) && params.length > 0) {
-    path += '/' + params.map(p => encodeURIComponent(String(p))).join('/');
+    path += '/' + params.map(p => String(p)).join(',');
   }
 
   try {
@@ -689,7 +689,7 @@ async function handleDailyCron(env) {
     if (b.ci === todayStr && b.slot && b.pin && tok) {
       const raw = b.guest.split(' ')[0] + ' ' + b.ci.slice(5).replace('-', '');
       const label = raw.length > 20 ? raw.slice(0, 20) : raw;
-      await hubGet(base, `/devices/1/setCode/${b.slot}/${b.pin}/${encodeURIComponent(label)}`, tok).catch(() => {});
+      await hubGet(base, `/devices/1/setCode/${b.slot},${b.pin},${label}`, tok).catch(() => {});
     }
 
     // Remove lock code on checkout day
