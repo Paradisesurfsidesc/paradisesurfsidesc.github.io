@@ -2,6 +2,9 @@ name = "paradise-weather"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
+[triggers]
+crons = ["0 16 * * *"]   # noon EDT daily — send emails + push/remove lock codes
+
 [[kv_namespaces]]
 binding = "PM_BOOKINGS"
 id = "d73cadcf701c49258dc0d196e1a2dd9a"

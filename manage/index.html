@@ -273,6 +273,19 @@ tr:hover td { background: rgba(255,255,255,.03); }
         <label>Notes</label>
         <textarea id="fNotes" placeholder="Special requests, early check-in, etc."></textarea>
       </div>
+      <div class="form-row span2">
+        <label>Auto Notifications</label>
+        <div style="display:flex;gap:1.25rem;flex-wrap:wrap;padding:.5rem 0">
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.875rem">
+            <input type="checkbox" id="fEmailDayBefore" checked style="width:16px;height:16px;accent-color:var(--accent)">
+            📧 Email day before (noon)
+          </label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.875rem">
+            <input type="checkbox" id="fEmailDayOf" checked style="width:16px;height:16px;accent-color:var(--accent)">
+            📧 Email day of (noon)
+          </label>
+        </div>
+      </div>
     </div>
     <div class="code-preview" id="codePreview" style="display:none">
       <div style="font-size:.75rem;color:var(--muted);margin-bottom:.35rem">Generated PIN</div>
@@ -591,6 +604,8 @@ function openModal(id) {
   document.getElementById('fSlot').value     = b?.slot    || '';
   document.getElementById('fStatus').value   = b?.status  || 'Confirmed';
   document.getElementById('fNotes').value    = b?.notes   || '';
+  document.getElementById('fEmailDayBefore').checked = b ? (b.emailDayBefore !== false) : true;
+  document.getElementById('fEmailDayOf').checked     = b ? (b.emailDayOf     !== false) : true;
 
   // Time override
   const hasCustom = !!(b?.ci_time || b?.co_time);
@@ -657,10 +672,12 @@ async function saveBooking() {
     ci, co,
     ci_time: timeOverride ? document.getElementById('fCheckinTime').value  : null,
     co_time: timeOverride ? document.getElementById('fCheckoutTime').value : null,
-    slot:    slot || null,
-    pin:     slot ? pin : null,
-    status:  document.getElementById('fStatus').value,
-    notes:   document.getElementById('fNotes').value.trim(),
+    slot:            slot || null,
+    pin:             slot ? pin : null,
+    status:          document.getElementById('fStatus').value,
+    notes:           document.getElementById('fNotes').value.trim(),
+    emailDayBefore:  document.getElementById('fEmailDayBefore').checked,
+    emailDayOf:      document.getElementById('fEmailDayOf').checked,
   };
 
   if (editingId) {

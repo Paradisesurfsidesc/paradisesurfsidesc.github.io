@@ -647,8 +647,61 @@ async function handleWeather(env) {
   };
 }
 
+// ── Daily cron — noon EDT (16:00 UTC) ─────────────────────────────────────────
+async function handleDailyCron(env) {
+  if (!env.PM_BOOKINGS) return;
+
+  const raw = await env.PM_BOOKINGS.get('bookings').catch(() => null);
+  if (!raw) return;
+  let bookings;
+  try { bookings = JSON.parse(raw); } catch { return; }
+
+  const now      = new Date();
+  const todayStr = now.toISOString().slice(0, 10);
+  const tomorrow = new Date(now.getTime() + 86400000);
+  const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+
+  const base = hubBase(env);
+  const tok  = env.HUBITAT_TOKEN;
+
+  for (const b of bookings) {
+    if (b.status === 'Cancelled' || b.status === 'Completed') continue;
+
+    const emailBody = b.email && b.pin ? JSON.stringify({
+      to: b.email, guest: b.guest, pin: b.pin,
+      ci: b.ci, co: b.co, ci_time: b.ci_time, co_time: b.co_time,
+    }) : null;
+
+    // Email day before check-in
+    if (b.emailDayBefore !== false && b.ci === tomorrowStr && emailBody) {
+      await handleSendEmail(emailBody, env).catch(() => {});
+    }
+
+    // Email day of check-in
+    if (b.emailDayOf !== false && b.ci === todayStr && emailBody) {
+      await handleSendEmail(emailBody, env).catch(() => {});
+    }
+
+    // Push lock code on check-in day
+    if (b.ci === todayStr && b.slot && b.pin && tok) {
+      const raw = b.guest.split(' ')[0] + ' ' + b.ci.slice(5).replace('-', '/');
+      const label = raw.length > 20 ? raw.slice(0, 20) : raw;
+      await hubGet(base, `/devices/1/setCode/${b.slot}/${b.pin}/${encodeURIComponent(label)}`, tok).catch(() => {});
+    }
+
+    // Remove lock code on checkout day
+    if (b.co === todayStr && b.slot && tok) {
+      await hubGet(base, `/devices/1/deleteCode/${b.slot}`, tok).catch(() => {});
+    }
+  }
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 export default {
+  async scheduled(event, env) {
+    await handleDailyCron(env);
+  },
+
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
 
