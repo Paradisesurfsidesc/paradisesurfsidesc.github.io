@@ -319,7 +319,10 @@ async function handleCommand(body, env) {
     const r = await fetch(hubUrl(base, path, tok), {
       cf: { cacheTtl: 0, cacheEverything: false },
     });
-    if (!r.ok) return { ok: false, error: `Hubitat error ${r.status}` };
+    if (!r.ok) {
+      const detail = await r.text().catch(() => '');
+      return { ok: false, error: `Hubitat ${r.status}${detail ? ': ' + detail.slice(0, 120) : ''}` };
+    }
     return { ok: true, deviceId, command };
   } catch (e) {
     return { ok: false, error: String(e?.message || e) };
@@ -684,7 +687,7 @@ async function handleDailyCron(env) {
 
     // Push lock code on check-in day
     if (b.ci === todayStr && b.slot && b.pin && tok) {
-      const raw = b.guest.split(' ')[0] + ' ' + b.ci.slice(5).replace('-', '/');
+      const raw = b.guest.split(' ')[0] + ' ' + b.ci.slice(5).replace('-', '');
       const label = raw.length > 20 ? raw.slice(0, 20) : raw;
       await hubGet(base, `/devices/1/setCode/${b.slot}/${b.pin}/${encodeURIComponent(label)}`, tok).catch(() => {});
     }

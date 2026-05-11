@@ -404,7 +404,7 @@ async function pushCodeToLock(id) {
   if (!b?.slot || !b?.pin) return;
   const label = (() => {
     const first = b.guest.split(' ')[0];
-    const s = `${first} ${b.ci.slice(5).replace('-','/')}-${b.co.slice(5).replace('-','/')}`;
+    const s = `${first} ${b.ci.slice(5).replace('-','')}-${b.co.slice(5).replace('-','')}`;
     return s.length > 20 ? s.slice(0, 20) : s;
   })();
   setSaveStatus('Pushing…');
