@@ -41,15 +41,16 @@ function num(v) {
 }
 
 // ── /api/pool ─────────────────────────────────────────────────────────────────
-// 85=relay1/speed2  86=relay2/speed3  11=heater fireman  10=water temp
+// 85=relay1/speed2  86=relay2/speed3  11=heater fireman  10=water temp  88=water quality
 async function handlePool(env) {
   const base = hubBase(env);
   const tok  = env.HUBITAT_TOKEN;
-  const [d85, d86, d11, d10] = await Promise.all([
+  const [d85, d86, d11, d10, d88] = await Promise.all([
     hubGet(base, '/devices/85', tok),
     hubGet(base, '/devices/86', tok),
     hubGet(base, '/devices/11', tok),
     hubGet(base, '/devices/10', tok),
+    hubGet(base, '/devices/88', tok),
   ]);
 
   const r1 = attr(d85, 'switch') === 'on';
@@ -61,11 +62,25 @@ async function handlePool(env) {
   const month = new Date().getMonth() + 1;
   const runtime_target_hrs = (month >= 4 && month <= 10) ? 8 : 6;
 
+  // Water quality — EZO-pH (addr 99) + EZO-ORP (addr 98) via Atlas Pool Kit + Hubitat driver
+  // Negative attribute values = sentinel for no probe / unavailable (-1 = unknown)
+  const phRaw  = num(attr(d88, 'pH'));
+  const orpRaw = num(attr(d88, 'orp'));
+  const chemistry = {
+    sensorStatus: attr(d88, 'sensorStatus') || 'offline',
+    ph:           phRaw  !== null && phRaw  >= 0 ? Math.round(phRaw  * 100) / 100 : null,
+    orp:          orpRaw !== null && orpRaw >= 0 ? Math.round(orpRaw) : null,
+    phStatus:     attr(d88, 'phStatus')    || 'unknown',
+    orpStatus:    attr(d88, 'orpStatus')   || 'unknown',
+    lastUpdated:  attr(d88, 'lastUpdated') || null,
+  };
+
   return {
     ok:     true,
     pump:   { speed: r2 ? 3 : r1 ? 2 : 0, rpm: r2 ? 3000 : r1 ? 2000 : 0, relay1_on: r1, relay2_on: r2 },
     water:  { temp_f, runtime_target_hrs },
     heater: { on: attr(d11, 'switch') === 'on' },
+    chemistry,
   };
 }
 

@@ -541,12 +541,12 @@ hr { border: none; border-top: 1px solid var(--cardBorder); margin: 4px 0 14px; 
   </div>
 
   <div class="metric-card" onclick="goTo('chem')">
-    <div class="metric-card-bar" style="background:rgba(242,193,75,0.4);"></div>
+    <div class="metric-card-bar" id="mc-chem-bar" style="background:rgba(242,193,75,0.4);"></div>
     <div class="metric-card-body">
       <div class="metric-card-label">Chemicals</div>
-      <div class="metric-card-value" style="font-size:20px;margin-top:4px;">ORP · pH · Flow</div>
-      <div class="metric-card-sub">Sensors pending — log treatments below</div>
-      <div class="metric-card-pill" style="margin-top:8px;"><span class="pill p-muted"><span class="pill-dot"></span>Awaiting sensors</span></div>
+      <div class="metric-card-value" id="mc-chem-val" style="font-size:20px;margin-top:4px;">ORP · pH</div>
+      <div class="metric-card-sub" id="mc-chem-sub">Waiting for sensor data…</div>
+      <div class="metric-card-pill" id="mc-chem-pill" style="margin-top:8px;"><span class="pill p-muted"><span class="pill-dot"></span>Sensor offline</span></div>
     </div>
     <div class="metric-card-right">
       <div class="metric-card-icon">🧪</div>
@@ -719,16 +719,24 @@ hr { border: none; border-top: 1px solid var(--cardBorder); margin: 4px 0 14px; 
 ════════════════════════════════════════ -->
 <div class="screen" id="screen-chem">
 
-  <div class="chem-ph">
-    <div class="chem-ph-icon">⚡</div>
-    <div class="chem-ph-title">ORP — Sensor Pending</div>
-    <div class="chem-ph-sub">Target: 650–750 mV<br>SC DHEC chlorine: 1–8 ppm</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div class="card-label" style="margin-bottom:0;">ORP</div>
+      <span id="chem-sensor-pill"></span>
+    </div>
+    <div class="card-value" id="chem-orp-val">—</div>
+    <div class="card-sub">Target: 650–800 mV · SC DHEC chlorine proxy</div>
+    <div style="margin-top:12px;" id="chem-orp-pill"></div>
+    <div style="font-size:12px;color:var(--muted2);margin-top:10px;" id="chem-last-updated"></div>
   </div>
-  <div class="chem-ph">
-    <div class="chem-ph-icon">🧪</div>
-    <div class="chem-ph-title">pH — Sensor Pending</div>
-    <div class="chem-ph-sub">Target: 7.0–7.8<br>SC DHEC standard</div>
+
+  <div class="card">
+    <div class="card-label">pH</div>
+    <div class="card-value" id="chem-ph-val">—</div>
+    <div class="card-sub">Target: 7.2–7.8 · SC DHEC range 7.0–7.8</div>
+    <div style="margin-top:12px;" id="chem-ph-pill"></div>
   </div>
+
   <div class="chem-ph">
     <div class="chem-ph-icon">🌊</div>
     <div class="chem-ph-title">Flow Rate — Meter Pending</div>
@@ -1019,6 +1027,7 @@ function updateAll() {
   updateOverview();
   updatePump();
   updateTemp();
+  updateChem();
   updateHVAC();
   updateLeak();
   updateService();
@@ -1129,6 +1138,46 @@ async function fetchPumpLog() {
     <div><div class="log-msg">Heater ${p.heater?.on?'running':'off'}</div><div class="log-dev">Qubino · AquaCal SuperQuiet 120</div></div>
     <div class="log-time">Now</div>
   </div>`;
+}
+
+// ── Chemistry ─────────────────────────────────────────────────────
+function updateChem() {
+  const c=poolState.chemistry; if(!c) return;
+  const online=c.sensorStatus==='online', stale=c.sensorStatus==='stale';
+
+  const statusPillCls=online?'p-green':stale?'p-yellow':'p-muted';
+  const statusPillLbl=online?'Online':stale?'Stale':'Offline';
+  setHTML('chem-sensor-pill', pill(statusPillCls,statusPillLbl));
+
+  // ORP
+  setText('chem-orp-val', c.orp!==null?`${c.orp} mV`:'—');
+  setHTML('chem-orp-pill', pill(
+    c.orpStatus==='normal'?'p-green':c.orpStatus==='low'?'p-yellow':c.orpStatus==='high'?'p-red':'p-muted',
+    c.orpStatus==='normal'?'Normal':c.orpStatus==='low'?'Low — add sanitizer':c.orpStatus==='high'?'High':'Unknown'
+  ));
+
+  // pH
+  setText('chem-ph-val', c.ph!==null?c.ph.toFixed(2):'—');
+  setHTML('chem-ph-pill', pill(
+    c.phStatus==='normal'?'p-green':c.phStatus==='low'?'p-yellow':c.phStatus==='high'?'p-red':'p-muted',
+    c.phStatus==='normal'?'Normal':c.phStatus==='low'?'Low':c.phStatus==='high'?'High':'Unknown'
+  ));
+
+  // Last updated timestamp
+  setText('chem-last-updated', c.lastUpdated?`Updated: ${c.lastUpdated}`:'');
+
+  // Overview Chemicals card
+  const bothOk=c.phStatus==='normal'&&c.orpStatus==='normal';
+  const anyBad=c.phStatus==='high'||c.phStatus==='low'||c.orpStatus==='high'||c.orpStatus==='low';
+  const ovCls=online&&bothOk?'p-green':online&&anyBad?'p-yellow':stale?'p-muted':'p-muted';
+  const orpDisp=c.orp!==null?`${c.orp} mV`:'—';
+  const phDisp =c.ph !==null?c.ph.toFixed(2):'—';
+  setStyle('mc-chem-bar',`background:${online&&bothOk?'var(--green)':online&&anyBad?'var(--accent)':stale?'var(--muted2)':'var(--muted2)'};`);
+  setText('mc-chem-val', `ORP ${orpDisp} · pH ${phDisp}`);
+  setText('mc-chem-sub', `Atlas Scientific · ${online?'Live':stale?'Stale data':'Sensor offline'}`);
+  setHTML('mc-chem-pill', pill(ovCls,
+    !online?'Sensor offline':bothOk?'Chemistry OK':'Check chemistry'
+  ));
 }
 
 // ── Timeline ──────────────────────────────────────────────────────
